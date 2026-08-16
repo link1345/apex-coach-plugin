@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "apex-reference": {
+      "cwd": ".",
+      "command": "bun",
+      "args": ["./dist/apex-reference/server.js"]
+    },
+    "game-video-analysis": {
+      "cwd": ".",
+      "command": "bun",
+      "args": ["./dist/game-video-analysis/server.js"]
+    }
+  }
+}

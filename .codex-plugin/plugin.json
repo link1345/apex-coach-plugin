@@ -1,0 +1,28 @@
+{
+  "name": "apex-coach-plugin",
+  "version": "0.1.0",
+  "description": "APEX Legends gameplay video analysis and evidence-based coaching for Codex.",
+  "author": {
+    "name": "link1345",
+    "url": "https://github.com/link1345"
+  },
+  "homepage": "https://github.com/link1345/apex-coach-plugin",
+  "repository": "https://github.com/link1345/apex-coach-plugin",
+  "keywords": ["apex-legends", "coaching", "video-analysis", "mcp"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Apex Coach Plugin",
+    "shortDescription": "APEXの戦闘動画を根拠ベースでレビューします。",
+    "longDescription": "動画からフレームや音声を抽出し、APEX固有の参照情報と照合しながら、観察・推論・判断を分離したコーチングを提供します。",
+    "developerName": "link1345",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read"],
+    "websiteURL": "https://github.com/link1345/apex-coach-plugin",
+    "defaultPrompt": [
+      "このAPEX戦闘動画を分析して、優先度順に改善点を教えてください。",
+      "この場面でプッシュ、維持、リセットのどれが妥当だったか確認してください。",
+      "動画内の判断を、観察できた情報だけに基づいてレビューしてください。"
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

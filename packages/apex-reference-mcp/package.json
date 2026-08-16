@@ -1,0 +1,27 @@
+{
+  "name": "apex-reference-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "apex-reference-mcp": "./bin/apex-reference-mcp.ts"
+  },
+  "scripts": {
+    "start": "bun run bin/apex-reference-mcp.ts",
+    "mcp:start": "bun run bin/apex-reference-mcp.ts",
+    "changes:extract": "bun run src/reference/changePipelineCli.ts extract",
+    "changes:approve": "bun run src/reference/changePipelineCli.ts approve",
+    "references:validate": "bun run src/reference/validationCli.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2"
+  }
+}
