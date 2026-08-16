@@ -63,12 +63,22 @@ export class RuntimeDiagnosticService {
       const result = kind === "ffmpeg"
         ? await this.runner.runFfmpeg(["-version"])
         : await this.runner.runFfprobe(["-version"]);
-      const version = result.stdout.split(/\r?\n/, 1)[0]?.trim();
+      const output = `${result.stdout}\n${result.stderr}`;
+      const signature = kind === "ffmpeg" ? /^ffmpeg version\b/im : /^ffprobe version\b/im;
+      const version = output.split(/\r?\n/).find((line) => signature.test(line))?.trim();
+
+      if (!version) {
+        throw new MediaError(
+          "invalid_binary",
+          `Configured ${kind} executable did not report a recognizable ${kind} version signature.`,
+          { path }
+        );
+      }
 
       return {
         ready: true,
         path,
-        ...(version ? { version } : {}),
+        version,
         configuredBy
       };
     } catch (error) {

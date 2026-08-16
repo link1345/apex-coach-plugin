@@ -55,6 +55,10 @@ export type ReviewFinding = {
 
 export type ReviewDraft = {
   audioCoverage: "complete" | "partial" | "none";
+  referenceContext?: {
+    patch?: string;
+    at?: string;
+  };
   findings: ReviewFinding[];
 };
 
@@ -81,6 +85,23 @@ export async function validateReviewDraft(
   for (const finding of draft.findings) {
     const evidenceIds = new Set(finding.observations.map((observation) => observation.id));
     const decisiveOptions = finding.options.filter((option) => option.verdict === "better");
+    const referenceSelector = {
+      ...(draft.referenceContext?.patch ? { patch: draft.referenceContext.patch } : {}),
+      ...(draft.referenceContext?.at ? { at: draft.referenceContext.at } : {})
+    };
+    const hasReferenceContext = Object.keys(referenceSelector).length > 0;
+    const hasReferenceDependentClaims = finding.referenceClaims.length > 0
+      || finding.numericClaims.some((claim) => claim.use === "threshold" && claim.referenceId && claim.valueKey);
+
+    if (hasReferenceDependentClaims && !hasReferenceContext) {
+      issues.push(issue(
+        "missing_reference_context",
+        "error",
+        finding.id,
+        "referenceContext",
+        "Reference-backed claims require the reviewed game's patch or timestamp."
+      ));
+    }
 
     for (const [index, inference] of finding.inferences.entries()) {
       addMissingEvidenceIssues(issues, finding.id, `findings.${finding.id}.inferences.${index}`, inference.cueEvidenceIds, evidenceIds);
@@ -97,6 +118,9 @@ export async function validateReviewDraft(
       }
       if (option.feasibility === "conditional" && option.conditions.length === 0) {
         issues.push(issue("missing_option_conditions", "error", finding.id, path, "A conditional option must list its conditions."));
+      }
+      if (option.verdict === "better" && option.feasibility === "conditional" && finding.recommendationMode === "decisive") {
+        issues.push(issue("conditional_option_recommended_decisively", "error", finding.id, path, "A conditional option rated better requires conditional recommendation mode."));
       }
       if (option.category === "ability" && option.verdict === "better" && option.evidenceIds.length === 0) {
         issues.push(issue("ability_without_availability_evidence", "error", finding.id, path, "A recommended ability requires HUD, prior-use, or availability evidence."));
@@ -145,7 +169,10 @@ export async function validateReviewDraft(
           "A numeric threshold requires a referenceId and valueKey; an observed measurement is not a general rule."
         ));
       } else if (numericClaim.use === "threshold" && numericClaim.referenceId && numericClaim.valueKey) {
-        const lookup = await repository.getReference({ id: numericClaim.referenceId });
+        if (!hasReferenceContext) {
+          continue;
+        }
+        const lookup = await repository.getReference({ id: numericClaim.referenceId, ...referenceSelector });
         const value = lookup.found ? lookup.reference.values[numericClaim.valueKey] : undefined;
         checkedReferenceClaims.push({
           findingId: finding.id,
@@ -156,6 +183,19 @@ export async function validateReviewDraft(
         });
         if (value === undefined) {
           issues.push(issue("unsupported_numeric_threshold", "error", finding.id, path, `Reference ${numericClaim.referenceId} does not provide values.${numericClaim.valueKey}.`));
+        } else if (
+          value.kind !== "absolute"
+          || typeof value.value !== "number"
+          || value.value !== numericClaim.value
+          || normalizeUnit(value.unit) !== normalizeUnit(numericClaim.unit)
+        ) {
+          issues.push(issue(
+            "unsupported_numeric_threshold",
+            "error",
+            finding.id,
+            path,
+            `Threshold ${numericClaim.value}${numericClaim.unit ? ` ${numericClaim.unit}` : ""} does not exactly match the numeric reference value.`
+          ));
         }
       }
     }
@@ -178,7 +218,10 @@ export async function validateReviewDraft(
     }
 
     for (const referenceClaim of finding.referenceClaims) {
-      const lookup = await repository.getReference({ id: referenceClaim.referenceId });
+      if (!hasReferenceContext) {
+        continue;
+      }
+      const lookup = await repository.getReference({ id: referenceClaim.referenceId, ...referenceSelector });
       const value = lookup.found ? lookup.reference.values[referenceClaim.valueKey] : undefined;
       checkedReferenceClaims.push({
         findingId: finding.id,
@@ -194,6 +237,14 @@ export async function validateReviewDraft(
           finding.id,
           `findings.${finding.id}.referenceClaims`,
           `Reference ${referenceClaim.referenceId} does not provide values.${referenceClaim.valueKey}.`
+        ));
+      } else if (value.kind === "unknown") {
+        issues.push(issue(
+          "unsupported_reference_claim",
+          "error",
+          finding.id,
+          `findings.${finding.id}.referenceClaims`,
+          `Reference ${referenceClaim.referenceId} marks values.${referenceClaim.valueKey} as unknown: ${value.reason}`
         ));
       }
     }
@@ -215,10 +266,18 @@ function addMissingEvidenceIssues(
   referencedIds: string[],
   availableIds: Set<string>
 ): void {
+  if (referencedIds.length === 0) {
+    issues.push(issue("missing_evidence", "error", findingId, path, "At least one observation evidence id is required."));
+    return;
+  }
   const missingEvidence = referencedIds.filter((evidenceId) => !availableIds.has(evidenceId));
   if (missingEvidence.length > 0) {
     issues.push(issue("missing_evidence", "error", findingId, path, `Unknown evidence ids: ${missingEvidence.join(", ")}.`));
   }
+}
+
+function normalizeUnit(unit: string | undefined): string | undefined {
+  return unit?.trim().toLowerCase();
 }
 
 function issue(

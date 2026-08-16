@@ -14,7 +14,7 @@ Review the decision from information available at that timestamp. Do not use the
 3. Inspect video metadata, broad phases, and then dense frames or clips around decision points.
 4. Extract audio around a decision when sound could change the recommendation. Record audio coverage as `complete`, `partial`, or `none`.
 5. Use `apex-reference.search_reference` and `get_reference` when an APEX-specific fact affects the judgment. Cite the exact reference id and `values` key used.
-6. Build structured findings and call `apex-reference.validate_review` before writing the final answer.
+6. Build structured findings and call `apex-reference.validate_review` before writing the final answer. When the draft contains reference-backed claims, pass `referenceContext.patch` or `referenceContext.at` for the reviewed gameplay version; never validate historical footage against an implicit latest value.
 7. Fix every validation error. Report unresolved warnings or evidence gaps as limitations.
 
 ## Hard decision gates

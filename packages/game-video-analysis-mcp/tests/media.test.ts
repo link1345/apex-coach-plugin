@@ -127,6 +127,34 @@ describe("runtime diagnostics", () => {
     expect(result.remediation.join(" ")).toContain("FFMPEG_PATH");
     expect(result.remediation.join(" ")).toContain("FFPROBE_PATH");
   });
+
+  test("rejects successful executables without FFmpeg version signatures", async () => {
+    const runner = new class extends FfmpegRunner {
+      override async getFfmpegPath(): Promise<string> {
+        return process.execPath;
+      }
+
+      override async getFfprobePath(): Promise<string> {
+        return process.execPath;
+      }
+
+      override async runFfmpeg(args: string[]) {
+        return { command: process.execPath, args, exitCode: 0, stdout: "ok", stderr: "" };
+      }
+
+      override async runFfprobe(args: string[]) {
+        return { command: process.execPath, args, exitCode: 0, stdout: "", stderr: "ok" };
+      }
+    }();
+
+    const result = await new RuntimeDiagnosticService(runner).checkRuntime();
+
+    expect(result.ready).toBe(false);
+    expect(result.ffmpeg.error?.code).toBe("invalid_binary");
+    expect(result.ffprobe.error?.code).toBe("invalid_binary");
+    expect(result.audioExtractionAvailable).toBe(false);
+    expect(result.videoExtractionAvailable).toBe(false);
+  });
 });
 
 describe("video info service", () => {

@@ -1,5 +1,6 @@
 export type MediaErrorCode =
   | "binary_not_found"
+  | "invalid_binary"
   | "invalid_input_path"
   | "unsupported_input"
   | "process_failed"

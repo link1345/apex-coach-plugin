@@ -6,6 +6,7 @@ Create one `validate_review` finding per distinct decision problem. Group repeat
 
 Required fields include:
 
+- reference patch or timestamp context when any reference-backed claim is used;
 - timestamp range;
 - observations with unique ids;
 - inferences and cue evidence ids;

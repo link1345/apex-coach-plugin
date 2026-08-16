@@ -76,6 +76,13 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
       description: "Validate structured coaching findings before writing the final review. Rejects unavailable options, unsupported thresholds and references, ambiguous comparisons, and overconfident audio or recovery claims.",
       inputSchema: {
         audioCoverage: z.enum(["complete", "partial", "none"]),
+        referenceContext: z.object({
+          patch: z.string().min(1).optional(),
+          at: z.iso.datetime().optional()
+        }).refine(
+          (context) => context.patch !== undefined || context.at !== undefined,
+          "referenceContext requires patch or at"
+        ).optional(),
         findings: z.array(reviewFindingSchema()).min(1)
       },
       outputSchema: {
