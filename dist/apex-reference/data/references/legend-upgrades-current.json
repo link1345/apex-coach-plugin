@@ -1,0 +1,1573 @@
+[
+  {
+    "id": "mechanic.legend_upgrades.alter",
+    "name": "Alter Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Alter upgrades", "オルター アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Alter.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.alter" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Eye to Another World",
+            "effect": "Gain all Recon class perks."
+          },
+          {
+            "name": "Controller of Worlds",
+            "effect": "Gain all Controller class perks."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Staring into the Void",
+            "effect": "Increase Void Passage scan time for Alter by 15 seconds."
+          },
+          {
+            "name": "Void Breacher",
+            "effect": "Using a friendly Void Passage grants faster movement speed and reloads; the movement bonus is 15%."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Alter",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Alter page lists both choices at Levels 2 and 3; Overclocked official notes confirm the current Void Breacher movement tuning."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.ash",
+    "name": "Ash Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Ash upgrades", "アッシュ アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Ash.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.ash" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Longer Reach",
+            "effect": "Increase Phase Breach range by 25 meters."
+          },
+          {
+            "name": "Ultimate Cooldown",
+            "effect": "Reduce Phase Breach cooldown by 30 seconds."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Twin Snares",
+            "effect": "Gain 1 additional Arc Snare charge."
+          },
+          {
+            "name": "Greedy Snare",
+            "effect": "Triple Arc Snare lifetime from 5 to 15 seconds and allow it to snare multiple enemies."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Ash",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Ash page lists the post-Wild-Iron upgrade arrangement."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.axle",
+    "name": "Axle Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Axle upgrades", "アクセル アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Axle.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.axle" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Sliding Shooter",
+            "effect": "While sliding, fire up to half of the weapon's maximum magazine from inventory before consuming the loaded magazine."
+          },
+          {
+            "name": "Long Haul",
+            "effect": "Increase Nitro Gate's boosted slide duration from 3 to 5 seconds."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Jump Gate",
+            "effect": "Nitro Gate grants one double jump while its effect is active."
+          },
+          {
+            "name": "Super Slider",
+            "effect": "Reduce Nitro Gate cooldown by 5 seconds and increase its maximum in-world count from 2 to 3."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked replaces Automata with Long Haul and explicitly sets the current Level 2 and Level 3 pairings."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.ballistic",
+    "name": "Ballistic Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Ballistic upgrades", "バリスティック アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Ballistic.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.ballistic" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Extra Bullet",
+            "effect": "Gain 1 additional Whistler charge."
+          },
+          {
+            "name": "Trap Mode",
+            "effect": "Triple a placed Whistler dart's lifetime from 5 to 15 seconds and increase its trigger damage to 35."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Killing Time",
+            "effect": "Increase Tempest duration by 15 seconds, from 30 to 45 seconds."
+          },
+          {
+            "name": "Quiet Time",
+            "effect": "Whistler silences and slows for 0.5 seconds on impact instead of applying Overheat; the Tactical has a longer cooldown."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Ballistic",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Ballistic page matches the Overclocked midseason upgrade rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.bangalore",
+    "name": "Bangalore Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Bangalore upgrades", "バンガロール アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Bangalore.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.bangalore" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Electric Smoke",
+            "effect": "Smoke Launcher deals 100 damage to enemy deployables."
+          },
+          {
+            "name": "Cover Me!",
+            "effect": "Allies regenerate health inside smoke, and enemies who trigger Double Time are automatically pinged."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "ECM Payload",
+            "effect": "Rolling Thunder deals 10 additional damage, from 40 to 50, and destroys enemy deployables."
+          },
+          {
+            "name": "Medal of Honor",
+            "effect": "Revive allies 25% faster and trigger Double Time while running toward knocked allies."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Bangalore",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Bangalore page reflects the Showdown upgrade rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.bloodhound",
+    "name": "Bloodhound Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Bloodhound upgrades", "ブラッドハウンド アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Bloodhound after the Marked rework.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.bloodhound" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Hidden Sight",
+            "effect": "Activating Allfather's Cloak refreshes Eye of the Allfather; scanning while cloaked hides the scan visual from enemies."
+          },
+          {
+            "name": "Bird's Eye",
+            "effect": "White Ravens split and fly toward the two nearest enemies on different squads."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Hunter's Agility",
+            "effect": "Eye of the Allfather activates faster and its cooldown is reduced by 5 seconds, from 25 to 20."
+          },
+          {
+            "name": "True Predator",
+            "effect": "Shooting only interrupts cloak; cloak re-enables after 1 second instead of breaking completely."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Marked introduces Hidden Sight, Bird's Eye, and True Predator; the current Bloodhound page confirms Hunter's Agility as the other Level 3 choice and the 1-second recloak."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.catalyst",
+    "name": "Catalyst Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Catalyst upgrades", "カタリスト アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Catalyst.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.catalyst" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Hidden Spikes",
+            "effect": "Piercing Spikes are hidden from enemies while dormant."
+          },
+          {
+            "name": "Sole Piercer",
+            "effect": "Piercing Spikes activate twice as fast and deal 20 instead of 15 damage."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Ferro-Door",
+            "effect": "Using Barricade on a destroyed door frame rebuilds the door."
+          },
+          {
+            "name": "Resilient Veil",
+            "effect": "Increase Dark Veil duration by 5 seconds, from 15 to 20 seconds."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Catalyst",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Catalyst page reflects the Breach upgrade rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.caustic",
+    "name": "Caustic Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Caustic upgrades", "コースティック アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Caustic.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.caustic" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Extra Traps",
+            "effect": "Gain 1 Nox Gas Trap charge and increase the maximum deployed traps by 2."
+          },
+          {
+            "name": "Breathe It In",
+            "effect": "Regenerate 1 health per second while inside Nox gas."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Particle Diffuser",
+            "effect": "Increase Nox Gas Grenade radius by 50%."
+          },
+          {
+            "name": "Gas Fighter",
+            "effect": "Recharge Nox Gas Trap 300% faster while inside Nox gas."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Caustic",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Caustic page lists both current choices at each tier."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.conduit",
+    "name": "Conduit Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Conduit upgrades", "コンジット アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Conduit.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.conduit" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Battpack",
+            "effect": "Carry 3 Shield Batteries per stack instead of 2 and show battery counts over Death Boxes."
+          },
+          {
+            "name": "Bigger Jam",
+            "effect": "Increase Energy Barricade radius by 10%, from 10 to 11 meters."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Instant Barrier",
+            "effect": "Apply part of Radiant Transfer's temporary shield immediately; regeneration duration is reduced."
+          },
+          {
+            "name": "Enduring Barrier",
+            "effect": "Radiant Transfer regeneration continues through damage, except Ring damage."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Conduit",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Conduit page matches the Overclocked and midseason upgrade changes."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.crypto",
+    "name": "Crypto Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Crypto upgrades", "クリプト アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Crypto.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.crypto" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Network Expansion",
+            "effect": "Increase Neurolink and Drone EMP radius by 25%, from 30 to 37.5 meters."
+          },
+          {
+            "name": "Ally.MoveTo()",
+            "effect": "Crypto can use Trailblaze toward every ally."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Power Coupling",
+            "effect": "Gain Ultimate charge from Survey Beacon scans and from scanning enemies with the drone."
+          },
+          {
+            "name": "Hackathon",
+            "effect": "Reduce Surveillance Drone cooldown by 20 seconds, from 40 to 20, and gain a speed boost when activating Drone EMP or losing the drone."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Crypto",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Crypto page lists the Winter Wipeout upgrade set with subsequent Power Coupling tuning."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.fuse",
+    "name": "Fuse Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Fuse upgrades", "ヒューズ アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Fuse.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.fuse" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Pyro Techniques",
+            "effect": "The Motherlode leaves fire patches for 8 seconds after its bombs explode."
+          },
+          {
+            "name": "Knuckle Jumper",
+            "effect": "Jumping beside your own Knuckle Cluster gives an explosive boost and destroys the cluster."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Reignition",
+            "effect": "Explosive damage recharges the Ultimate; every 2 damage reduces cooldown by 1 second."
+          },
+          {
+            "name": "Wreckless",
+            "effect": "Reduce explosive damage taken by 50%."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Fuse",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Fuse page reflects the Breach upgrade rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.gibraltar",
+    "name": "Gibraltar Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Gibraltar upgrades", "ジブラルタル アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Gibraltar.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.gibraltar" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Thunder Dome",
+            "effect": "The first enemy crossing the electrified Dome takes 50 damage and is slowed."
+          },
+          {
+            "name": "Healing Dome",
+            "effect": "Increase Dome duration by 4 seconds, from 12 to 16, and double Shield Cell and Syringe healing inside it."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Triple Bombardment",
+            "effect": "Gain 3 Defensive Bombardment charges, each with a smaller radius."
+          },
+          {
+            "name": "Fast Shotties",
+            "effect": "Move at holstered speed with shotguns and automatically reload shotguns on knock."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Gibraltar",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Gibraltar page lists the post-Winter-Wipeout upgrade set."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.horizon",
+    "name": "Horizon Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Horizon upgrades", "ホライゾン アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Horizon.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.horizon" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Gravity Boots",
+            "effect": "Press crouch in the air to fall much faster."
+          },
+          {
+            "name": "NEWT Scoot",
+            "effect": "Hold jump after leaving Gravity Lift to glide and fall more slowly."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Conservation of Energy",
+            "effect": "A Spacewalk soft landing regenerates 25 shield."
+          },
+          {
+            "name": "Knock Expert",
+            "effect": "Gain 1 Gravity Lift charge on knock."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Horizon",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Horizon page matches the official Amped upgrade rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.lifeline",
+    "name": "Lifeline Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Lifeline upgrades", "ライフライン アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Lifeline.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.lifeline" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Extended Flight",
+            "effect": "Increase Combat Glide duration by 1.5 seconds, from 4 to 5.5 seconds."
+          },
+          {
+            "name": "Battpack",
+            "effect": "Carry 3 Shield Batteries per stack instead of 2 and show battery counts over Death Boxes."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Enhanced Radio",
+            "effect": "Increase D.O.C. Heal Drone assignment range by 50%."
+          },
+          {
+            "name": "Tactical Cooldown+",
+            "effect": "Reduce D.O.C. Heal Drone cooldown by 10 seconds, from 45 to 35 seconds."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Lifeline",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Lifeline page lists the post-From-the-Rift choices."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.loba",
+    "name": "Loba Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Loba upgrades", "ローバ アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Loba, including Marked's backpack-tier change.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.loba" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Wolf's Claws",
+            "effect": "After a bracelet teleport, gain a speed boost and very fast weapon draw."
+          },
+          {
+            "name": "Shopping Spree",
+            "effect": "Each squad member can take 3 items instead of 2 from a friendly Black Market."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Escape Artist",
+            "effect": "After a bracelet teleport, regenerate up to 25 shield; taking damage stops regeneration."
+          },
+          {
+            "name": "Brand New Bag",
+            "effect": "Grant a purple Backpack to every squad member."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Marked changes Brand New Bag from gold to purple backpacks; the remaining choices are confirmed on the current Loba page."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.mad_maggie",
+    "name": "Mad Maggie Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Mad Maggie upgrades", "マッドマギー アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Mad Maggie.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.mad_maggie" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Gunrunning",
+            "effect": "Warlord's Ire movement speed also applies while holding SMGs and pistols."
+          },
+          {
+            "name": "Fire Ball",
+            "effect": "Wrecking Ball drops magma patches and Maggie takes 50% less fire damage."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Drillslinger",
+            "effect": "Gain 1 Riot Drill charge but reduce drill duration by 25%, from 9 to 6.75 seconds."
+          },
+          {
+            "name": "Big Drill",
+            "effect": "Increase Riot Drill width and depth by 50%."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Mad_Maggie",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Mad Maggie page reflects the Wild Iron upgrade changes."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.mirage",
+    "name": "Mirage Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Mirage upgrades", "ミラージュ アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Mirage.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.mirage" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Renaissance Man",
+            "effect": "Gain all class world interactions: Weapon Supply Bins, Care Package scans, Survey Beacons, and Ring Consoles."
+          },
+          {
+            "name": "Boozle-Eye",
+            "effect": "A bamboozle also scans the enemy who shot the decoy."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Me Two",
+            "effect": "Gain 1 Psyche Out charge and allow 2 active decoys."
+          },
+          {
+            "name": "Bamboozle Bonus",
+            "effect": "Reset Psyche Out cooldown after a successful bamboozle."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Mirage",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Mirage page lists all four current choices."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.newcastle",
+    "name": "Newcastle Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Newcastle upgrades", "ニューキャッスル アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Newcastle.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.newcastle" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Stronghold",
+            "effect": "Add 500 Castle Wall health, for 1250 total, and extend electrification by 120 seconds, from 120 to 240."
+          },
+          {
+            "name": "Ready To Rumble",
+            "effect": "Reviving a player reloads Newcastle's weapons and triggers full regeneration."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Ultimate Savior",
+            "effect": "Castle Wall's landing impact grants allies in the impact zone 15 seconds of shield regeneration."
+          },
+          {
+            "name": "Defensive Line",
+            "effect": "Mobile Shield and the Revive Shield knock enemies back once."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Newcastle",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Newcastle page lists the Winter Wipeout upgrade set and subsequent Stronghold duration tuning."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.octane",
+    "name": "Octane Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Octane upgrades", "オクタン アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Octane.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.octane" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Thick Skin",
+            "effect": "Reduce Stim self-damage by 25%, from 20 to 15."
+          },
+          {
+            "name": "Squad Rush",
+            "effect": "Every player using the Launch Pad gains Stim on landing."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Daredevil",
+            "effect": "Extend Stim Surge more at lower health, up to 6 additional seconds."
+          },
+          {
+            "name": "Triple Jump",
+            "effect": "Gain a third jump from Launch Pads."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Octane",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Octane page includes the April 2026 Thick Skin and Daredevil tuning."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.pathfinder",
+    "name": "Pathfinder Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Pathfinder upgrades", "パスファインダー アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Pathfinder.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.pathfinder" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          { "name": "Field Research", "effect": "Gain all Recon class perks." },
+          { "name": "Ringmaster", "effect": "Gain all Controller class perks." }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Landing Gear",
+            "effect": "Gain better air control and recover faster from hard landings."
+          },
+          {
+            "name": "Feeling Zippy",
+            "effect": "Gain 1 Zipline Gun charge and improve allied energized-zipline speed."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Pathfinder",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Pathfinder page reflects the Overclocked midseason rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.rampart",
+    "name": "Rampart Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Rampart upgrades", "ランパート アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Rampart, including Marked's Combat Reserve change.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.rampart" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Combat Reserve",
+            "effect": "Gain larger ammo stacks, 2 grenade-only inventory slots, and stowed reload; it no longer grants red Weapon Supply Bin access."
+          },
+          {
+            "name": "Locked and Loaded",
+            "effect": "Reload faster and gain infinite ammo while behind intact Amped Cover."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Ramped Up",
+            "effect": "Improve Sheila handling and spin-up by 20% and increase firing/spin movement speed from 104 to 139."
+          },
+          {
+            "name": "Rebuild Module",
+            "effect": "Amped Cover regenerates health and rebuilds its shield after avoiding damage for a period."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked removes red-bin access from Combat Reserve, adds stowed reload, and confirms Ramped Up's current movement values."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.revenant",
+    "name": "Revenant Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Revenant upgrades", "レヴナント アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Revenant.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.revenant" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Ultimate Cooldown",
+            "effect": "Reduce Forged Shadows cooldown by 30 seconds, from 180 to 150."
+          },
+          {
+            "name": "Try To Hide",
+            "effect": "Double the duration of Assassin's Instinct low-health markers."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Tactical Cooldown",
+            "effect": "Reduce Shadow Pounce cooldown by 5 seconds, from 20 to 15."
+          },
+          {
+            "name": "Agile Assassin",
+            "effect": "Activate and charge Shadow Pounce 50% faster."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Revenant",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Revenant page lists all four current choices."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.seer",
+    "name": "Seer Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Seer upgrades", "シア アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Seer after the July 2026 rearrangement.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.seer" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Lasting Beats",
+            "effect": "Enemies leaving Exhibit remain highlighted for 5 seconds."
+          },
+          {
+            "name": "Energizing Focus",
+            "effect": "Hitting an enemy with Focus of Attention regenerates 25 shield; multiple hits do not stack."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Home Base",
+            "effect": "While inside Exhibit, reduce Focus of Attention cooldown to 8 seconds."
+          },
+          {
+            "name": "Split Focus",
+            "effect": "Gain 1 additional Focus of Attention charge."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Marked republishes the July hotfix tier rearrangement; current Seer data confirms both pairings and the 8-second Home Base cooldown."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.sparrow",
+    "name": "Sparrow Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Sparrow upgrades", "スパロー アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Sparrow.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.sparrow" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Hunt Target",
+            "effect": "Gain a speed boost while running toward an enemy marked by Tracker Dart."
+          },
+          {
+            "name": "Extra Traps",
+            "effect": "Gain 1 Tracker Dart charge and allow 1 additional deployed trap."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Life Syphon",
+            "effect": "Recover health and shield when Stinger Bolt damages an enemy."
+          },
+          {
+            "name": "Alternate Mode",
+            "effect": "Gain 2 Stinger Bolt charges, for 3 total, but each has fewer pulses and a smaller radius."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Sparrow",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Sparrow page includes the post-Prodigy Extra Traps world-count adjustment."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.valkyrie",
+    "name": "Valkyrie Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Valkyrie upgrades", "ヴァルキリー アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Valkyrie, with Marked tuning applied.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.valkyrie" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Eyes in the Sky",
+            "effect": "Reveal enemies through walls while skydiving up to 100 meters; line-of-sight scans retain the full 250-meter range."
+          },
+          {
+            "name": "Full Coverage",
+            "effect": "Expand Missile Swarm from a 4x3 to 4x5 pattern and reduce its cooldown by 5 seconds, from 30 to 25."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Supersonic",
+            "effect": "Reduce Skyward Dive launch time by 40%."
+          },
+          {
+            "name": "Aerial Expert",
+            "effect": "Reduce initial jetpack fuel cost, improve horizontal speed and handling, and slightly increase fuel consumption rate."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked sets Eyes in the Sky's through-wall range to 100m and Supersonic's launch-time reduction to 40%; the current page confirms the other choices."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.vantage",
+    "name": "Vantage Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Vantage upgrades", "ヴァンテージ アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Vantage after Overclocked.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.vantage" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Controlling my Prey",
+            "effect": "Gain all Controller class perks."
+          },
+          {
+            "name": "Improved Mark",
+            "effect": "Sniper's Mark briefly highlights marked enemies, shows their icon through walls, and reveals their health bar to the squad."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Herd Tracker",
+            "effect": "Marking one enemy with Spotter's Lens marks that enemy's entire squad."
+          },
+          {
+            "name": "Sniper Cover",
+            "effect": "Add a 75-health Gun Shield to Sniper's Mark."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Vantage",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Vantage page confirms the Overclocked Herd Tracker replacement and all current choices."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.wattson",
+    "name": "Wattson Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Wattson upgrades", "ワットソン アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Wattson.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.wattson" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          { "name": "Help is Here", "effect": "Gain all Support class perks." },
+          {
+            "name": "Ultimate Conductor",
+            "effect": "Convert damage dealt into Ultimate charge; knocks grant an immediate 50% charge burst."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Energized Healer",
+            "effect": "Double the healing or shield restored by Syringes and Shield Cells."
+          },
+          {
+            "name": "Power Pylon",
+            "effect": "Double Interception Pylon health to 300 and double its healing rate and capacity."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Wattson",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Wattson page lists all four choices and current numeric values."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "mechanic.legend_upgrades.wraith",
+    "name": "Wraith Legend Upgrades",
+    "type": "mechanic",
+    "aliases": ["Wraith upgrades", "レイス アップグレード"],
+    "description": "Current Level 2 and Level 3 upgrade choices for Wraith after Aftershock integrated both cooldown upgrades into base kit.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "legendId": { "kind": "absolute", "value": "legend.wraith" },
+      "level2": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Sixth Sense",
+            "effect": "Voices from the Void warns when a new squad comes within 150 meters."
+          },
+          {
+            "name": "Phase Dome",
+            "effect": "Beginning Dimensional Rift creates a Phase Dome at the entrance that phases anyone inside; it lasts until placement or up to 30 seconds."
+          }
+        ]
+      },
+      "level3": {
+        "kind": "absolute",
+        "value": [
+          {
+            "name": "Fast Phase",
+            "effect": "Activate Into the Void 30% faster, reducing activation from 0.8 to 0.5 seconds."
+          },
+          {
+            "name": "Void Jumper",
+            "effect": "Increase Into the Void duration by 2 seconds, from 4 to 6, and enable a double jump while phased."
+          }
+        ]
+      },
+      "selectionRule": { "kind": "absolute", "value": "choose_one_per_tier" },
+      "level2UnlockEvo": { "kind": "absolute", "value": 450 },
+      "level3UnlockTotalEvo": { "kind": "absolute", "value": 2150 }
+    },
+    "provenance": [
+      {
+        "sourceType": "manual_verified",
+        "sourceUrl": "https://apexlegends.wiki.gg/wiki/Wraith",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Current Wraith page reflects the March 31, 2026 Aftershock rework."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  }
+]

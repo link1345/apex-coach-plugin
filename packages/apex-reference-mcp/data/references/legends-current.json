@@ -1,0 +1,953 @@
+[
+  {
+    "id": "legend.alter",
+    "name": "Alter",
+    "type": "legend",
+    "aliases": ["オルター"],
+    "description": "Skirmisher who breaches terrain and provides a squad recall point.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "overclocked-29.0",
+      "effectiveFrom": "2026-05-05T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "skirmisher" },
+      "passive": { "kind": "absolute", "value": "Gift from the Rift" },
+      "tactical": { "kind": "absolute", "value": "Void Passage" },
+      "ultimate": { "kind": "absolute", "value": "Void Nexus" },
+      "passive.description": { "kind": "absolute", "value": "Reveals nearby death boxes through walls and allows Alter to remotely take one item from each box." },
+      "tactical.description": { "kind": "absolute", "value": "Creates a passage through a valid wall, floor, or ceiling that Legends can traverse to the opposite side." },
+      "ultimate.description": { "kind": "absolute", "value": "Deploys a recall point that Alter and her squad can activate remotely to phase back to it; the resulting chase portal can also be used by enemies." },
+      "abilityUseCases": { "kind": "absolute", "value": ["loot_information", "terrain_breach", "squad_reset", "enemy_chase_risk"] },
+      "tacticalCooldown": {
+        "kind": "absolute",
+        "value": 25,
+        "unit": "seconds"
+      },
+      "ultimateRange": { "kind": "absolute", "value": 250, "unit": "meters" },
+      "selfRecallTime": { "kind": "absolute", "value": 3, "unit": "seconds" },
+      "allyRecallTime": { "kind": "absolute", "value": 4, "unit": "seconds" },
+      "chasePortalOpenTime": {
+        "kind": "absolute",
+        "value": 4,
+        "unit": "seconds"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/overclocked-patch-notes",
+        "sourcePublishedAt": "2026-05-04T00:00:00.000Z",
+        "effectiveFrom": "2026-05-05T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Overclocked notes specify Alter's current tactical cooldown and ultimate range and recall timings."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.ash",
+    "name": "Ash",
+    "type": "legend",
+    "aliases": ["アッシュ"],
+    "description": "Skirmisher built around a burst movement passive, tether pressure, and one-way team repositioning.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "overclocked-29.0",
+      "effectiveFrom": "2026-05-05T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "skirmisher" },
+      "passive": { "kind": "absolute", "value": "Predator's Pursuit" },
+      "tactical": { "kind": "absolute", "value": "Arc Snare" },
+      "ultimate": { "kind": "absolute", "value": "Phase Breach" },
+      "passive.description": { "kind": "absolute", "value": "Performs an omnidirectional short-range air dash, enabling mid-fight repositioning or gap closing." },
+      "tactical.description": { "kind": "absolute", "value": "Throws a spinning snare that damages and tethers an enemy near its impact point, limiting escape until the tether ends or breaks." },
+      "ultimate.description": { "kind": "absolute", "value": "Opens a one-way phase portal to a targeted location for Ash, allies, and enemies who enter it." },
+      "abilityUseCases": { "kind": "absolute", "value": ["duel_reposition", "target_tether", "one_way_team_entry", "escape"] },
+      "passiveCooldown": { "kind": "absolute", "value": 10, "unit": "seconds" },
+      "passiveVelocity": { "kind": "absolute", "value": 450 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/overclocked-patch-notes",
+        "sourcePublishedAt": "2026-05-04T00:00:00.000Z",
+        "effectiveFrom": "2026-05-05T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Overclocked notes specify Ash's current passive cooldown and velocity."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.axle",
+    "name": "Axle",
+    "type": "legend",
+    "aliases": ["アクセル"],
+    "description": "Combat Racer whose slide control, team-agnostic speed gate, and seeking displacement drone shape engagement timing.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "skirmisher" },
+      "passive": { "kind": "absolute", "value": "Drift" },
+      "tactical": { "kind": "absolute", "value": "Nitro Gate" },
+      "ultimate": { "kind": "absolute", "value": "Kickstart" },
+      "passive.description": { "kind": "absolute", "value": "Gives Axle increased speed, acceleration, and lateral control while sliding." },
+      "tactical.description": { "kind": "absolute", "value": "Deploys a team-agnostic gate that forces anyone crossing it into a high-speed, highly steerable boosted slide." },
+      "ultimate.description": { "kind": "absolute", "value": "Launches a ground-running drone that searches for a target, chases it, then detonates to damage, reveal, stun, and displace affected enemies." },
+      "abilityUseCases": { "kind": "absolute", "value": ["fast_rotation", "entry_or_escape", "enemy_displacement", "gate_can_help_enemies"] },
+      "tacticalAffects": {
+        "kind": "absolute",
+        "value": ["self", "allies", "enemies"]
+      },
+      "maxSlideBoostTime": {
+        "kind": "absolute",
+        "value": 3,
+        "unit": "seconds"
+      },
+      "ultimateAffectsSelf": {
+        "kind": "absolute",
+        "value": "damage_stun_displacement"
+      },
+      "ultimateAffectsAllies": {
+        "kind": "absolute",
+        "value": "stun_displacement_no_damage"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked notes reduce Nitro Gate's maximum slide boost to 3 seconds and define Kickstart effects on Axle and allies."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.ballistic",
+    "name": "Ballistic",
+    "type": "legend",
+    "aliases": ["バリスティック"],
+    "description": "Assault Legend who carries a sling weapon, pressures enemy weapons, and boosts squad weapon readiness.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "assault" },
+      "passive": { "kind": "absolute", "value": "Sling" },
+      "tactical": { "kind": "absolute", "value": "Whistler" },
+      "ultimate": { "kind": "absolute", "value": "Tempest" },
+      "passive.description": { "kind": "absolute", "value": "Carries a third weapon in the Sling; the Sling weapon improves with Legend level and can hold Care Package weapons." },
+      "tactical.description": { "kind": "absolute", "value": "Fires a guided Smart Bullet that pressures the target's weapon and causes an overheat burst if they keep firing; missed bullets remain as an area hazard." },
+      "ultimate.description": { "kind": "absolute", "value": "Empowers the squad with faster reloads, movement speed, and unlimited ammunition while upgrading Ballistic's Sling weapon for the duration." },
+      "abilityUseCases": { "kind": "absolute", "value": ["third_weapon_flexibility", "anti_fire_pressure", "team_push_window", "ammo_economy"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "weapon_overheat_or_team_firepower_window"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/ballistic",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Ballistic as an Assault Legend; ability roles are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.catalyst",
+    "name": "Catalyst",
+    "type": "legend",
+    "aliases": ["カタリスト"],
+    "description": "Controller who reinforces doors, places ferrofluid traps, and blocks sightlines with Dark Veil.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "controller" },
+      "passive": { "kind": "absolute", "value": "Barricade" },
+      "tactical": { "kind": "absolute", "value": "Piercing Spikes" },
+      "ultimate": { "kind": "absolute", "value": "Dark Veil" },
+      "passive.description": { "kind": "absolute", "value": "Reinforces doors with ferrofluid, increasing the effort required to break them and allowing Catalyst to control blocked doorways." },
+      "tactical.description": { "kind": "absolute", "value": "Throws a ferrofluid spike trap that activates near enemies, damaging and slowing movement through its area." },
+      "ultimate.description": { "kind": "absolute", "value": "Raises a long permeable ferrofluid wall that blocks sightlines and impairs enemies who cross it." },
+      "abilityUseCases": { "kind": "absolute", "value": ["door_control", "trap_denial", "line_of_sight_break", "crossing_or_reset"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "door_control_trap_pressure_or_los_denial"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/catalyst",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Catalyst as a Controller Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.caustic",
+    "name": "Caustic",
+    "type": "legend",
+    "aliases": ["コースティック", "ガスおじ"],
+    "description": "Controller who uses gas traps and a gas grenade to deny enclosed space.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "controller" },
+      "passive": { "kind": "absolute", "value": "Nox Vision" },
+      "tactical": { "kind": "absolute", "value": "Nox Gas Trap" },
+      "ultimate": { "kind": "absolute", "value": "Nox Gas Grenade" },
+      "passive.description": { "kind": "absolute", "value": "Allows Caustic to see enemies affected by his Nox gas through the gas." },
+      "tactical.description": { "kind": "absolute", "value": "Places canisters that release damaging Nox gas when enemies approach or when the canister is triggered." },
+      "ultimate.description": { "kind": "absolute", "value": "Throws a grenade that blankets a large area in Nox gas for sustained area denial." },
+      "abilityUseCases": { "kind": "absolute", "value": ["building_control", "push_delay", "gas_vision_advantage", "area_denial"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "area_denial_and_visibility_pressure"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/caustic",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Caustic as a Controller Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.conduit",
+    "name": "Conduit",
+    "type": "legend",
+    "aliases": ["コンジット"],
+    "description": "Support Legend who accelerates toward allies and grants temporary shields with two tactical charges.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "overclocked-29.0",
+      "effectiveFrom": "2026-05-05T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "support" },
+      "passive": { "kind": "absolute", "value": "Savior's Speed" },
+      "tactical": { "kind": "absolute", "value": "Radiant Transfer" },
+      "ultimate": { "kind": "absolute", "value": "Energy Barricade" },
+      "passive.description": { "kind": "absolute", "value": "Gains sprint speed when moving toward a squadmate outside tactical range, with an additional bonus when moving toward a Skirmisher." },
+      "tactical.description": { "kind": "absolute", "value": "Regenerates temporary shields for a targeted ally and Conduit without requiring direct line of sight for the full regeneration; currently has two charges." },
+      "ultimate.description": { "kind": "absolute", "value": "Deploys shield-jamming devices across an area that damage shields and slow enemies who remain inside their fields." },
+      "abilityUseCases": { "kind": "absolute", "value": ["catch_up_to_team", "remote_shield_support", "push_support", "area_denial"] },
+      "tacticalCharges": { "kind": "absolute", "value": 2 },
+      "shieldRegenDuration": {
+        "kind": "absolute",
+        "value": 6,
+        "unit": "seconds"
+      },
+      "shieldRegenRate": {
+        "kind": "absolute",
+        "value": 15,
+        "unit": "shield_per_second"
+      },
+      "tacticalCooldown": {
+        "kind": "absolute",
+        "value": 27,
+        "unit": "seconds"
+      },
+      "extraSpeedTowardSkirmisher": {
+        "kind": "absolute",
+        "value": 5,
+        "unit": "percent"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/overclocked-patch-notes",
+        "sourcePublishedAt": "2026-05-04T00:00:00.000Z",
+        "effectiveFrom": "2026-05-05T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Overclocked notes define Conduit's two tactical charges, regeneration duration/rate, cooldown, and passive bonus toward Skirmishers."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.crypto",
+    "name": "Crypto",
+    "type": "legend",
+    "aliases": ["クリプト"],
+    "description": "Recon Legend who scouts remotely with a drone and disrupts shields and deployables with an EMP.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "recon" },
+      "passive": { "kind": "absolute", "value": "Neurolink" },
+      "tactical": { "kind": "absolute", "value": "Surveillance Drone" },
+      "ultimate": { "kind": "absolute", "value": "Drone EMP" },
+      "passive.description": { "kind": "absolute", "value": "Shares enemies and objects detected by Crypto's drone with Crypto and his squad." },
+      "tactical.description": { "kind": "absolute", "value": "Deploys and pilots a surveillance drone for remote scouting, scanning, banner interactions, and other drone-enabled interactions." },
+      "ultimate.description": { "kind": "absolute", "value": "Detonates an EMP from the drone that damages shields, slows players, and disables or destroys many deployable defenses." },
+      "abilityUseCases": { "kind": "absolute", "value": ["remote_recon", "squad_scan", "defensive_setup_break", "emp_entry_timing"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "remote_intel_banner_or_emp_push_window"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/crypto",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Crypto as a Recon Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.fuse",
+    "name": "Fuse",
+    "type": "legend",
+    "aliases": ["ヒューズ"],
+    "description": "Assault Legend specializing in carried ordnance, Knuckle Cluster pressure, and large-area artillery denial.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "breach-28.0",
+      "effectiveFrom": "2026-02-10T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "assault" },
+      "passive": { "kind": "absolute", "value": "Grenadier" },
+      "tactical": { "kind": "absolute", "value": "Knuckle Cluster" },
+      "ultimate": { "kind": "absolute", "value": "The Motherlode" },
+      "passive.description": { "kind": "absolute", "value": "Stacks additional grenades and launches ordnance farther, faster, and more accurately with the arm-mounted launcher." },
+      "tactical.description": { "kind": "absolute", "value": "Fires a cluster charge that sticks to surfaces or targets and produces a sequence of explosions." },
+      "ultimate.description": { "kind": "absolute", "value": "Fires a mortar that can pierce cover before impact and scatters explosive submunitions across a broad area." },
+      "abilityUseCases": { "kind": "absolute", "value": ["ordnance_economy", "cover_pressure", "flush_from_space", "large_area_bombardment"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "ordnance_pressure_space_clear_or_follow_up_window"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/breach-patch-notes",
+        "sourcePublishedAt": "2026-02-09T00:00:00.000Z",
+        "effectiveFrom": "2026-02-10T00:00:00.000Z",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "Breach patch notes document Fuse's current reworked tactical and ultimate direction."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.gibraltar",
+    "name": "Gibraltar",
+    "type": "legend",
+    "aliases": ["ジブラルタル", "ジブ"],
+    "description": "Support Legend who protects peeks and resets with a gun shield and dome, then denies an area with bombardment.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "support" },
+      "passive": { "kind": "absolute", "value": "Gun Shield" },
+      "tactical": { "kind": "absolute", "value": "Dome of Protection" },
+      "ultimate": { "kind": "absolute", "value": "Defensive Bombardment" },
+      "passive.description": { "kind": "absolute", "value": "Deploys a forward-facing gun shield while aiming down sights, absorbing incoming fire until broken." },
+      "tactical.description": { "kind": "absolute", "value": "Throws a dome that blocks incoming and outgoing attacks, creating a temporary protected space for fights and resets." },
+      "ultimate.description": { "kind": "absolute", "value": "Calls a concentrated mortar strike onto a marked position, damaging and stunning exposed enemies." },
+      "abilityUseCases": { "kind": "absolute", "value": ["protected_peek", "dome_reset", "close_dome_fight", "outdoor_area_denial"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "protected_reset_or_area_denial"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/gibraltar",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Gibraltar as a Support Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.horizon",
+    "name": "Horizon",
+    "type": "legend",
+    "aliases": ["ホライゾン"],
+    "description": "Skirmisher who reduces landing disruption, lifts players vertically, and groups enemies with a black hole.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "skirmisher" },
+      "passive": { "kind": "absolute", "value": "Spacewalk" },
+      "tactical": { "kind": "absolute", "value": "Gravity Lift" },
+      "ultimate": { "kind": "absolute", "value": "Black Hole" },
+      "passive.description": { "kind": "absolute", "value": "Improves airborne control and reduces the movement penalty from hard landings." },
+      "tactical.description": { "kind": "absolute", "value": "Creates a gravity column that lifts players upward, enabling vertical repositioning while also being usable by enemies." },
+      "ultimate.description": { "kind": "absolute", "value": "Deploys N.E.W.T. to create a black hole that pulls nearby players and ordnance toward its center." },
+      "abilityUseCases": { "kind": "absolute", "value": ["vertical_entry", "height_take", "enemy_can_use_lift", "enemy_grouping"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "vertical_entry_escape_or_enemy_grouping"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/horizon",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Horizon as a Skirmisher Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.loba",
+    "name": "Loba",
+    "type": "legend",
+    "aliases": ["ローバ"],
+    "description": "Support Legend who sees valuable loot, teleports with her bracelet, and supplies the squad through Black Market.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "support" },
+      "passive": { "kind": "absolute", "value": "Eye for Quality" },
+      "tactical": { "kind": "absolute", "value": "Burglar's Best Friend" },
+      "ultimate": { "kind": "absolute", "value": "Black Market Boutique" },
+      "passive.description": { "kind": "absolute", "value": "Reveals nearby high-tier loot through obstacles, helping Loba identify valuable equipment before entering an area." },
+      "tactical.description": { "kind": "absolute", "value": "Throws a bracelet and teleports Loba to its landing point for repositioning, entry, or escape." },
+      "ultimate.description": { "kind": "absolute", "value": "Deploys a Black Market that lets nearby players transfer loot from the surrounding area into their inventories." },
+      "abilityUseCases": { "kind": "absolute", "value": ["loot_information", "personal_reposition", "team_resupply", "market_reveals_presence"] },
+      "tacticalEquipTime": {
+        "kind": "absolute",
+        "value": 0.4,
+        "unit": "seconds"
+      },
+      "tacticalRangeChange": {
+        "kind": "relative_change",
+        "direction": "increase",
+        "amount": "roughly 15%"
+      },
+      "tacticalTravelTimeChange": {
+        "kind": "relative_change",
+        "direction": "decrease",
+        "amount": "roughly 30%"
+      },
+      "ultimateCooldown": {
+        "kind": "absolute",
+        "value": 120,
+        "unit": "seconds"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked notes define Loba's tactical equip/range/travel changes and 120-second ultimate cooldown."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.mad_maggie",
+    "name": "Mad Maggie",
+    "type": "legend",
+    "aliases": ["マッドマギー", "マギー"],
+    "description": "Assault Legend who highlights damaged targets, drills through cover, and creates an aggressive speed route.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "assault" },
+      "passive": { "kind": "absolute", "value": "Warlord's Ire" },
+      "tactical": { "kind": "absolute", "value": "Riot Drill" },
+      "ultimate": { "kind": "absolute", "value": "Wrecking Ball" },
+      "passive.description": { "kind": "absolute", "value": "Temporarily highlights enemies Maggie damages and removes the normal movement penalty while carrying shotguns." },
+      "tactical.description": { "kind": "absolute", "value": "Fires a drill that attaches to an obstacle and burns enemies on the opposite side of the cover." },
+      "ultimate.description": { "kind": "absolute", "value": "Throws a ball that travels through the environment, disrupts enemies and obstacles, and leaves speed-boosting pads behind." },
+      "abilityUseCases": { "kind": "absolute", "value": ["damage_tracking", "anti_cover_pressure", "shotgun_entry", "team_speed_route"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "cover_breach_and_fast_entry"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/mad-maggie",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Mad Maggie as an Assault Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.mirage",
+    "name": "Mirage",
+    "type": "legend",
+    "aliases": ["ミラージュ"],
+    "description": "Support Legend who uses decoys and cloaking during revives and respawns to create uncertainty.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "support" },
+      "passive": { "kind": "absolute", "value": "Now You See Me..." },
+      "tactical": { "kind": "absolute", "value": "Psyche Out" },
+      "ultimate": { "kind": "absolute", "value": "Life of the Party" },
+      "passive.description": { "kind": "absolute", "value": "Cloaks Mirage and the teammate he revives, cloaks Mirage while using a Respawn Beacon, and enables direct control of deployed decoys." },
+      "tactical.description": { "kind": "absolute", "value": "Sends out a holographic decoy that can be directed or made to mimic Mirage's movement to draw reactions and reveal attackers." },
+      "ultimate.description": { "kind": "absolute", "value": "Briefly cloaks Mirage and deploys a group of controllable decoys that mimic him, obscuring which target is real." },
+      "abilityUseCases": { "kind": "absolute", "value": ["information_by_bait", "cloaked_revive", "identity_confusion", "escape_or_entry"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "decoy_identification_or_cloaked_reset"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/mirage",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Mirage as a Support Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.newcastle",
+    "name": "Newcastle",
+    "type": "legend",
+    "aliases": ["ニューキャッスル"],
+    "description": "Support Legend who drags downed allies behind a shield and deploys mobile and fortification shields.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "support" },
+      "passive": { "kind": "absolute", "value": "Retrieve the Wounded" },
+      "tactical": { "kind": "absolute", "value": "Mobile Shield" },
+      "ultimate": { "kind": "absolute", "value": "Castle Wall" },
+      "passive.description": { "kind": "absolute", "value": "Drags a downed squadmate while reviving and protects the revive with Newcastle's knockdown-shield energy." },
+      "tactical.description": { "kind": "absolute", "value": "Deploys a mobile energy shield whose position and facing can be redirected after placement." },
+      "ultimate.description": { "kind": "absolute", "value": "Leaps to a target location or squadmate and slams down a fortified wall that creates durable cover." },
+      "abilityUseCases": { "kind": "absolute", "value": ["protected_drag_revive", "mobile_crossing_cover", "ally_reinforcement", "fortified_hold"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "protected_revive_mobile_cover_or_fortification"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/newcastle",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Newcastle as a Support Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.octane",
+    "name": "Octane",
+    "type": "legend",
+    "aliases": ["オクタン"],
+    "description": "Skirmisher who regenerates health, trades health for speed, and launches the squad through the air.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "skirmisher" },
+      "passive": { "kind": "absolute", "value": "Swift Mend" },
+      "tactical": { "kind": "absolute", "value": "Stim" },
+      "ultimate": { "kind": "absolute", "value": "Launch Pad" },
+      "passive.description": { "kind": "absolute", "value": "Regenerates missing health over time when Octane is not taking damage." },
+      "tactical.description": { "kind": "absolute", "value": "Consumes health to gain a burst of movement speed and reduce the effect of movement slows for a short duration." },
+      "ultimate.description": { "kind": "absolute", "value": "Deploys a reusable jump pad that launches any player who touches it and permits an aerial direction change." },
+      "abilityUseCases": { "kind": "absolute", "value": ["self_sustain", "fast_entry_or_escape", "team_rotation", "pad_available_to_enemies"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "health_for_speed_trade_or_team_entry_route"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/octane",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Octane as a Skirmisher Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.rampart",
+    "name": "Rampart",
+    "type": "legend",
+    "aliases": ["ランパート"],
+    "description": "Controller who improves LMG handling, builds amped cover, and supplies mobile minigun pressure.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "controller" },
+      "passive": { "kind": "absolute", "value": "Modded Loader" },
+      "tactical": { "kind": "absolute", "value": "Amped Cover" },
+      "ultimate": { "kind": "absolute", "value": "Mobile Minigun Sheila" },
+      "passive.description": { "kind": "absolute", "value": "Improves magazine capacity and reload or handling performance for LMGs and Sheila, and accelerates Locked Hop-Up progress." },
+      "tactical.description": { "kind": "absolute", "value": "Builds crouch-height cover with an upper amped barrier that blocks incoming fire and increases outgoing weapon damage." },
+      "ultimate.description": { "kind": "absolute", "value": "Equips Sheila, a high-capacity mobile minigun that spins up into sustained high-rate fire and can be placed for later use." },
+      "abilityUseCases": { "kind": "absolute", "value": ["lmg_sustain", "create_firing_cover", "angle_fortification", "sustained_suppression"] },
+      "lockedHopUpProgressBonus": {
+        "kind": "absolute",
+        "value": 50,
+        "unit": "percent"
+      },
+      "wallHealthByEvo": {
+        "kind": "absolute",
+        "value": { "low": 600, "mid": 700, "high": 800 }
+      },
+      "ampedWallHealthBonus": { "kind": "absolute", "value": 25 },
+      "wallDeploymentTimeChange": {
+        "kind": "relative_change",
+        "direction": "decrease",
+        "amount": 0.5,
+        "unit": "seconds"
+      },
+      "sheilaFiringMoveSpeed": { "kind": "absolute", "value": 104 }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked notes define Rampart's hop-up progress, wall health/deployment changes, and Sheila movement speed."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.revenant",
+    "name": "Revenant",
+    "type": "legend",
+    "aliases": ["レヴナント", "レヴ"],
+    "description": "Assault Legend who tracks vulnerable enemies, leaps to engage, and gains a rechargeable shadow guard.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "assault" },
+      "passive": { "kind": "absolute", "value": "Assassin's Instinct" },
+      "tactical": { "kind": "absolute", "value": "Shadow Pounce" },
+      "ultimate": { "kind": "absolute", "value": "Forged Shadows" },
+      "passive.description": { "kind": "absolute", "value": "Highlights nearby enemies who are low on health and improves crouch movement and climbing for stalking or pursuit." },
+      "tactical.description": { "kind": "absolute", "value": "Charges and releases a long forward leap whose distance increases with charge time." },
+      "ultimate.description": { "kind": "absolute", "value": "Creates a shadow shroud that absorbs damage and can be refreshed after securing a knock." },
+      "abilityUseCases": { "kind": "absolute", "value": ["finish_vulnerable_targets", "gap_close_or_escape", "temporary_extra_durability", "knock_chain"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "low_health_tracking_gap_close_or_extra_guard"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/revenant",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Revenant as an Assault Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.seer",
+    "name": "Seer",
+    "type": "legend",
+    "aliases": ["シア"],
+    "description": "Recon Legend who detects nearby heartbeats, interrupts and reveals with his tactical, and tracks movement in a large area.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "recon" },
+      "passive": { "kind": "absolute", "value": "Heart Seeker" },
+      "tactical": { "kind": "absolute", "value": "Focus of Attention" },
+      "ultimate": { "kind": "absolute", "value": "Exhibit" },
+      "passive.description": { "kind": "absolute", "value": "Detects the direction and approximate presence of nearby heartbeats while aiming down sights or preparing the tactical." },
+      "tactical.description": { "kind": "absolute", "value": "Emits a delayed focused blast that reveals affected enemies and disrupts their actions and ability use." },
+      "ultimate.description": { "kind": "absolute", "value": "Deploys a device that reveals enemy movement and firing activity within a large surrounding area." },
+      "abilityUseCases": { "kind": "absolute", "value": ["heartbeat_check", "interrupt_and_reveal", "fight_area_tracking", "device_can_be_destroyed"] },
+      "homeBaseTacticalCooldown": {
+        "kind": "absolute",
+        "value": 8,
+        "unit": "seconds"
+      },
+      "markedChange": {
+        "kind": "relative_change",
+        "direction": "decrease",
+        "amount": "tactical turn slow"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 0.95,
+        "evidenceLevel": "explicit_relative_change",
+        "evidence": "Marked notes retain the July 2 Home Base cooldown at 8 seconds and reduce tactical turn slow without publishing an absolute amount."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.sparrow",
+    "name": "Sparrow",
+    "type": "legend",
+    "aliases": ["スパロー"],
+    "description": "Recon Legend who double-jumps, places line-of-sight tracker darts, and fires an area-denial Stinger Bolt.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "recon" },
+      "passive": { "kind": "absolute", "value": "Double Jump" },
+      "tactical": { "kind": "absolute", "value": "Tracker Dart" },
+      "ultimate": { "kind": "absolute", "value": "Stinger Bolt" },
+      "passive.description": { "kind": "absolute", "value": "Performs a second jump in mid-air or launches upward from a climb, and carries additional standard and explosive Bocek arrows." },
+      "tactical.description": { "kind": "absolute", "value": "Fires a surface-mounted tracker that reveals enemies entering its line of sight and can remotely activate Survey Beacons." },
+      "ultimate.description": { "kind": "absolute", "value": "Fires an anchored large arrow that charges and repeatedly shocks its area, damaging and slowing enemies until they leave cover, escape the radius, or destroy it." },
+      "abilityUseCases": { "kind": "absolute", "value": ["vertical_mobility", "flank_or_choke_watch", "remote_beacon_scan", "area_denial"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "vertical_mobility_remote_scan_or_pulse_area_denial"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/sparrow",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Sparrow as a Recon Legend; current core ability functions are documented in official Prodigy notes."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.valkyrie",
+    "name": "Valkyrie",
+    "type": "legend",
+    "aliases": ["ヴァルキリー", "ヴァル"],
+    "description": "Recon Legend using jet-assisted vertical movement, missile pressure, and squad redeployment.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "marked",
+      "effectiveFrom": "2026-08-04T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "recon" },
+      "passive": { "kind": "absolute", "value": "VTOL Jets" },
+      "tactical": { "kind": "absolute", "value": "Missile Swarm" },
+      "ultimate": { "kind": "absolute", "value": "Skyward Dive" },
+      "passive.description": { "kind": "absolute", "value": "Uses VTOL jets for controlled vertical flight and scans visible enemies while skydiving." },
+      "tactical.description": { "kind": "absolute", "value": "Launches a grid of rockets that damage and briefly stun enemies caught in the impact pattern." },
+      "ultimate.description": { "kind": "absolute", "value": "Prepares a vertical launch that allows Valkyrie and attached squadmates to redeploy by skydive." },
+      "abilityUseCases": { "kind": "absolute", "value": ["vertical_micro_reposition", "stun_pressure", "team_macro_rotation", "launch_can_be_interrupted"] },
+      "tacticalBaseDamage": { "kind": "absolute", "value": 15 },
+      "additionalRocketDamage": { "kind": "absolute", "value": 3 },
+      "ultimateBaseHeightChange": {
+        "kind": "relative_change",
+        "direction": "decrease",
+        "amount": "15%"
+      },
+      "eyeInTheSkyThroughWallsRange": {
+        "kind": "absolute",
+        "value": 100,
+        "unit": "meters"
+      },
+      "eyeInTheSkyLineOfSightRange": {
+        "kind": "absolute",
+        "value": 250,
+        "unit": "meters"
+      },
+      "supersonicLaunchTimeReduction": {
+        "kind": "absolute",
+        "value": 40,
+        "unit": "percent"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked notes define Valkyrie's missile damage, ultimate height reduction, scan ranges, and Supersonic modifier."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.vantage",
+    "name": "Vantage",
+    "type": "legend",
+    "aliases": ["ヴァンテージ"],
+    "description": "Recon sniper who reads squads through Spotter's Lens, repositions with Echo, and marks targets with a custom rifle.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "overclocked-29.0",
+      "effectiveFrom": "2026-05-05T00:00:00.000Z"
+    },
+    "values": {
+      "class": { "kind": "absolute", "value": "recon" },
+      "passive": { "kind": "absolute", "value": "Spotter's Lens" },
+      "tactical": { "kind": "absolute", "value": "Echo Relocation" },
+      "ultimate": { "kind": "absolute", "value": "Sniper's Mark" },
+      "passive.description": { "kind": "absolute", "value": "Uses Spotter's Lens to inspect distant enemies and teams, estimate bullet drop, and build ultimate ammunition by tracking teams." },
+      "tactical.description": { "kind": "absolute", "value": "Commands Echo to a location and launches Vantage toward him, with an optional second jump for additional repositioning." },
+      "ultimate.description": { "kind": "absolute", "value": "Equips a custom sniper rifle whose hits mark targets and increase follow-up damage against them; it supports normal and canted sight modes." },
+      "abilityUseCases": { "kind": "absolute", "value": ["long_range_information", "vertical_reposition", "target_marking", "team_focus_fire"] },
+      "trackedTeamUltBulletGain": {
+        "kind": "absolute",
+        "value": 70,
+        "unit": "percent_of_bullet"
+      },
+      "trackedTeamCooldown": {
+        "kind": "absolute",
+        "value": 10,
+        "unit": "seconds_per_team"
+      },
+      "tacticalVelocity": {
+        "kind": "absolute",
+        "value": 21,
+        "unit": "meters_per_second"
+      },
+      "doubleJumpRange": { "kind": "absolute", "value": 7, "unit": "meters" },
+      "tacticalCooldown": {
+        "kind": "absolute",
+        "value": 17,
+        "unit": "seconds"
+      },
+      "normalScopeMagnification": { "kind": "absolute", "value": "4x" },
+      "cantedScopeMagnification": { "kind": "absolute", "value": "2x" }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/overclocked-patch-notes",
+        "sourcePublishedAt": "2026-05-04T00:00:00.000Z",
+        "effectiveFrom": "2026-05-05T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Overclocked notes specify Vantage's passive generation, Echo movement/cooldown, and both Sniper's Mark scope modes."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.wattson",
+    "name": "Wattson",
+    "type": "legend",
+    "aliases": ["ワットソン"],
+    "description": "Controller who regenerates shields, fences routes, and intercepts ordnance while restoring shields.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
+    "values": {
+      "class": { "kind": "absolute", "value": "controller" },
+      "passive": { "kind": "absolute", "value": "Spark of Genius" },
+      "tactical": { "kind": "absolute", "value": "Perimeter Security" },
+      "ultimate": { "kind": "absolute", "value": "Interception Pylon" },
+      "passive.description": { "kind": "absolute", "value": "Passively regenerates shields and allows Wattson to carry additional Ultimate Accelerants and use one to fully charge her ultimate." },
+      "tactical.description": { "kind": "absolute", "value": "Connects fence nodes into electrified barriers that damage, slow, and reveal enemies crossing them." },
+      "ultimate.description": { "kind": "absolute", "value": "Places a pylon that intercepts incoming ordnance and restores shields to players within its effective area." },
+      "abilityUseCases": { "kind": "absolute", "value": ["shield_economy", "route_alarm_and_denial", "ordnance_interception", "anchored_reset"] },
+      "analysisCue": {
+        "kind": "absolute",
+        "value": "route_denial_ordnance_interception_or_shield_reset"
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/wattson",
+        "confidence": 0.9,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current roster identifies Wattson as a Controller Legend; core ability functions are recorded for review lookup."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  }
+]
