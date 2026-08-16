@@ -508,19 +508,69 @@
     "type": "legend",
     "aliases": ["ライフライン"],
     "description": "Support-class Legend sample for revive and squad sustain review contexts.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
     "patch": { "mode": "stable" },
     "values": {
       "class": { "kind": "absolute", "value": "support" },
-      "analysisCue": { "kind": "absolute", "value": "squad_help_or_heal" }
+      "analysisCue": { "kind": "absolute", "value": "squad_help_or_heal" },
+      "ability.tactical.name": { "kind": "absolute", "value": "D.O.C. Heal Drone" },
+      "ability.tactical.effect": { "kind": "absolute", "value": "heal_nearby_allies" },
+      "ability.tactical.requiresDeployment": { "kind": "absolute", "value": true },
+      "ability.tactical.canFollowAssignedAlly": { "kind": "absolute", "value": true },
+      "ability.tactical.shieldRestoration": {
+        "kind": "unknown",
+        "reason": "The current official character page says D.O.C. heals nearby allies but does not state that the tactical restores shields."
+      }
     },
     "provenance": [
       {
         "sourceType": "official_document",
-        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/abilities/",
-        "confidence": 0.85,
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/lifeline",
+        "confidence": 0.95,
         "evidenceLevel": "manual_confirmation",
-        "evidence": "EA legend guide describes Support as helping and healing the squad."
+        "evidence": "EA's current Lifeline page names D.O.C. Heal Drone and states that it heals nearby allies and can follow an assigned ally once deployed."
+      }
+    ],
+    "fieldProvenance": {},
+    "changeEvents": []
+  },
+  {
+    "id": "legend.vantage",
+    "name": "Vantage",
+    "type": "legend",
+    "aliases": ["ヴァンテージ", "Echo Relocation", "エコー配置", "エコーリロケーション"],
+    "description": "Vantage tactical reference for checking whether a reposition recommendation was mechanically possible at the decision timestamp.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": {
+      "mode": "patch_dependent",
+      "version": "overclocked-29.0",
+      "effectiveFrom": "2026-05-04T00:00:00.000Z"
+    },
+    "values": {
+      "ability.tactical.name": { "kind": "absolute", "value": "Echo Relocation" },
+      "ability.tactical.effect": { "kind": "absolute", "value": "launch_toward_positioned_echo" },
+      "ability.tactical.cooldown": { "kind": "absolute", "value": 17, "unit": "seconds" },
+      "review.availabilityRequirement": {
+        "kind": "absolute",
+        "value": "Confirm the HUD state and prior use at the decision timestamp; the reference cooldown alone does not prove availability."
+      }
+    },
+    "provenance": [
+      {
+        "sourceType": "official_document",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/vantage",
+        "confidence": 0.95,
+        "evidenceLevel": "manual_confirmation",
+        "evidence": "EA's current Vantage page describes Echo Relocation as positioning Echo and launching toward him."
+      },
+      {
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/29-0-designers-notes",
+        "sourcePublishedAt": "2026-05-01T00:00:00.000Z",
+        "effectiveFrom": "2026-05-04T00:00:00.000Z",
+        "confidence": 0.98,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "EA's Overclocked 29.0 designer notes state that Vantage's tactical cooldown was reduced from 20 seconds to 17 seconds."
       }
     ],
     "fieldProvenance": {},

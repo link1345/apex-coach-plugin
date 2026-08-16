@@ -1,6 +1,6 @@
 import { access, stat } from "node:fs/promises";
 import { constants } from "node:fs";
-import { delimiter, isAbsolute, resolve } from "node:path";
+import { delimiter, extname, isAbsolute, resolve } from "node:path";
 import { MediaError } from "./errors.js";
 
 export async function validateInputVideoPath(inputPath: string): Promise<string> {
@@ -31,14 +31,18 @@ export async function validateInputVideoPath(inputPath: string): Promise<string>
 }
 
 export function candidateExecutablePaths(command: string, envPath = process.env.PATH ?? ""): string[] {
-  if (isAbsolute(command) || command.includes("/")) {
+  if (isAbsolute(command) || command.includes("/") || command.includes("\\")) {
     return [command];
   }
+
+  const suffixes = process.platform === "win32" && extname(command).length === 0
+    ? ["", ...(process.env.PATHEXT ?? ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean).map((suffix) => suffix.toLowerCase())]
+    : [""];
 
   return envPath
     .split(delimiter)
     .filter((entry) => entry.length > 0)
-    .map((entry) => resolve(entry, command));
+    .flatMap((entry) => suffixes.map((suffix) => resolve(entry, `${command}${suffix}`)));
 }
 
 export async function resolveExecutable(command: string, envPath?: string): Promise<string> {

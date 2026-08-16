@@ -7,11 +7,12 @@ import { ClipExtractionService } from "../src/media/clipExtraction.js";
 import { CropRegionService, normalizeCropRegion } from "../src/media/cropRegion.js";
 import { MediaError } from "../src/media/errors.js";
 import { FfmpegRunner } from "../src/media/ffmpeg.js";
+import { RuntimeDiagnosticService } from "../src/media/runtimeDiagnostic.js";
 import { FrameExtractionService, frameTimestamps, parseTimestamp } from "../src/media/frameExtraction.js";
-import { validateInputVideoPath } from "../src/media/paths.js";
+import { candidateExecutablePaths, validateInputVideoPath } from "../src/media/paths.js";
 import { withTempWorkspace } from "../src/media/temp.js";
 import { formatDuration, parseFrameRate, VideoInfoService } from "../src/media/videoInfo.js";
-import { createExecutable, createFixtureVideo } from "./fixtures.js";
+import { createFixtureVideo } from "./fixtures.js";
 
 describe("input path validation", () => {
   test("rejects missing files with an LLM-readable error code", async () => {
@@ -79,17 +80,52 @@ describe("ffmpeg runner", () => {
     });
   });
 
-  test("reports unsupported files when ffprobe cannot parse media", async () => {
+  test("reports invalid probe output without leaking raw process failures", async () => {
     await withTempWorkspace(async (workspace) => {
-      const ffprobePath = await createExecutable(workspace.path, "ffprobe", `console.error("Invalid data found"); process.exit(1);`);
       const videoPath = await createFixtureVideo(workspace.path, "broken.dat");
-      const runner = new FfmpegRunner({ ffprobePath });
+      const runner = new FfmpegRunner({ ffprobePath: process.execPath });
 
       await expect(runner.probeVideo(videoPath)).rejects.toBeInstanceOf(MediaError);
       await expect(runner.probeVideo(videoPath)).rejects.toMatchObject({
-        code: "process_failed"
+        code: "invalid_probe_output"
       });
     });
+  });
+});
+
+describe("executable path resolution", () => {
+  test("includes PATHEXT candidates on Windows", () => {
+    const candidates = candidateExecutablePaths("ffmpeg", process.platform === "win32" ? "C:\\media-tools" : "/media-tools");
+
+    if (process.platform === "win32") {
+      expect(candidates.some((candidate) => candidate.toLowerCase().endsWith("ffmpeg.exe"))).toBe(true);
+    } else {
+      expect(candidates).toEqual(["/media-tools/ffmpeg"]);
+    }
+  });
+});
+
+describe("runtime diagnostics", () => {
+  test("reports ready binaries and their versions", async () => {
+    const result = await new RuntimeDiagnosticService().checkRuntime();
+
+    expect(result.ready).toBe(true);
+    expect(result.ffmpeg.path).toBeString();
+    expect(result.ffmpeg.version).toContain("ffmpeg version");
+    expect(result.ffprobe.path).toBeString();
+    expect(result.ffprobe.version).toContain("ffprobe version");
+    expect(result.remediation).toEqual([]);
+  });
+
+  test("returns actionable diagnostics instead of throwing for missing binaries", async () => {
+    const runner = new FfmpegRunner({ ffmpegPath: "/missing/ffmpeg", ffprobePath: "/missing/ffprobe" });
+    const result = await new RuntimeDiagnosticService(runner).checkRuntime();
+
+    expect(result.ready).toBe(false);
+    expect(result.ffmpeg.error?.code).toBe("binary_not_found");
+    expect(result.ffprobe.error?.code).toBe("binary_not_found");
+    expect(result.remediation.join(" ")).toContain("FFMPEG_PATH");
+    expect(result.remediation.join(" ")).toContain("FFPROBE_PATH");
   });
 });
 

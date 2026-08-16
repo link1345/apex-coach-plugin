@@ -1,0 +1,51 @@
+{
+  "id": "plugin-effectiveness-2026-08-16",
+  "source": {
+    "kind": "private_video_review",
+    "description": "Regression contract derived from the plugin/no-plugin comparison. The raw gameplay video is not stored in this repository."
+  },
+  "requiredBehaviors": [
+    {
+      "id": "ability-feasibility",
+      "requirement": "Do not recommend Echo Relocation when HUD or prior-use evidence shows that it is on cooldown.",
+      "enforcedBy": ["unavailable_option_recommended", "ability_without_availability_evidence"]
+    },
+    {
+      "id": "inventory-opportunity-cost",
+      "requirement": "Do not penalize inventory opening count alone; require lost movement, exposure, time, or a missed combat window.",
+      "enforcedBy": ["skill-recovery-inventory"]
+    },
+    {
+      "id": "no-scene-threshold",
+      "requirement": "Treat 25-27m as a scene measurement, not a general trade-distance threshold.",
+      "enforcedBy": ["unsupported_numeric_threshold"]
+    },
+    {
+      "id": "ambiguous-utility",
+      "requirement": "Do not rank gunfire over an unidentified grenade or ability without confirmed action or effect evidence.",
+      "enforcedBy": ["ambiguous_action_compared_decisively"]
+    },
+    {
+      "id": "doc-conditions",
+      "requirement": "Separate health and shield; do not infer D.O.C. deployment, reachability, or completion time from a subtitle.",
+      "enforcedBy": ["missing_recovery_context", "uncertain_recovery_recommended_decisively", "unsupported_reference_claim"]
+    },
+    {
+      "id": "audio-conditional",
+      "requirement": "Use conditional branches when unreviewed audio could change whether to heal or hold an entry.",
+      "enforcedBy": ["audio_not_analyzed_for_decisive_claim"]
+    },
+    {
+      "id": "preserve-valid-causal-findings",
+      "requirement": "Keep evidence-backed findings about the revive-window wide swing, staged retreat, and failure to convert safety into an attempted reset.",
+      "enforcedBy": ["skill-combat-decisions", "skill-output-format"]
+    }
+  ],
+  "evaluation": {
+    "runsPerCondition": 3,
+    "passCriteria": {
+      "criticalUnsupportedClaims": 0,
+      "requiredBehaviorCoverage": 7
+    }
+  }
+}

@@ -2,11 +2,12 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import * as z from "zod/v4";
 import { ReferenceRepository } from "./reference/repository.js";
 import { ReferenceTypeSchema } from "./reference/schema.js";
+import { validateReviewDraft } from "./review/validation.js";
 
 export function createApexReferenceServer(repository = new ReferenceRepository()): McpServer {
   const server = new McpServer({
     name: "apex-reference-mcp",
-    version: "0.1.0"
+    version: "0.2.0"
   });
 
   server.registerResource(
@@ -64,6 +65,37 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
             text: JSON.stringify({ results }, null, 2)
           }
         ]
+      };
+    }
+  );
+
+  server.registerTool(
+    "validate_review",
+    {
+      title: "Validate an APEX review draft",
+      description: "Validate structured coaching findings before writing the final review. Rejects unavailable options, unsupported thresholds and references, ambiguous comparisons, and overconfident audio or recovery claims.",
+      inputSchema: {
+        audioCoverage: z.enum(["complete", "partial", "none"]),
+        findings: z.array(reviewFindingSchema()).min(1)
+      },
+      outputSchema: {
+        valid: z.boolean(),
+        errors: z.array(reviewIssueSchema()),
+        warnings: z.array(reviewIssueSchema()),
+        checkedReferenceClaims: z.array(z.object({
+          findingId: z.string(),
+          referenceId: z.string(),
+          valueKey: z.string(),
+          found: z.boolean(),
+          value: z.unknown().optional()
+        }))
+      }
+    },
+    async (draft) => {
+      const result = await validateReviewDraft(draft, repository);
+      return {
+        structuredContent: result,
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }]
       };
     }
   );
@@ -158,4 +190,59 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
   );
 
   return server;
+}
+
+function reviewFindingSchema() {
+  const feasibility = z.enum(["confirmed", "conditional", "unavailable", "unknown"]);
+  return z.object({
+    id: z.string().min(1),
+    timestampRange: z.string().min(1),
+    observations: z.array(z.object({ id: z.string().min(1), statement: z.string().min(1) })),
+    inferences: z.array(z.object({ statement: z.string().min(1), cueEvidenceIds: z.array(z.string().min(1)) })),
+    actualAction: z.string().min(1),
+    actualActionCertainty: z.enum(["confirmed", "ambiguous", "unknown"]),
+    evaluation: z.string().min(1),
+    recommendationMode: z.enum(["decisive", "conditional", "none"]),
+    audioStatus: z.enum(["analyzed", "unusable", "not_analyzed"]),
+    audioDependent: z.boolean(),
+    options: z.array(z.object({
+      action: z.string().min(1),
+      category: z.enum(["ability", "recovery", "positioning", "weapon", "utility", "other"]),
+      feasibility,
+      verdict: z.enum(["better", "acceptable", "not_recommended", "unrated"]),
+      evidenceIds: z.array(z.string().min(1)),
+      conditions: z.array(z.string().min(1))
+    })),
+    numericClaims: z.array(z.object({
+      value: z.number(),
+      unit: z.string().min(1).optional(),
+      use: z.enum(["measurement", "threshold"]),
+      evidenceIds: z.array(z.string().min(1)),
+      referenceId: z.string().min(1).optional(),
+      valueKey: z.string().min(1).optional()
+    })),
+    referenceClaims: z.array(z.object({
+      referenceId: z.string().min(1),
+      valueKey: z.string().min(1),
+      claim: z.string().min(1)
+    })),
+    recoveryContext: z.object({
+      resourceTypes: z.array(z.enum(["health", "shield"])),
+      availability: feasibility,
+      deployed: z.enum(["confirmed", "not_required", "unknown"]),
+      reachable: z.enum(["confirmed", "not_required", "unknown"]),
+      completionWindow: z.enum(["sufficient", "pressured", "unknown"]),
+      evidenceIds: z.array(z.string().min(1))
+    }).optional()
+  });
+}
+
+function reviewIssueSchema() {
+  return z.object({
+    code: z.string(),
+    severity: z.enum(["error", "warning"]),
+    findingId: z.string(),
+    path: z.string(),
+    message: z.string()
+  });
 }

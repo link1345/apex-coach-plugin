@@ -9,6 +9,10 @@ if (manifest.name !== "apex-coach-plugin") {
   throw new Error("plugin manifest name must be apex-coach-plugin");
 }
 
+if (manifest.version !== "0.2.0") {
+  throw new Error("plugin manifest version must be 0.2.0");
+}
+
 if (manifest.skills !== "./skills/" || manifest.mcpServers !== "./.mcp.json") {
   throw new Error("plugin manifest component paths are invalid");
 }
@@ -24,6 +28,9 @@ for (const [name, server] of Object.entries(mcp.mcpServers) as Array<[
 }
 
 await access(join(root, "skills", "apex-combat-review", "SKILL.md"));
+for (const reference of ["decision-gates.md", "combat-decisions.md", "recovery-inventory.md", "audio.md", "output-format.md"]) {
+  await access(join(root, "skills", "apex-combat-review", "references", reference));
+}
 await access(join(root, "dist", "apex-reference", "data", "references", "mvp.json"));
 
 console.log("Plugin manifest, Skill, MCP bundles, and reference data are present.");

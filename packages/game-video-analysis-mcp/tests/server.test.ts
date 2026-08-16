@@ -33,10 +33,32 @@ describe("MCP server", () => {
     expect(content).toHaveProperty("text");
     expect("text" in content! ? content.text : "").toContain("ffmpegExecutionLayer");
     expect("text" in content! ? content.text : "").toContain("get_video_info");
+    expect("text" in content! ? content.text : "").toContain("check_runtime");
     expect("text" in content! ? content.text : "").toContain("get_frame");
     expect("text" in content! ? content.text : "").toContain("get_clip");
     expect("text" in content! ? content.text : "").toContain("get_audio");
     expect("text" in content! ? content.text : "").toContain("crop_region");
+
+    await server.close();
+  });
+
+  test("exposes runtime readiness as structured output", async () => {
+    const server = createGameVideoAnalysisServer();
+    const client = new Client({ name: "test-client", version: "0.1.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    clients.push(client);
+
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const tools = await client.listTools();
+    expect(tools.tools.map((tool) => tool.name)).toContain("check_runtime");
+
+    const result = await client.callTool({ name: "check_runtime", arguments: {} });
+    expect(result.isError).toBeUndefined();
+    expect(result.structuredContent).toMatchObject({
+      ready: true,
+      audioExtractionAvailable: true,
+      videoExtractionAvailable: true
+    });
 
     await server.close();
   });

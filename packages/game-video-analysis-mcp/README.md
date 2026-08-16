@@ -43,6 +43,12 @@ If the package is linked or installed, use the binary name instead:
 
 ## Tools
 
+### `check_runtime`
+
+Call this before analyzing a video. It verifies the exact `ffmpeg` and `ffprobe` binaries visible to the MCP process and returns their paths, versions, readiness, extraction availability, remediation steps, and whether Codex should be restarted after changing environment variables.
+
+This tool returns `ready: false` as structured diagnostic output instead of failing the review with an opaque process error.
+
 ### `get_video_info`
 
 Inspect a local video file with ffprobe and return normalized metadata for later extraction tools.
@@ -225,6 +231,7 @@ This foundation includes:
 
 - a minimal TypeScript MCP server
 - a shared ffmpeg/ffprobe execution layer
+- preflight runtime diagnostics through `check_runtime`
 - input video path validation
 - managed temporary workspace creation and cleanup
 - normalized video metadata through `get_video_info`
@@ -234,3 +241,5 @@ This foundation includes:
 - rectangular frame-region extraction and upscaling through `crop_region`
 - structured errors for missing binaries and invalid input
 - tests that exercise server startup, ffprobe execution, invalid input, missing binary handling, and temp cleanup
+
+The server extracts audio but does not classify footsteps, healing, revives, reloads, or other game events. Clients must mark audio as unreviewed when they cannot inspect the extracted segment and must not treat that state as silence.
