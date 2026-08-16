@@ -4,7 +4,12 @@ import { ReferenceCollectionSchema, type Reference, type ReferenceType } from ".
 
 export type ReferenceValidationIssue = {
   referenceId?: string;
-  code: "missing_provenance" | "missing_verified_at" | "missing_patch_effective_period" | "unreviewed_absolute_unknown";
+  code:
+    | "duplicate_reference_id"
+    | "missing_provenance"
+    | "missing_verified_at"
+    | "missing_patch_effective_period"
+    | "unreviewed_absolute_unknown";
   message: string;
 };
 
@@ -22,8 +27,18 @@ const referenceTypes: ReferenceType[] = ["weapon", "legend", "item", "mechanic"]
 export async function validateReferenceData(dataDir: string): Promise<ReferenceValidationReport> {
   const references = await readReferences(dataDir);
   const issues: ReferenceValidationIssue[] = [];
+  const seenReferenceIds = new Set<string>();
 
   for (const reference of references) {
+    if (seenReferenceIds.has(reference.id)) {
+      issues.push({
+        referenceId: reference.id,
+        code: "duplicate_reference_id",
+        message: "Reference ID is duplicated across the loaded catalog."
+      });
+    }
+    seenReferenceIds.add(reference.id);
+
     if (reference.provenance.length === 0) {
       issues.push({
         referenceId: reference.id,

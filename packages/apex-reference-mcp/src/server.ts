@@ -10,11 +10,11 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
   });
 
   server.registerResource(
-    "apex-reference-samples",
-    "apex-reference://samples",
+    "apex-reference-catalog",
+    "apex-reference://catalog",
     {
-      title: "APEX Reference samples",
-      description: "Validated sample APEX reference records with provenance metadata.",
+      title: "APEX Reference catalog",
+      description: "Validated current APEX reference catalog with patch and provenance metadata.",
       mimeType: "application/json"
     },
     async (uri) => {

@@ -14,7 +14,7 @@ bun run typecheck
 bun test
 bun run start
 bun run references:validate
-bun run changes:extract -- --input ./release-note.md --output ./data/changes/pending/release-note.json --patch sample-season --effectiveFrom 2026-08-12T00:00:00.000Z --sourceUrl https://www.ea.com/games/apex-legends/news/example
+bun run changes:extract -- --input ./release-note.md --output ./data/changes/pending/release-note.json --patch next-patch --effectiveFrom 2026-09-01T00:00:00.000Z --sourceUrl https://www.ea.com/games/apex-legends/news/example
 bun run changes:approve -- --candidates ./data/changes/pending/release-note.json --references ./data/references/sample.json
 ```
 
@@ -58,7 +58,21 @@ Relative changes intentionally preserve direction only and do not invent numeric
 
 `bun run references:validate` loads every `data/references/*.json` file through the schema and reports missing provenance, missing `verifiedAt`, missing patch effective periods, and suspicious numeric absolute values on fields marked as unknown.
 
-The MVP seed dataset is intentionally small and review-oriented. It covers core recovery/shield items, representative weapons, common video-review mechanics, and a handful of Legend samples. `data/reviews/mvp-video-review.json` records one MVP review pass and the current missing Reference terms that should be sourced before adding more facts.
+## Current Coverage
+
+The catalog is verified as of **2026-08-16** against Season 30 **Marked** (effective 2026-08-04), including the published 2026-08-11 live fixes.
+
+- all 28 current Legends, with class, Passive/Tactical/Ultimate names, per-ability behavior descriptions, practical combat use cases, and current patch-specific values where published
+- all 28 current Legends' complete Legend Upgrade trees: exactly two Level 2 choices and two Level 3 choices, their effects, EVO unlock thresholds, and the one-choice-per-tier rule
+- all 29 current weapons, with class/ammo and current patch-specific values where EA publishes them
+- detailed Marked changes for Bloodhound, Loba, Rampart, Valkyrie, Axle, and Seer
+- detailed current behavior for energy-ammo regeneration, Corrupted Attachments, Hardlight, Deathbox Respawn, Chain Healing, EVO Armor, Arsenals, loot resets, current rotations, and related combat-review systems
+- current recovery, armor, helmet, ammunition, ordnance, and core inventory references
+- Gold and Mythic Armor Upgrade Helmets are recorded as removed from floor loot since Showdown; their former Takeover effects remain historical context, not current obtainable gear
+
+`data/reviews/current-spec-audit-2026-08-16.json` records the exact official sources, roster counts, live-update check, and remaining official-source gaps. A missing published number is stored as `unknown`; old community tables are not silently treated as current facts.
+
+The legacy `sample.json` filename remains for compatibility with the change-pipeline tests, but its runtime records are current factual Shield Battery and R-99 references rather than fictional sample-season data.
 
 ## Release Note Change Pipeline
 

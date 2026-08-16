@@ -1,7 +1,11 @@
 import { readdir, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { ReferenceCollectionSchema, type Reference, type ReferenceType } from "./schema.js";
+import {
+  ReferenceCollectionSchema,
+  type Reference,
+  type ReferenceType,
+} from "./schema.js";
 
 const projectRoot = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const defaultDataDir = join(projectRoot, "data", "references");
@@ -76,7 +80,11 @@ export type ReferenceHistoryResult =
     }
   | {
       found: false;
-      reason: "missing_identifier" | "type_required_with_name" | "reference_not_found" | "ambiguous_reference";
+      reason:
+        | "missing_identifier"
+        | "type_required_with_name"
+        | "reference_not_found"
+        | "ambiguous_reference";
       candidates: ReferenceLookupCandidate[];
     };
 
@@ -97,7 +105,7 @@ export class ReferenceRepository {
         .map(async (fileName) => {
           const raw = await readFile(join(this.dataDir, fileName), "utf8");
           return ReferenceCollectionSchema.parse(JSON.parse(raw));
-        })
+        }),
     );
 
     return references.flat();
@@ -108,7 +116,9 @@ export class ReferenceRepository {
     return references.find((reference) => reference.id === id);
   }
 
-  async getReference(options: ReferenceLookupOptions): Promise<ReferenceLookupResult> {
+  async getReference(
+    options: ReferenceLookupOptions,
+  ): Promise<ReferenceLookupResult> {
     const selector = toVersionSelector(options);
     if (selector === undefined) {
       return { found: false, reason: "version_not_found", candidates: [] };
@@ -120,21 +130,32 @@ export class ReferenceRepository {
       return identityResult;
     }
 
-    const versionedReference = resolveReferenceVersion(identityResult.reference, selector);
+    const versionedReference = resolveReferenceVersion(
+      identityResult.reference,
+      selector,
+    );
 
     if (versionedReference === undefined) {
-      return { found: false, reason: "version_not_found", candidates: [toLookupCandidate(identityResult.reference)] };
+      return {
+        found: false,
+        reason: "version_not_found",
+        candidates: [toLookupCandidate(identityResult.reference)],
+      };
     }
 
     return {
       found: true,
       resolvedBy: identityResult.resolvedBy,
       reference: versionedReference,
-      ...(options.includeHistory === true ? { history: toHistory(identityResult.reference) } : {})
+      ...(options.includeHistory === true
+        ? { history: toHistory(identityResult.reference) }
+        : {}),
     };
   }
 
-  async getReferenceHistory(options: ReferenceLookupOptions): Promise<ReferenceHistoryResult> {
+  async getReferenceHistory(
+    options: ReferenceLookupOptions,
+  ): Promise<ReferenceHistoryResult> {
     const identityResult = await this.resolveReferenceIdentity(options);
 
     if (!identityResult.found) {
@@ -144,11 +165,13 @@ export class ReferenceRepository {
     return {
       found: true,
       resolvedBy: identityResult.resolvedBy,
-      history: toHistory(identityResult.reference)
+      history: toHistory(identityResult.reference),
     };
   }
 
-  private async resolveReferenceIdentity(options: ReferenceLookupOptions): Promise<
+  private async resolveReferenceIdentity(
+    options: ReferenceLookupOptions,
+  ): Promise<
     | {
         found: true;
         resolvedBy: "id" | "name_type";
@@ -156,7 +179,11 @@ export class ReferenceRepository {
       }
     | {
         found: false;
-        reason: "missing_identifier" | "type_required_with_name" | "reference_not_found" | "ambiguous_reference";
+        reason:
+          | "missing_identifier"
+          | "type_required_with_name"
+          | "reference_not_found"
+          | "ambiguous_reference";
         candidates: ReferenceLookupCandidate[];
       }
   > {
@@ -178,7 +205,11 @@ export class ReferenceRepository {
     }
 
     if (options.type === undefined) {
-      return { found: false, reason: "type_required_with_name", candidates: [] };
+      return {
+        found: false,
+        reason: "type_required_with_name",
+        candidates: [],
+      };
     }
 
     const normalizedName = normalizeSearchText(name);
@@ -187,7 +218,9 @@ export class ReferenceRepository {
       (reference) =>
         reference.type === options.type &&
         (normalizeSearchText(reference.name) === normalizedName ||
-          reference.aliases.some((alias) => normalizeSearchText(alias) === normalizedName))
+          reference.aliases.some(
+            (alias) => normalizeSearchText(alias) === normalizedName,
+          )),
     );
 
     if (matches.length === 1) {
@@ -195,13 +228,19 @@ export class ReferenceRepository {
     }
 
     if (matches.length > 1) {
-      return { found: false, reason: "ambiguous_reference", candidates: matches.map(toLookupCandidate) };
+      return {
+        found: false,
+        reason: "ambiguous_reference",
+        candidates: matches.map(toLookupCandidate),
+      };
     }
 
     return { found: false, reason: "reference_not_found", candidates: [] };
   }
 
-  async searchReferences(options: ReferenceSearchOptions): Promise<ReferenceSearchResult[]> {
+  async searchReferences(
+    options: ReferenceSearchOptions,
+  ): Promise<ReferenceSearchResult[]> {
     const maxResults = Math.min(Math.max(options.maxResults ?? 10, 1), 25);
     const query = normalizeSearchText(options.query);
     const queryTokens = tokenizeSearchText(query);
@@ -212,33 +251,45 @@ export class ReferenceRepository {
 
     const references = await this.listReferences();
     return references
-      .filter((reference) => options.type === undefined || reference.type === options.type)
+      .filter(
+        (reference) =>
+          options.type === undefined || reference.type === options.type,
+      )
       .map((reference) => {
-        const latestReference = resolveReferenceVersion(reference, {}) ?? reference;
+        const latestReference =
+          resolveReferenceVersion(reference, {}) ?? reference;
         const score = scoreReference(latestReference, query, queryTokens);
         return {
           id: latestReference.id,
           name: latestReference.name,
           type: latestReference.type,
-          summary: latestReference.description,
+          summary: toSearchSummary(latestReference),
           patch: latestReference.patch,
           verifiedAt: latestReference.verifiedAt,
           source: latestReference.provenance.at(-1)!,
-          score
+          score,
         };
       })
       .filter((result) => result.score > 0)
-      .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id))
+      .sort(
+        (left, right) =>
+          right.score - left.score || left.id.localeCompare(right.id),
+      )
       .slice(0, maxResults);
   }
 }
 
-function toVersionSelector(options: ReferenceLookupOptions): VersionSelector | undefined {
+function toVersionSelector(
+  options: ReferenceLookupOptions,
+): VersionSelector | undefined {
   const version = options.version?.trim() ?? options.patch?.trim();
   const at = options.at?.trim();
 
   if (at === undefined || at.length === 0) {
-    return { version: version !== undefined && version.length > 0 ? version : undefined };
+    return {
+      version:
+        version !== undefined && version.length > 0 ? version : undefined,
+    };
   }
 
   const timestamp = new Date(at);
@@ -246,12 +297,20 @@ function toVersionSelector(options: ReferenceLookupOptions): VersionSelector | u
     return undefined;
   }
 
-  return { version: version !== undefined && version.length > 0 ? version : undefined, at: timestamp };
+  return {
+    version: version !== undefined && version.length > 0 ? version : undefined,
+    at: timestamp,
+  };
 }
 
-function resolveReferenceVersion(reference: Reference, selector: VersionSelector): Reference | undefined {
+function resolveReferenceVersion(
+  reference: Reference,
+  selector: VersionSelector,
+): Reference | undefined {
   if (reference.patch.mode === "stable") {
-    return selector.version === undefined ? cloneReference(reference) : undefined;
+    return selector.version === undefined
+      ? cloneReference(reference)
+      : undefined;
   }
 
   const baseEffectiveFrom = new Date(reference.patch.effectiveFrom);
@@ -261,14 +320,20 @@ function resolveReferenceVersion(reference: Reference, selector: VersionSelector
 
   const events = reference.changeEvents
     .slice()
-    .sort((left, right) => left.effectiveFrom.localeCompare(right.effectiveFrom) || left.id.localeCompare(right.id));
+    .sort(
+      (left, right) =>
+        left.effectiveFrom.localeCompare(right.effectiveFrom) ||
+        left.id.localeCompare(right.id),
+    );
 
   if (selector.version !== undefined) {
     if (selector.version === reference.patch.version) {
       return cloneReference(reference);
     }
 
-    const eventIndex = events.findIndex((event) => event.patch === selector.version);
+    const eventIndex = events.findIndex(
+      (event) => event.patch === selector.version,
+    );
     if (eventIndex === -1) {
       return undefined;
     }
@@ -277,14 +342,19 @@ function resolveReferenceVersion(reference: Reference, selector: VersionSelector
   }
 
   if (selector.at !== undefined) {
-    const matchingEvents = events.filter((event) => new Date(event.effectiveFrom) <= selector.at!);
+    const matchingEvents = events.filter(
+      (event) => new Date(event.effectiveFrom) <= selector.at!,
+    );
     return applyChangeEvents(reference, matchingEvents);
   }
 
   return applyChangeEvents(reference, events);
 }
 
-function applyChangeEvents(reference: Reference, events: Reference["changeEvents"]): Reference {
+function applyChangeEvents(
+  reference: Reference,
+  events: Reference["changeEvents"],
+): Reference {
   const versioned = cloneReference(reference);
 
   for (const event of events) {
@@ -300,19 +370,24 @@ function applyChangeEvents(reference: Reference, events: Reference["changeEvents
       mode: "patch_dependent",
       version: event.patch,
       effectiveFrom: event.effectiveFrom,
-      effectiveTo: null
+      effectiveTo: null,
     };
   }
 
   if (events.length > 0) {
-    versioned.provenance = [...versioned.provenance, ...events.map((event) => event.provenance)];
+    versioned.provenance = [
+      ...versioned.provenance,
+      ...events.map((event) => event.provenance),
+    ];
   }
 
   return versioned;
 }
 
 function toValueKey(fieldPath: string): string {
-  return fieldPath.startsWith("values.") ? fieldPath.slice("values.".length) : fieldPath;
+  return fieldPath.startsWith("values.")
+    ? fieldPath.slice("values.".length)
+    : fieldPath;
 }
 
 function toHistory(reference: Reference): ReferenceHistory {
@@ -323,7 +398,11 @@ function toHistory(reference: Reference): ReferenceHistory {
     basePatch: reference.patch,
     events: reference.changeEvents
       .slice()
-      .sort((left, right) => left.effectiveFrom.localeCompare(right.effectiveFrom) || left.id.localeCompare(right.id))
+      .sort(
+        (left, right) =>
+          left.effectiveFrom.localeCompare(right.effectiveFrom) ||
+          left.id.localeCompare(right.id),
+      ),
   };
 }
 
@@ -338,16 +417,23 @@ function toLookupCandidate(reference: Reference): ReferenceLookupCandidate {
     type: reference.type,
     patch: reference.patch,
     verifiedAt: reference.verifiedAt,
-    source: reference.provenance[0]!
+    source: reference.provenance[0]!,
   };
 }
 
-function scoreReference(reference: Reference, query: string, queryTokens: string[]): number {
+function scoreReference(
+  reference: Reference,
+  query: string,
+  queryTokens: string[],
+): number {
   const id = normalizeSearchText(reference.id);
   const name = normalizeSearchText(reference.name);
   const aliases = reference.aliases.map(normalizeSearchText);
   const description = normalizeSearchText(reference.description);
   const valueKeys = Object.keys(reference.values).map(normalizeSearchText);
+  const valueText = normalizeSearchText(
+    extractSearchableStrings(reference.values).join(" "),
+  );
   const matchedTokens = new Set<string>();
 
   let score = 0;
@@ -373,6 +459,11 @@ function scoreReference(reference: Reference, query: string, queryTokens: string
     phraseMatched = true;
   }
 
+  if (valueText.includes(query)) {
+    score += 40;
+    phraseMatched = true;
+  }
+
   for (const token of queryTokens) {
     if (id.includes(token)) {
       score += 8;
@@ -394,13 +485,75 @@ function scoreReference(reference: Reference, query: string, queryTokens: string
       score += 4;
       matchedTokens.add(token);
     }
+    if (valueText.includes(token)) {
+      score += 5;
+      matchedTokens.add(token);
+    }
   }
 
-  if (!phraseMatched && matchedTokens.size < Math.ceil(queryTokens.length / 2)) {
+  if (
+    !phraseMatched &&
+    matchedTokens.size < Math.ceil(queryTokens.length / 2)
+  ) {
     return 0;
   }
 
   return score;
+}
+
+function toSearchSummary(reference: Reference): string {
+  if (reference.type !== "legend") {
+    return reference.description;
+  }
+
+  const passive = getAbsoluteString(reference.values.passive);
+  const tactical = getAbsoluteString(reference.values.tactical);
+  const ultimate = getAbsoluteString(reference.values.ultimate);
+  const abilities = [
+    passive === undefined ? undefined : `Passive: ${passive}`,
+    tactical === undefined ? undefined : `Tactical: ${tactical}`,
+    ultimate === undefined ? undefined : `Ultimate: ${ultimate}`,
+  ].filter((value): value is string => value !== undefined);
+
+  return abilities.length === 0
+    ? reference.description
+    : `${reference.description} ${abilities.join("; ")}.`;
+}
+
+function getAbsoluteString(value: unknown): string | undefined {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    !("kind" in value) ||
+    !("value" in value)
+  ) {
+    return undefined;
+  }
+
+  const candidate = value as { kind?: unknown; value?: unknown };
+  return candidate.kind === "absolute" && typeof candidate.value === "string"
+    ? candidate.value
+    : undefined;
+}
+
+function extractSearchableStrings(value: unknown): string[] {
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return [String(value)];
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap(extractSearchableStrings);
+  }
+
+  if (typeof value === "object" && value !== null) {
+    return Object.values(value).flatMap(extractSearchableStrings);
+  }
+
+  return [];
 }
 
 function normalizeSearchText(value: string): string {
@@ -413,5 +566,11 @@ function normalizeSearchText(value: string): string {
 }
 
 function tokenizeSearchText(value: string): string[] {
-  return [...new Set(value.split(" ").filter((token) => token.length > 1 || /[^\x00-\x7F]/.test(token)))];
+  return [
+    ...new Set(
+      value
+        .split(" ")
+        .filter((token) => token.length > 1 || /[^\x00-\x7F]/.test(token)),
+    ),
+  ];
 }
