@@ -43,7 +43,7 @@ https://github.com/link1345/apex-coach-plugin
 このリポジトリのCodexプラグインをインストールしてください。
 ```
 
-AIエージェントがリポジトリ内のREADMEとMarketplace定義を確認し、Marketplaceの登録と登録結果の確認を進めます。環境の権限設定によっては、コマンドの実行前に承認を求められる場合があります。セットアップ完了後は「3. Codexアプリでインストールする」へ進んでください。
+AIエージェントがリポジトリ内のREADMEとMarketplace定義を確認し、Marketplaceの登録と登録結果の確認を進めます。環境の権限設定によっては、コマンドの実行前に承認を求められる場合があります。セットアップ完了後は「使い方」を参照してください。
 
 #### コマンドで追加する
 
@@ -61,20 +61,6 @@ codex plugin marketplace add https://github.com/link1345/apex-coach-plugin.git -
 codex plugin marketplace list
 ```
 
-### 3. Codexアプリでインストールする
-
-1. Codexアプリを完全に終了し、再起動します。
-2. Plugins Directoryを開き、`APEX Coach`を選択します。
-3. `Apex Coach Plugin`を開き、追加ボタンを押します。
-4. インストール後、新しいタスクを開始します。
-
-新しいタスクで、例えば次のように依頼できます。
-
-```text
-@apex-coach-plugin
-このAPEX戦闘動画を分析して、優先度順に改善点を教えてください。
-```
-
 ### トラブルシュート
 
 - Marketplaceが表示されない: `codex plugin marketplace list`で`apex-coach`が登録されていることを確認し、Codexアプリを再起動します。
@@ -88,6 +74,15 @@ codex plugin marketplace upgrade apex-coach
 ```
 
 詳しいプラグイン開発・導入方法は、[OpenAI公式のPackage your plugin](https://developers.openai.com/plugins/build/plugins)を参照してください。
+
+## 使い方
+
+新しいタスクで、例えば次のように依頼できます。
+
+```text
+@apex-coach-plugin
+このAPEX戦闘動画を分析して、優先度順に改善点を教えてください。
+```
 
 ## Development
 
