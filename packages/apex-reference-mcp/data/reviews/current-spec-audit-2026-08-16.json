@@ -1,0 +1,102 @@
+{
+  "id": "current-spec-audit-2026-08-16",
+  "asOf": "2026-08-16T00:00:00.000Z",
+  "currentVersion": {
+    "season": 30,
+    "name": "Marked",
+    "effectiveFrom": "2026-08-04T00:00:00.000Z",
+    "latestLiveUpdateChecked": "2026-08-11"
+  },
+  "officialSources": [
+    "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+    "https://www.ea.com/games/apex-legends/apex-legends/news/marked-game-updates",
+    "https://www.ea.com/games/apex-legends/apex-legends/news/overclocked-patch-notes",
+    "https://www.ea.com/games/apex-legends/apex-legends/news/breach-patch-notes",
+    "https://www.ea.com/games/apex-legends/apex-legends/news/showdown-patch-notes",
+    "https://www.ea.com/games/apex-legends/apex-legends/news/takeover-patch-notes",
+    "https://www.ea.com/games/apex-legends/apex-legends/characters-hub",
+    "https://help.ea.com/en/articles/apex-legends/guns-and-weapons/"
+  ],
+  "secondaryVerificationSources": [
+    {
+      "url": "https://apexlegends.wiki.gg/wiki/Legend_Upgrade",
+      "use": "Current per-Legend upgrade templates were checked on 2026-08-16; later official patch notes override stale consolidated or per-Legend entries."
+    }
+  ],
+  "coverage": {
+    "legendRoster": { "covered": 28, "expected": 28 },
+    "legendAbilityProfiles": {
+      "covered": 28,
+      "expected": 28,
+      "requiredFields": [
+        "passive",
+        "passive.description",
+        "tactical",
+        "tactical.description",
+        "ultimate",
+        "ultimate.description",
+        "abilityUseCases"
+      ]
+    },
+    "legendUpgradeProfiles": {
+      "covered": 28,
+      "expected": 28,
+      "choicesPerLegend": { "level2": 2, "level3": 2 },
+      "selectionRule": "choose_one_per_tier"
+    },
+    "weaponRoster": { "covered": 29, "expected": 29 },
+    "markedChangedLegends": [
+      "Bloodhound",
+      "Loba",
+      "Rampart",
+      "Valkyrie",
+      "Axle",
+      "Seer"
+    ],
+    "overclockedCurrentLegends": ["Alter", "Ash", "Conduit", "Vantage"],
+    "coreSystems": [
+      "Hardlight Mesh",
+      "Deathbox Respawn",
+      "Chain Healing",
+      "Enemy Health Bar visibility",
+      "Energy weapon regenerating ammunition",
+      "Marked loot system",
+      "Arsenals",
+      "Loot Bin Reset",
+      "Care Package rotation",
+      "Gold weapons",
+      "Accelerator Hop-Up",
+      "Volunteer Jumpmaster",
+      "EVO Armor",
+      "Gold and Mythic helmet floor-loot removal",
+      "BR map rotation"
+    ]
+  },
+  "equipmentCorrections": {
+    "goldAndMythicArmorUpgradeHelmets": {
+      "introduced": "Takeover (2025-02-11)",
+      "removedFromFloorLoot": "Showdown (2025-08-05)",
+      "currentFinding": "No later official patch through Marked documents a standard-BR reintroduction.",
+      "scopeCaveat": "EA states removal from floor loot, not deletion from every mode or from the game files."
+    }
+  },
+  "liveUpdateNotes": {
+    "date": "2026-08-11",
+    "changes": [
+      "Mythic CAR reload animation fix",
+      "Hemlok Breach AR recoil behavior fix",
+      "World's Edge minimap location fix",
+      "Lifeline Tactical audio fix",
+      "Bloodhound respawn Ultimate charge fix"
+    ],
+    "balanceValueImpact": "No published numeric balance value changed."
+  },
+  "knownOfficialSourceGaps": [
+    "EA does not publish one current consolidated table containing all four Legend Upgrade choices for all 28 Legends; unchanged choices were cross-checked against current per-Legend wiki templates, while official patch notes take precedence for replacements and tuning.",
+    "Current official web documents do not publish exact Heavy, Shotgun, or Sniper inventory stack sizes.",
+    "Current official web documents do not publish a single consolidated table for all healing amounts and use times.",
+    "Current official web documents do not publish a single consolidated table for every weapon's complete damage, RPM, reload, projectile, and attachment values.",
+    "Current official web documents do not publish a current consolidated Ring table for every round and mode."
+  ],
+  "policy": "Unpublished or not-currently-confirmed absolute values remain unknown; they are not inferred from old wiki tables or memory."
+}

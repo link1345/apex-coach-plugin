@@ -1,30 +1,32 @@
 # APEX Coach Plugin
 
-APEX Legendsのゲームプレイ動画を、観察可能な情報とAPEX固有の参照情報に基づいてレビューするCodexプラグインです。
+[English](README.md) | [日本語](README.ja.md)
 
-1つのプラグインに、次の3コンポーネントをまとめています。
+A Codex plugin for reviewing APEX Legends gameplay videos using observable evidence and APEX-specific reference data.
 
-- `apex-combat-review`: 後知恵を避け、観察・選択肢・実際の行動・評価を分けるコーチングSkill
-- `apex-reference`: 武器、レジェンド、アイテム、メカニクス、パッチ差分を参照するMCPサーバー
-- `game-video-analysis`: 動画情報、フレーム、短いクリップ、音声、HUD領域を抽出するMCPサーバー
+It bundles the following three components into one plugin:
 
-レビュー開始時に動画解析ランタイムを診断し、最終回答前に構造化した判断を検証します。実行不能なアビリティ、出典のない数値閾値、未確認音声への依存、曖昧な行動の断定比較、回復条件や参照情報の過剰主張は検証エラーになります。
+- `apex-combat-review`: A coaching skill that separates observations, available options, actual actions, and evaluation while avoiding hindsight bias
+- `apex-reference`: An MCP server for looking up weapons, legends, items, mechanics, and patch-specific changes
+- `game-video-analysis`: An MCP server for extracting video metadata, frames, short clips, audio, and HUD regions
+
+At the start of a review, the plugin diagnoses the video-analysis runtime and validates structured findings before producing the final response. Validation rejects unavailable abilities, unsupported numeric thresholds, reliance on unreviewed audio, decisive comparisons of ambiguous actions, and overclaims about recovery conditions or reference data.
 
 ## Requirements
 
 - Codex
-- Bun 1.3以上
-- `ffmpeg`と`ffprobe`（動画解析機能を使用する場合）
+- Bun 1.3 or later
+- `ffmpeg` and `ffprobe` when using video analysis features
 
-`ffmpeg`と`ffprobe`は`PATH`に追加するか、`FFMPEG_PATH`と`FFPROBE_PATH`で指定できます。
+Add `ffmpeg` and `ffprobe` to `PATH`, or specify them with `FFMPEG_PATH` and `FFPROBE_PATH`.
 
-## Codexアプリへのインストール
+## Install in Codex
 
-このリポジトリには、Codex CLIから追加できるMarketplace定義が含まれています。
+This repository includes a marketplace definition that can be added with the Codex CLI.
 
-### 1. 必要なコマンドを確認する
+### 1. Check the required commands
 
-PowerShellで次のコマンドを実行します。
+Run the following commands in PowerShell:
 
 ```powershell
 bun --version
@@ -32,64 +34,64 @@ ffmpeg -version
 ffprobe -version
 ```
 
-`bun`は必須です。`ffmpeg`と`ffprobe`は動画解析機能を使用する場合のみ必要です。
+`bun` is required. `ffmpeg` and `ffprobe` are required only when using video analysis features.
 
-### 2. Marketplaceを追加する
+### 2. Add the marketplace
 
-#### AIエージェントに任せる
+#### Ask an AI agent
 
-Codexで新しいタスクを作成し、次のようにリポジトリを指定して依頼します。
+Create a new task in Codex and provide the repository URL:
 
 ```text
 https://github.com/link1345/apex-coach-plugin
-このリポジトリのCodexプラグインをインストールしてください。
+Install the Codex plugin from this repository.
 ```
 
-AIエージェントがリポジトリ内のREADMEとMarketplace定義を確認し、Marketplaceの登録と登録結果の確認を進めます。環境の権限設定によっては、コマンドの実行前に承認を求められる場合があります。セットアップ完了後は「使い方」を参照してください。
+The AI agent will inspect the README and marketplace definition, register the marketplace, and verify the result. Depending on your environment permissions, it may ask for approval before running commands. After setup, see "Usage" below.
 
-#### コマンドで追加する
+#### Add it manually
 
-Codexアプリの統合ターミナル、またはPowerShellで次のコマンドを実行します。
+Run the following command in the Codex integrated terminal or PowerShell:
 
 ```powershell
 codex plugin marketplace add https://github.com/link1345/apex-coach-plugin.git --sparse .agents/plugins
 ```
 
-このコマンドは`.agents/plugins/marketplace.json`だけをMarketplace情報として取得します。そこから、リポジトリ直下の`apex-coach-plugin`をインストール対象として読み込みます。
+This command retrieves `.agents/plugins/marketplace.json` as the marketplace definition. The definition exposes the `apex-coach-plugin` located at the repository root.
 
-登録結果は次のコマンドで確認できます。
+Verify the registration with:
 
 ```powershell
 codex plugin marketplace list
 ```
 
-### トラブルシュート
+### Troubleshooting
 
-- Marketplaceが表示されない: `codex plugin marketplace list`で`apex-coach`が登録されていることを確認し、Codexアプリを再起動します。
-- MCPツールが利用できない: `bun`が`PATH`に設定されていることを確認し、新しいタスクを開始します。
-- 動画解析で`binary_not_found`が表示される: `ffmpeg`と`ffprobe`を`PATH`へ追加するか、`FFMPEG_PATH`と`FFPROBE_PATH`を設定してCodexアプリを再起動します。
-- 動画解析を始める前に、プラグインの`check_runtime`でCodexプロセスから見える実行ファイル、バージョン、修正案を確認できます。
+- Marketplace does not appear: Confirm that `apex-coach` is listed by `codex plugin marketplace list`, then restart Codex.
+- MCP tools are unavailable: Confirm that `bun` is available on `PATH`, then start a new task.
+- Video analysis reports `binary_not_found`: Add `ffmpeg` and `ffprobe` to `PATH`, or set `FFMPEG_PATH` and `FFPROBE_PATH`, then restart Codex.
+- Before starting video analysis, use the plugin's `check_runtime` tool to inspect the executables and versions visible to the Codex process and receive actionable fixes.
 
-Marketplaceの更新を取得する場合は、次のコマンドを実行します。
+To retrieve marketplace updates, run:
 
 ```powershell
 codex plugin marketplace upgrade apex-coach
 ```
 
-詳しいプラグイン開発・導入方法は、[OpenAI公式のPackage your plugin](https://developers.openai.com/plugins/build/plugins)を参照してください。
+For more information about plugin packaging and installation, see the [official OpenAI Package your plugin documentation](https://developers.openai.com/plugins/build/plugins).
 
-## 使い方
+## Usage
 
-新しいタスクで、例えば次のように依頼できます。
+In a new task, try a prompt such as:
 
 ```text
 @apex-coach-plugin
-このAPEX戦闘動画を分析して、優先度順に改善点を教えてください。
+Analyze this APEX combat video and list the improvements in priority order.
 ```
 
-Skillは、観測事実、推論、その時点で実行可能だった選択肢、実際の行動を分離します。距離など動画中の測定値を一般的な閾値へ変換せず、アビリティはHUDと直前の使用状況、回復は体力・シールド・展開・到達・猶予、音声は解析済みかどうかを確認してから助言します。
+The skill separates observed facts, inferences, options available at the time, and actual actions. It does not convert measured values such as distance into unsupported general thresholds. Before advising, it checks the HUD and recent ability use, recovery conditions such as health, shields, cover, reachability, and available time, and whether audio was actually reviewed.
 
-音声MCPは音声区間を抽出しますが、足音などを自動確定する分類器ではありません。音声を確認できない場面では、単一の断定ではなく条件分岐で回答します。
+The audio MCP extracts audio segments; it is not a classifier that automatically confirms footsteps or other sounds. When audio cannot be reviewed, the response uses conditional branches instead of a single definitive claim.
 
 ## Development
 
@@ -98,28 +100,28 @@ bun install --frozen-lockfile
 bun run check
 ```
 
-`bun run build`は2つのMCPサーバーを依存込みで`dist/`へバンドルします。`dist/`は、プラグイン導入後に追加のパッケージ取得を必要としないよう、リポジトリへコミットします。
+`bun run build` bundles both MCP servers and their dependencies into `dist/`. The `dist/` directory is committed so that installing the plugin does not require downloading additional packages.
 
 ## Plugin structure
 
 ```text
-.agents/plugins/marketplace.json  Git配布用Marketplace定義
-.codex-plugin/plugin.json     Codexプラグインマニフェスト
-.mcp.json                     2つのMCPサーバーの起動設定
-skills/apex-combat-review/    コーチングSkill
-packages/                     上流MCPソースのレビュー済みスナップショット
-runtime/                      配布用MCPエントリーポイント
-dist/                         バンドル済みMCPと参照データ
+.agents/plugins/marketplace.json  Marketplace definition for Git distribution
+.codex-plugin/plugin.json         Codex plugin manifest
+.mcp.json                         Startup configuration for both MCP servers
+skills/apex-combat-review/        Coaching skill
+packages/                         Reviewed snapshots of the upstream MCP sources
+runtime/                          MCP entry points for distribution
+dist/                             Bundled MCP servers and reference data
 ```
 
-取り込んだ上流コミットは[UPSTREAM.md](UPSTREAM.md)に記録します。
+Imported upstream commits are recorded in [UPSTREAM.md](UPSTREAM.md).
 
 ## Example prompts
 
-- 「このAPEX戦闘動画を分析して、優先度順に改善点を教えてください」
-- 「この場面でプッシュ、維持、リセットのどれが妥当だったか確認してください」
-- 「動画内の判断を、観察できた情報だけに基づいてレビューしてください」
+- "Analyze this APEX combat video and list the improvements in priority order."
+- "Determine whether pushing, holding, or resetting was the best option in this situation."
+- "Review the decisions in this video using only information that was observable at the time."
 
 ## Data handling
 
-動画解析MCPは、ユーザーが指定したローカル動画を読み取り、抽出物をOSの一時ディレクトリに作成します。APEX参照MCPは、プラグインに同梱されたローカルJSONデータを読み取ります。
+The video analysis MCP reads local videos selected by the user and creates extracted files in the operating system's temporary directory. The APEX reference MCP reads local JSON data bundled with the plugin.

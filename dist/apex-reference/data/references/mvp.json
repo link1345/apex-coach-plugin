@@ -4,20 +4,24 @@
     "name": "Shield Cell",
     "type": "item",
     "aliases": ["シールドセル", "セル"],
-    "description": "Small shield recovery item commonly visible during reset windows in APEX video review.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
-    "patch": { "mode": "stable" },
+    "description": "Small shield recovery item with a 2.5-second use time and six-item inventory stack.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "patch_dependent", "version": "takeover", "effectiveFrom": "2025-02-11T00:00:00.000Z" },
     "values": {
       "effect": { "kind": "absolute", "value": "restore_shields" },
+      "useTime": { "kind": "absolute", "value": 2.5, "unit": "seconds" },
+      "stackSize": { "kind": "absolute", "value": 6 },
       "analysisCue": { "kind": "absolute", "value": "short_shield_reset" }
     },
     "provenance": [
       {
-        "sourceType": "official_document",
-        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/how-to-play/",
-        "confidence": 0.9,
-        "evidenceLevel": "manual_confirmation",
-        "evidence": "EA beginner guide lists shield cells as shield recovery items."
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/takeover-patch-notes",
+        "sourcePublishedAt": "2025-02-10T00:00:00.000Z",
+        "effectiveFrom": "2025-02-11T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Takeover notes set Shield Cell use time to 2.5 seconds and Cell/Syringe stacks to six."
       }
     ],
     "fieldProvenance": {},
@@ -52,20 +56,24 @@
     "name": "Syringe",
     "type": "item",
     "aliases": ["注射器", "シリンジ"],
-    "description": "Small health recovery item visible when a player stabilizes after flesh damage.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
-    "patch": { "mode": "stable" },
+    "description": "Small health recovery item with a 4-second use time and six-item inventory stack.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "patch_dependent", "version": "takeover", "effectiveFrom": "2025-02-11T00:00:00.000Z" },
     "values": {
       "effect": { "kind": "absolute", "value": "restore_health" },
+      "useTime": { "kind": "absolute", "value": 4, "unit": "seconds" },
+      "stackSize": { "kind": "absolute", "value": 6 },
       "analysisCue": { "kind": "absolute", "value": "short_health_reset" }
     },
     "provenance": [
       {
-        "sourceType": "official_document",
-        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/how-to-play/",
-        "confidence": 0.9,
-        "evidenceLevel": "manual_confirmation",
-        "evidence": "EA beginner guide lists syringes as health recovery items."
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/takeover-patch-notes",
+        "sourcePublishedAt": "2025-02-10T00:00:00.000Z",
+        "effectiveFrom": "2025-02-11T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Takeover notes set Syringe use time to 4 seconds and Cell/Syringe stacks to six."
       }
     ],
     "fieldProvenance": {},
@@ -293,20 +301,26 @@
     "name": "Volt SMG",
     "type": "weapon",
     "aliases": ["Volt", "ボルト"],
-    "description": "SMG listed in official weapon guidance; useful for close-range tracking review.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
-    "patch": { "mode": "stable" },
+    "description": "Energy SMG using Marked's regenerating ammunition stockpile; useful for judging sustained-fight readiness.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "patch_dependent", "version": "marked", "effectiveFrom": "2026-08-04T00:00:00.000Z" },
     "values": {
       "class": { "kind": "absolute", "value": "smg" },
-      "rangeProfile": { "kind": "absolute", "value": "close_range" }
+      "rangeProfile": { "kind": "absolute", "value": "close_range" },
+      "ammoSystem": { "kind": "absolute", "value": "regenerating_stockpile" },
+      "stockpileMagazines": { "kind": "absolute", "value": 2, "unit": "magazines" },
+      "ammoRegenerationTime": { "kind": "absolute", "value": 18, "unit": "seconds_per_magazine" },
+      "regenerationPausesWhile": { "kind": "absolute", "value": ["shooting", "reloading"] }
     },
     "provenance": [
       {
-        "sourceType": "official_document",
-        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/guns-and-weapons/",
-        "confidence": 0.85,
-        "evidenceLevel": "manual_confirmation",
-        "evidence": "EA weapon guide includes SMGs as a weapon category and lists Volt in starter weapon guidance."
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked patch notes define Volt's two-magazine stockpile and the 18-second per-magazine regeneration rules."
       }
     ],
     "fieldProvenance": {},
@@ -507,12 +521,19 @@
     "name": "Lifeline",
     "type": "legend",
     "aliases": ["ライフライン"],
-    "description": "Support-class Legend sample for revive and squad sustain review contexts.",
+    "description": "Support Legend who glides with D.O.C., deploys a heal drone, and creates a protected squad recovery zone.",
     "verifiedAt": "2026-08-16T00:00:00.000Z",
     "patch": { "mode": "stable" },
     "values": {
       "class": { "kind": "absolute", "value": "support" },
-      "analysisCue": { "kind": "absolute", "value": "squad_help_or_heal" },
+      "passive": { "kind": "absolute", "value": "Combat Glide" },
+      "tactical": { "kind": "absolute", "value": "D.O.C. Heal Drone" },
+      "ultimate": { "kind": "absolute", "value": "D.O.C. Halo" },
+      "passive.description": { "kind": "absolute", "value": "Uses D.O.C. to glide briefly while airborne and can assign D.O.C. to revive a downed teammate while Lifeline remains free to act." },
+      "tactical.description": { "kind": "absolute", "value": "Deploys D.O.C. to heal nearby players and can assign the drone to follow an ally." },
+      "ultimate.description": { "kind": "absolute", "value": "Throws D.O.C. to create an indestructible Halo protection zone in which health and shield consumables are used faster." },
+      "abilityUseCases": { "kind": "absolute", "value": ["airborne_micro_mobility", "hands_free_revive", "squad_healing", "protected_fast_reset"] },
+      "analysisCue": { "kind": "absolute", "value": "combat_mobility_squad_heal_or_protected_reset" },
       "ability.tactical.name": { "kind": "absolute", "value": "D.O.C. Heal Drone" },
       "ability.tactical.effect": { "kind": "absolute", "value": "heal_nearby_allies" },
       "ability.tactical.requiresDeployment": { "kind": "absolute", "value": true },
@@ -535,58 +556,23 @@
     "changeEvents": []
   },
   {
-    "id": "legend.vantage",
-    "name": "Vantage",
-    "type": "legend",
-    "aliases": ["ヴァンテージ", "Echo Relocation", "エコー配置", "エコーリロケーション"],
-    "description": "Vantage tactical reference for checking whether a reposition recommendation was mechanically possible at the decision timestamp.",
-    "verifiedAt": "2026-08-16T00:00:00.000Z",
-    "patch": {
-      "mode": "patch_dependent",
-      "version": "overclocked-29.0",
-      "effectiveFrom": "2026-05-04T00:00:00.000Z"
-    },
-    "values": {
-      "ability.tactical.name": { "kind": "absolute", "value": "Echo Relocation" },
-      "ability.tactical.effect": { "kind": "absolute", "value": "launch_toward_positioned_echo" },
-      "ability.tactical.cooldown": { "kind": "absolute", "value": 17, "unit": "seconds" },
-      "review.availabilityRequirement": {
-        "kind": "absolute",
-        "value": "Confirm the HUD state and prior use at the decision timestamp; the reference cooldown alone does not prove availability."
-      }
-    },
-    "provenance": [
-      {
-        "sourceType": "official_document",
-        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/vantage",
-        "confidence": 0.95,
-        "evidenceLevel": "manual_confirmation",
-        "evidence": "EA's current Vantage page describes Echo Relocation as positioning Echo and launching toward him."
-      },
-      {
-        "sourceType": "official_patch_note",
-        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/29-0-designers-notes",
-        "sourcePublishedAt": "2026-05-01T00:00:00.000Z",
-        "effectiveFrom": "2026-05-04T00:00:00.000Z",
-        "confidence": 0.98,
-        "evidenceLevel": "explicit_absolute_value",
-        "evidence": "EA's Overclocked 29.0 designer notes state that Vantage's tactical cooldown was reduced from 20 seconds to 17 seconds."
-      }
-    ],
-    "fieldProvenance": {},
-    "changeEvents": []
-  },
-  {
     "id": "legend.wraith",
     "name": "Wraith",
     "type": "legend",
     "aliases": ["レイス"],
-    "description": "Skirmisher-style mobility sample used for disengage and reposition review contexts.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
+    "description": "Skirmisher who receives danger warnings, phases out of damage, and opens a two-way squad portal.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
     "patch": { "mode": "stable" },
     "values": {
-      "analysisCue": { "kind": "absolute", "value": "mobility_reposition" },
-      "abilityDetails": { "kind": "unknown", "reason": "This MVP record stores only review category; exact current ability text should be sourced before use." }
+      "class": { "kind": "absolute", "value": "skirmisher" },
+        "passive": { "kind": "absolute", "value": "Voices from the Void" },
+        "tactical": { "kind": "absolute", "value": "Into the Void" },
+        "ultimate": { "kind": "absolute", "value": "Dimensional Rift" },
+        "passive.description": { "kind": "absolute", "value": "Warns Wraith when danger such as enemy aim, traps, or nearby threats is detected and allows her to warn the squad." },
+        "tactical.description": { "kind": "absolute", "value": "Shifts Wraith into the Void after a short preparation, avoiding damage while repositioning but preventing weapon use during the phase." },
+        "ultimate.description": { "kind": "absolute", "value": "Creates two linked portal endpoints that players can use in either direction for protected team repositioning." },
+        "abilityUseCases": { "kind": "absolute", "value": ["danger_warning", "damage_avoidance", "personal_disengage", "two_way_team_reposition"] },
+        "analysisCue": { "kind": "absolute", "value": "damage_avoidance_disengage_or_team_reposition" }
     },
     "provenance": [
       {
@@ -605,12 +591,19 @@
     "name": "Bangalore",
     "type": "legend",
     "aliases": ["バンガロール", "バンガ"],
-    "description": "Starting Legend sample often relevant for smoke, line-of-sight, and fight reset review.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
+    "description": "Assault Legend who gains speed under fire, blocks sightlines with smoke, and denies an area with artillery.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
     "patch": { "mode": "stable" },
     "values": {
-      "analysisCue": { "kind": "absolute", "value": "line_of_sight_control" },
-      "abilityDetails": { "kind": "unknown", "reason": "This MVP record stores only review category; exact current ability text should be sourced before use." }
+      "class": { "kind": "absolute", "value": "assault" },
+        "passive": { "kind": "absolute", "value": "Double Time" },
+        "tactical": { "kind": "absolute", "value": "Smoke Launcher" },
+        "ultimate": { "kind": "absolute", "value": "Rolling Thunder" },
+        "passive.description": { "kind": "absolute", "value": "Grants a temporary sprint-speed burst when Bangalore is fired upon while moving." },
+        "tactical.description": { "kind": "absolute", "value": "Fires smoke canisters that create dense visual cover, breaking ordinary sightlines for both teams." },
+        "ultimate.description": { "kind": "absolute", "value": "Calls a creeping artillery strike across a wide area; missiles detonate after landing to damage and stun exposed enemies." },
+        "abilityUseCases": { "kind": "absolute", "value": ["escape_under_fire", "line_of_sight_control", "revive_or_crossing_cover", "large_area_denial"] },
+        "analysisCue": { "kind": "absolute", "value": "line_of_sight_control_escape_or_area_denial" }
     },
     "provenance": [
       {
@@ -629,20 +622,39 @@
     "name": "Bloodhound",
     "type": "legend",
     "aliases": ["ブラッドハウンド", "ブラハ"],
-    "description": "Recon-class sample used for enemy tracking and information-gathering review contexts.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
-    "patch": { "mode": "stable" },
-    "values": {
-      "class": { "kind": "absolute", "value": "recon" },
-      "analysisCue": { "kind": "absolute", "value": "enemy_tracking_or_intel" }
+    "description": "Recon Legend reworked in Marked with enhanced tracking, snapshot scans, and the Allfather's Cloak team utility.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "patch_dependent", "version": "marked", "effectiveFrom": "2026-08-04T00:00:00.000Z" },
+      "values": {
+        "class": { "kind": "absolute", "value": "recon" },
+        "passive": { "kind": "absolute", "value": "Tracker" },
+        "tactical": { "kind": "absolute", "value": "Eye of the Allfather" },
+        "ultimate": { "kind": "absolute", "value": "Allfather's Cloak" },
+        "passive.description": { "kind": "absolute", "value": "Reveals recent enemy activity through tracking clues and uses White Ravens to point toward distant enemy squads." },
+        "tactical.description": { "kind": "absolute", "value": "Scans the area ahead, first revealing enemies at full-body resolution and then updating their positions through a sequence of snapshots." },
+        "ultimate.description": { "kind": "absolute", "value": "Creates a temporary cloaking area for the squad; cloaked players gain speed and threat vision until the cloak expires or is broken by combat actions, while Bloodhound can use their own abilities without breaking it." },
+        "abilityUseCases": { "kind": "absolute", "value": ["enemy_route_tracking", "snapshot_scan", "cloaked_team_entry", "cloaked_disengage"] },
+        "analysisCue": { "kind": "absolute", "value": "enemy_tracking_cloak_entry_or_escape" },
+      "passive.whiteRavenRange": { "kind": "absolute", "value": 400, "unit": "meters" },
+      "tactical.fullBodyScanDuration": { "kind": "absolute", "value": 3, "unit": "seconds" },
+      "tactical.snapshotCount": { "kind": "absolute", "value": 4 },
+      "tactical.snapshotInterval": { "kind": "absolute", "value": 1.5, "unit": "seconds" },
+      "ultimate.name": { "kind": "absolute", "value": "Allfather's Cloak" },
+      "ultimate.cloakingAreaDuration": { "kind": "absolute", "value": 8, "unit": "seconds" },
+      "ultimate.cloakDurationAfterExit": { "kind": "absolute", "value": 12, "unit": "seconds" },
+      "ultimate.movementSpeedBonus": { "kind": "absolute", "value": 20, "unit": "percent" },
+      "ultimate.breakConditions": { "kind": "absolute", "value": ["taking_damage", "firing_weapon", "using_most_abilities"] },
+      "ultimate.bloodhoundAbilitiesPreserveCloak": { "kind": "absolute", "value": true }
     },
     "provenance": [
       {
-        "sourceType": "official_document",
-        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/abilities/",
-        "confidence": 0.85,
-        "evidenceLevel": "manual_confirmation",
-        "evidence": "EA legend guide describes Recon as tracking enemies and gathering intel."
+        "sourceType": "official_patch_note",
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
+        "evidenceLevel": "explicit_absolute_value",
+        "evidence": "Marked patch notes specify Bloodhound's reworked passive, tactical scan sequence, and Allfather's Cloak values and break conditions."
       }
     ],
     "fieldProvenance": {},
@@ -653,12 +665,19 @@
     "name": "Pathfinder",
     "type": "legend",
     "aliases": ["パスファインダー", "パス"],
-    "description": "Movement-oriented Legend sample for zipline and reposition review contexts.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
+    "description": "Skirmisher who grapples for individual movement and deploys a zipline for squad repositioning.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
     "patch": { "mode": "stable" },
     "values": {
-      "analysisCue": { "kind": "absolute", "value": "team_reposition" },
-      "abilityDetails": { "kind": "unknown", "reason": "This MVP record stores only review category; exact current ability text should be sourced before use." }
+      "class": { "kind": "absolute", "value": "skirmisher" },
+        "passive": { "kind": "absolute", "value": "Insider Knowledge" },
+        "tactical": { "kind": "absolute", "value": "Grappling Hook" },
+        "ultimate": { "kind": "absolute", "value": "Zipline Gun" },
+        "passive.description": { "kind": "absolute", "value": "Scans Care Packages to reveal their contents and reduce or fully charge Zipline Gun, rewarding forward information gathering." },
+        "tactical.description": { "kind": "absolute", "value": "Fires a grapple that pulls Pathfinder toward terrain for fast, momentum-based movement; cooldown scales with travel distance." },
+        "ultimate.description": { "kind": "absolute", "value": "Creates a permanent long-range zipline for squad movement; riding it provides damage mitigation under the current base kit." },
+        "abilityUseCases": { "kind": "absolute", "value": ["care_package_information", "individual_entry_or_escape", "height_take", "team_rotation"] },
+        "analysisCue": { "kind": "absolute", "value": "individual_entry_escape_or_team_reposition" }
     },
     "provenance": [
       {

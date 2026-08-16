@@ -4,35 +4,22 @@
     "name": "Shield Battery",
     "type": "item",
     "aliases": ["シールドバッテリー", "バッテリー", "bat"],
-    "description": "Restores shields after a channel time. This sample records a stable item fact with manual verification provenance.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
-    "patch": {
-      "mode": "stable"
-    },
+    "description": "Shield recovery item used for a substantial shield reset during combat.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
+    "patch": { "mode": "stable" },
     "values": {
-      "effect": {
-        "kind": "absolute",
-        "value": "restore_shields"
-      }
+      "effect": { "kind": "absolute", "value": "restore_shields" }
     },
     "provenance": [
       {
-        "sourceType": "manual_verified",
-        "sourceId": "seed-data-2026-08-12",
-        "confidence": 0.8,
+        "sourceType": "official_document",
+        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/how-to-play/",
+        "confidence": 0.9,
         "evidenceLevel": "manual_confirmation",
-        "evidence": "Seed sample for validating stable reference records."
+        "evidence": "EA's current beginner guide lists Shield Batteries among shield recovery items."
       }
     ],
-    "fieldProvenance": {
-      "values.effect": {
-        "sourceType": "manual_verified",
-        "sourceId": "seed-data-2026-08-12",
-        "confidence": 0.8,
-        "evidenceLevel": "manual_confirmation",
-        "evidence": "Seed sample for validating stable reference records."
-      }
-    },
+    "fieldProvenance": {},
     "changeEvents": []
   },
   {
@@ -40,152 +27,58 @@
     "name": "R-99 SMG damage",
     "type": "weapon",
     "aliases": ["R99", "R-99", "アール99"],
-    "description": "Patch-dependent sample for weapon damage where an official patch note states an explicit old and new value.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
+    "description": "Current R-99 body damage, with the Marked change retained as chronological patch history.",
+    "verifiedAt": "2026-08-16T00:00:00.000Z",
     "patch": {
       "mode": "patch_dependent",
-      "version": "sample-preseason",
-      "effectiveFrom": "2026-07-01T00:00:00.000Z",
-      "effectiveTo": "2026-08-12T00:00:00.000Z"
+      "version": "pre-marked",
+      "effectiveFrom": "2026-08-03T00:00:00.000Z",
+      "effectiveTo": "2026-08-04T00:00:00.000Z"
     },
     "values": {
-      "damage.body": {
-        "kind": "absolute",
-        "value": 11
-      }
+      "damage.body": { "kind": "absolute", "value": 13 }
     },
     "provenance": [
       {
         "sourceType": "official_patch_note",
-        "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-        "sourcePublishedAt": "2026-07-01T00:00:00.000Z",
-        "effectiveFrom": "2026-07-01T00:00:00.000Z",
-        "confidence": 0.95,
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-03T00:00:00.000Z",
+        "effectiveTo": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
         "evidenceLevel": "explicit_absolute_value",
-        "evidence": "Sample baseline states body damage was 11 before later changes."
+        "evidence": "Marked patch notes state that R-99 body damage was 13 before the reduction to 12."
       }
     ],
     "fieldProvenance": {
       "values.damage.body": {
         "sourceType": "official_patch_note",
-        "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-        "sourcePublishedAt": "2026-07-01T00:00:00.000Z",
-        "effectiveFrom": "2026-07-01T00:00:00.000Z",
-        "confidence": 0.95,
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+        "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+        "effectiveFrom": "2026-08-03T00:00:00.000Z",
+        "effectiveTo": "2026-08-04T00:00:00.000Z",
+        "confidence": 1,
         "evidenceLevel": "explicit_absolute_value",
-        "evidence": "Sample baseline states body damage was 11 before later changes."
+        "evidence": "Marked patch notes state that R-99 body damage was 13 before the reduction to 12."
       }
     },
     "changeEvents": [
       {
-        "id": "sample-season-r99-body-damage",
+        "id": "marked-r99-body-damage",
         "fieldPath": "values.damage.body",
         "changeType": "set",
-        "oldValue": {
-          "kind": "absolute",
-          "value": 11
-        },
-        "newValue": {
-          "kind": "absolute",
-          "value": 12
-        },
-        "patch": "sample-season",
-        "effectiveFrom": "2026-08-12T00:00:00.000Z",
+        "oldValue": { "kind": "absolute", "value": 13 },
+        "newValue": { "kind": "absolute", "value": 12 },
+        "patch": "marked",
+        "effectiveFrom": "2026-08-04T00:00:00.000Z",
         "provenance": {
           "sourceType": "official_patch_note",
-          "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-          "sourcePublishedAt": "2026-08-12T00:00:00.000Z",
-          "effectiveFrom": "2026-08-12T00:00:00.000Z",
-          "confidence": 0.95,
+          "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/news/marked-patch-notes",
+          "sourcePublishedAt": "2026-08-03T00:00:00.000Z",
+          "effectiveFrom": "2026-08-04T00:00:00.000Z",
+          "confidence": 1,
           "evidenceLevel": "explicit_absolute_value",
-          "evidence": "Sample patch note states body damage changed from 11 to 12."
-        }
-      },
-      {
-        "id": "sample-season-2-r99-body-damage",
-        "fieldPath": "values.damage.body",
-        "changeType": "set",
-        "oldValue": {
-          "kind": "absolute",
-          "value": 12
-        },
-        "newValue": {
-          "kind": "absolute",
-          "value": 13
-        },
-        "patch": "sample-season-2",
-        "effectiveFrom": "2026-09-01T00:00:00.000Z",
-        "provenance": {
-          "sourceType": "official_patch_note",
-          "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-          "sourcePublishedAt": "2026-09-01T00:00:00.000Z",
-          "effectiveFrom": "2026-09-01T00:00:00.000Z",
-          "confidence": 0.95,
-          "evidenceLevel": "explicit_absolute_value",
-          "evidence": "Sample patch note states body damage changed from 12 to 13."
-        }
-      }
-    ]
-  },
-  {
-    "id": "weapon.sample_spread.relative",
-    "name": "Sample weapon spread relative change",
-    "type": "weapon",
-    "aliases": ["spread sample", "拡散サンプル"],
-    "description": "Patch-dependent sample that preserves a relative change without inventing an absolute numeric value.",
-    "verifiedAt": "2026-08-12T00:00:00.000Z",
-    "patch": {
-      "mode": "patch_dependent",
-      "version": "sample-season",
-      "effectiveFrom": "2026-08-12T00:00:00.000Z"
-    },
-    "values": {
-      "spread": {
-        "kind": "relative_change",
-        "direction": "decrease"
-      }
-    },
-    "provenance": [
-      {
-        "sourceType": "official_patch_note",
-        "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-        "sourcePublishedAt": "2026-08-12T00:00:00.000Z",
-        "effectiveFrom": "2026-08-12T00:00:00.000Z",
-        "confidence": 0.7,
-        "evidenceLevel": "explicit_relative_change",
-        "evidence": "Sample patch note says spread decreased without publishing an absolute value."
-      }
-    ],
-    "fieldProvenance": {
-      "values.spread": {
-        "sourceType": "official_patch_note",
-        "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-        "sourcePublishedAt": "2026-08-12T00:00:00.000Z",
-        "effectiveFrom": "2026-08-12T00:00:00.000Z",
-        "confidence": 0.7,
-        "evidenceLevel": "explicit_relative_change",
-        "evidence": "Sample patch note says spread decreased without publishing an absolute value."
-      }
-    },
-    "changeEvents": [
-      {
-        "id": "sample-season-spread-decrease",
-        "fieldPath": "values.spread",
-        "changeType": "decrease",
-        "newValue": {
-          "kind": "relative_change",
-          "direction": "decrease"
-        },
-        "patch": "sample-season",
-        "effectiveFrom": "2026-08-12T00:00:00.000Z",
-        "provenance": {
-          "sourceType": "official_patch_note",
-          "sourceUrl": "https://www.ea.com/games/apex-legends/news",
-          "sourcePublishedAt": "2026-08-12T00:00:00.000Z",
-          "effectiveFrom": "2026-08-12T00:00:00.000Z",
-          "confidence": 0.7,
-          "evidenceLevel": "explicit_relative_change",
-          "evidence": "Sample patch note says spread decreased without publishing an absolute value."
+          "evidence": "Marked patch notes reduce R-99 body damage to 12 from 13."
         }
       }
     ]
