@@ -29,7 +29,15 @@ export class VideoInfoService {
   constructor(private readonly runner = new FfmpegRunner()) {}
 
   async getVideoInfo(inputPath: string): Promise<VideoInfo> {
-    const probe = await this.runner.probeVideo(inputPath);
+    const probe = await this.runner.probeVideo(inputPath).catch((error: unknown) => {
+      if (error instanceof MediaError && (error.code === "process_failed" || error.code === "invalid_probe_output")) {
+        throw new MediaError("unsupported_input", "ffprobe could not read the input as a supported video.", {
+          inputPath,
+          probeError: error.code
+        });
+      }
+      throw error;
+    });
     const videoStreams = probe.streams.filter((stream) => stream.codec_type === "video");
     const audioStreams = probe.streams.filter((stream) => stream.codec_type === "audio");
     const videoStream = videoStreams[0];

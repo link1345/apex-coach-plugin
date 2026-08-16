@@ -10,6 +10,8 @@ It bundles the following three components into one plugin:
 - `apex-reference`: An MCP server for looking up weapons, legends, items, mechanics, and patch-specific changes
 - `game-video-analysis`: An MCP server for extracting video metadata, frames, short clips, audio, and HUD regions
 
+At the start of a review, the plugin diagnoses the video-analysis runtime and validates structured findings before producing the final response. Validation rejects unavailable abilities, unsupported numeric thresholds, reliance on unreviewed audio, decisive comparisons of ambiguous actions, and overclaims about recovery conditions or reference data.
+
 ## Requirements
 
 - Codex
@@ -68,6 +70,7 @@ codex plugin marketplace list
 - Marketplace does not appear: Confirm that `apex-coach` is listed by `codex plugin marketplace list`, then restart Codex.
 - MCP tools are unavailable: Confirm that `bun` is available on `PATH`, then start a new task.
 - Video analysis reports `binary_not_found`: Add `ffmpeg` and `ffprobe` to `PATH`, or set `FFMPEG_PATH` and `FFPROBE_PATH`, then restart Codex.
+- Before starting video analysis, use the plugin's `check_runtime` tool to inspect the executables and versions visible to the Codex process and receive actionable fixes.
 
 To retrieve marketplace updates, run:
 
@@ -85,6 +88,10 @@ In a new task, try a prompt such as:
 @apex-coach-plugin
 Analyze this APEX combat video and list the improvements in priority order.
 ```
+
+The skill separates observed facts, inferences, options available at the time, and actual actions. It does not convert measured values such as distance into unsupported general thresholds. Before advising, it checks the HUD and recent ability use, recovery conditions such as health, shields, cover, reachability, and available time, and whether audio was actually reviewed.
+
+The audio MCP extracts audio segments; it is not a classifier that automatically confirms footsteps or other sounds. When audio cannot be reviewed, the response uses conditional branches instead of a single definitive claim.
 
 ## Development
 

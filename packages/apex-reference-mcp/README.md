@@ -1,6 +1,6 @@
 # APEX Reference MCP
 
-APEX Legends reference data MCP server. This package is scoped to factual reference lookup data and provenance tracking; gameplay judgment remains outside the server.
+APEX Legends reference data and review-validation MCP server. Factual gameplay judgment remains in the Skill; this server verifies reference provenance and rejects structurally unsupported review claims.
 
 ## Requirements
 
@@ -130,3 +130,18 @@ Input:
 - `type` optional filter required when resolving by `name`: `weapon`, `legend`, `item`, or `mechanic`.
 
 Successful responses include `found: true`, `resolvedBy`, and `history` with the baseline patch and ordered `events`.
+
+### `validate_review`
+
+Validates a structured combat-review draft before prose generation. It checks:
+
+- unique observation ids, typed ability-availability cues, option feasibility, and evidence ids;
+- empty evidence lists and unavailable, unknown, or conditional abilities recommended too decisively;
+- scene measurements incorrectly promoted to numeric thresholds that do not exactly match a numeric reference value and unit;
+- decisive comparisons against ambiguous actions;
+- decisive audio-dependent recommendations when audio was not analyzed;
+- recovery recommendations, including recovery abilities with multiple applicable categories, that do not distinguish health, shield, deployment, reachability, and completion window;
+- reference claims whose exact `referenceId`, `valueKey`, and structured expected value do not match the resolved value, or whose value is absent or explicitly unknown;
+- reference-backed claims that omit the reviewed patch or ISO timestamp in `referenceContext`.
+
+The result contains `valid`, separate `errors` and `warnings`, and the exact reference values resolved for supported claims. Clients should fix every error before publishing the review.

@@ -10,6 +10,8 @@ APEX Legendsのゲームプレイ動画を、観察可能な情報とAPEX固有�
 - `apex-reference`: 武器、レジェンド、アイテム、メカニクス、パッチ差分を参照するMCPサーバー
 - `game-video-analysis`: 動画情報、フレーム、短いクリップ、音声、HUD領域を抽出するMCPサーバー
 
+レビュー開始時に動画解析ランタイムを診断し、最終回答前に構造化した判断を検証します。実行不能なアビリティ、出典のない数値閾値、未確認音声への依存、曖昧な行動の断定比較、回復条件や参照情報の過剰主張は検証エラーになります。
+
 ## Requirements
 
 - Codex
@@ -68,6 +70,7 @@ codex plugin marketplace list
 - Marketplaceが表示されない: `codex plugin marketplace list`で`apex-coach`が登録されていることを確認し、Codexアプリを再起動します。
 - MCPツールが利用できない: `bun`が`PATH`に設定されていることを確認し、新しいタスクを開始します。
 - 動画解析で`binary_not_found`が表示される: `ffmpeg`と`ffprobe`を`PATH`へ追加するか、`FFMPEG_PATH`と`FFPROBE_PATH`を設定してCodexアプリを再起動します。
+- 動画解析を始める前に、プラグインの`check_runtime`でCodexプロセスから見える実行ファイル、バージョン、修正案を確認できます。
 
 Marketplaceの更新を取得する場合は、次のコマンドを実行します。
 
@@ -85,6 +88,10 @@ codex plugin marketplace upgrade apex-coach
 @apex-coach-plugin
 このAPEX戦闘動画を分析して、優先度順に改善点を教えてください。
 ```
+
+Skillは、観測事実、推論、その時点で実行可能だった選択肢、実際の行動を分離します。距離など動画中の測定値を一般的な閾値へ変換せず、アビリティはHUDと直前の使用状況、回復は体力・シールド・展開・到達・猶予、音声は解析済みかどうかを確認してから助言します。
+
+音声MCPは音声区間を抽出しますが、足音などを自動確定する分類器ではありません。音声を確認できない場面では、単一の断定ではなく条件分岐で回答します。
 
 ## Development
 

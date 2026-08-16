@@ -17,7 +17,7 @@
     },
     "packages/apex-reference-mcp": {
       "name": "apex-reference-mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
         "apex-reference-mcp": "./bin/apex-reference-mcp.ts",
       },
@@ -33,7 +33,7 @@
     },
     "packages/game-video-analysis-mcp": {
       "name": "game-video-analysis-mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
         "game-video-analysis-mcp": "./bin/game-video-analysis-mcp.ts",
       },

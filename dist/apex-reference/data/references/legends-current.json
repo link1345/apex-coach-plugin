@@ -874,6 +874,13 @@
       "passive": { "kind": "absolute", "value": "Spotter's Lens" },
       "tactical": { "kind": "absolute", "value": "Echo Relocation" },
       "ultimate": { "kind": "absolute", "value": "Sniper's Mark" },
+      "ability.tactical.name": { "kind": "absolute", "value": "Echo Relocation" },
+      "ability.tactical.effect": { "kind": "absolute", "value": "launch_toward_positioned_echo" },
+      "ability.tactical.cooldown": { "kind": "absolute", "value": 17, "unit": "seconds" },
+      "review.availabilityRequirement": {
+        "kind": "absolute",
+        "value": "Confirm the HUD state and prior use at the decision timestamp; cooldown alone is insufficient evidence of availability."
+      },
       "passive.description": { "kind": "absolute", "value": "Uses Spotter's Lens to inspect distant enemies and teams, estimate bullet drop, and build ultimate ammunition by tracking teams." },
       "tactical.description": { "kind": "absolute", "value": "Commands Echo to a location and launches Vantage toward him, with an optional second jump for additional repositioning." },
       "ultimate.description": { "kind": "absolute", "value": "Equips a custom sniper rifle whose hits mark targets and increase follow-up damage against them; it supports normal and canted sight modes." },

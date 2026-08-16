@@ -526,22 +526,30 @@
     "patch": { "mode": "stable" },
     "values": {
       "class": { "kind": "absolute", "value": "support" },
-        "passive": { "kind": "absolute", "value": "Combat Glide" },
-        "tactical": { "kind": "absolute", "value": "D.O.C. Heal Drone" },
-        "ultimate": { "kind": "absolute", "value": "D.O.C. Halo" },
-        "passive.description": { "kind": "absolute", "value": "Uses D.O.C. to glide briefly while airborne and can assign D.O.C. to revive a downed teammate while Lifeline remains free to act." },
-        "tactical.description": { "kind": "absolute", "value": "Deploys D.O.C. to heal nearby players and can assign the drone to follow an ally." },
-        "ultimate.description": { "kind": "absolute", "value": "Throws D.O.C. to create an indestructible Halo protection zone in which health and shield consumables are used faster." },
-        "abilityUseCases": { "kind": "absolute", "value": ["airborne_micro_mobility", "hands_free_revive", "squad_healing", "protected_fast_reset"] },
-        "analysisCue": { "kind": "absolute", "value": "combat_mobility_squad_heal_or_protected_reset" }
+      "passive": { "kind": "absolute", "value": "Combat Glide" },
+      "tactical": { "kind": "absolute", "value": "D.O.C. Heal Drone" },
+      "ultimate": { "kind": "absolute", "value": "D.O.C. Halo" },
+      "passive.description": { "kind": "absolute", "value": "Uses D.O.C. to glide briefly while airborne and can assign D.O.C. to revive a downed teammate while Lifeline remains free to act." },
+      "tactical.description": { "kind": "absolute", "value": "Deploys D.O.C. to heal nearby players and can assign the drone to follow an ally." },
+      "ultimate.description": { "kind": "absolute", "value": "Throws D.O.C. to create an indestructible Halo protection zone in which health and shield consumables are used faster." },
+      "abilityUseCases": { "kind": "absolute", "value": ["airborne_micro_mobility", "hands_free_revive", "squad_healing", "protected_fast_reset"] },
+      "analysisCue": { "kind": "absolute", "value": "combat_mobility_squad_heal_or_protected_reset" },
+      "ability.tactical.name": { "kind": "absolute", "value": "D.O.C. Heal Drone" },
+      "ability.tactical.effect": { "kind": "absolute", "value": "heal_nearby_allies" },
+      "ability.tactical.requiresDeployment": { "kind": "absolute", "value": true },
+      "ability.tactical.canFollowAssignedAlly": { "kind": "absolute", "value": true },
+      "ability.tactical.shieldRestoration": {
+        "kind": "unknown",
+        "reason": "The current official character page says D.O.C. heals nearby allies but does not state that the tactical restores shields."
+      }
     },
     "provenance": [
       {
         "sourceType": "official_document",
-        "sourceUrl": "https://help.ea.com/ja/articles/apex-legends/abilities/",
-        "confidence": 0.85,
+        "sourceUrl": "https://www.ea.com/games/apex-legends/apex-legends/characters-hub/lifeline",
+        "confidence": 0.95,
         "evidenceLevel": "manual_confirmation",
-        "evidence": "EA legend guide describes Support as helping and healing the squad."
+        "evidence": "EA's current Lifeline page names D.O.C. Heal Drone and states that it heals nearby allies and can follow an assigned ally once deployed."
       }
     ],
     "fieldProvenance": {},

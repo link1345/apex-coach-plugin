@@ -12,6 +12,7 @@ import {
 } from "../src/reference/changePipeline.js";
 import { validateReferenceData } from "../src/reference/validation.js";
 import { createApexReferenceServer } from "../src/server.js";
+import { validateReviewDraft, type ReviewFinding } from "../src/review/validation.js";
 
 const repository = new ReferenceRepository();
 
@@ -520,6 +521,286 @@ describe("reference data model", () => {
   });
 });
 
+describe("review validation", () => {
+  test("accepts a conditional evidence-backed finding and resolves exact reference keys", async () => {
+    const finding = makeReviewFinding();
+    finding.referenceClaims.push({
+      referenceId: "legend.lifeline",
+      valueKey: "ability.tactical.effect",
+      claim: "D.O.C. can heal nearby allies.",
+      expectedValue: { kind: "absolute", value: "heal_nearby_allies" }
+    });
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+
+    expect(result.valid).toBe(true);
+    expect(result.checkedReferenceClaims[0]).toMatchObject({
+      referenceId: "legend.lifeline",
+      valueKey: "ability.tactical.effect",
+      found: true
+    });
+  });
+
+  test("rejects unavailable abilities, unsupported thresholds, and decisive ambiguous comparisons", async () => {
+    const finding = makeReviewFinding();
+    finding.actualActionCertainty = "ambiguous";
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Use Echo Relocation",
+      categories: ["ability"],
+      abilityName: "Echo Relocation",
+      feasibility: "unavailable",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: []
+    }];
+    finding.numericClaims.push({ value: 25, unit: "meters", use: "threshold", evidenceIds: ["obs-1"] });
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    const codes = result.errors.map((error) => error.code);
+
+    expect(codes).toContain("unavailable_option_recommended");
+    expect(codes).toContain("ambiguous_action_compared_decisively");
+    expect(codes).toContain("unsupported_numeric_threshold");
+  });
+
+  test("requires conditional language for unreviewed audio and uncertain recovery", async () => {
+    const finding = makeReviewFinding();
+    finding.audioDependent = true;
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Use D.O.C. and heal",
+      categories: ["recovery"],
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: []
+    }];
+    finding.recoveryContext = {
+      resourceTypes: ["health"],
+      availability: "conditional",
+      deployed: "unknown",
+      reachable: "unknown",
+      completionWindow: "unknown",
+      evidenceIds: ["obs-1"]
+    };
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    const codes = result.errors.map((error) => error.code);
+
+    expect(codes).toContain("audio_not_analyzed_for_decisive_claim");
+    expect(codes).toContain("uncertain_recovery_recommended_decisively");
+  });
+
+  test("rejects reference claims that exceed the stored value keys", async () => {
+    const finding = makeReviewFinding();
+    finding.referenceClaims.push({
+      referenceId: "legend.lifeline",
+      valueKey: "ability.tactical.restoresShields",
+      claim: "D.O.C. restores shields.",
+      expectedValue: { kind: "absolute", value: true }
+    });
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_reference_claim");
+  });
+
+  test("rejects reference values explicitly marked unknown", async () => {
+    const finding = makeReviewFinding();
+    finding.referenceClaims.push({
+      referenceId: "legend.lifeline",
+      valueKey: "ability.tactical.shieldRestoration",
+      claim: "D.O.C. restores shields.",
+      expectedValue: { kind: "absolute", value: true }
+    });
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+
+    expect(result.valid).toBe(false);
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_reference_claim");
+  });
+
+  test("requires numeric thresholds and units to exactly match the resolved value", async () => {
+    const finding = makeReviewFinding();
+    finding.numericClaims = [{
+      value: 25,
+      unit: "seconds",
+      use: "threshold",
+      evidenceIds: ["obs-1"],
+      referenceId: "legend.vantage",
+      valueKey: "ability.tactical.cooldown"
+    }];
+
+    const mismatch = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(mismatch.errors.map((error) => error.code)).toContain("unsupported_numeric_threshold");
+
+    finding.numericClaims[0]!.value = 17;
+    const exact = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(exact.valid).toBe(true);
+
+    finding.numericClaims[0]!.valueKey = "ability.tactical.name";
+    const nonNumeric = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(nonNumeric.errors.map((error) => error.code)).toContain("unsupported_numeric_threshold");
+  });
+
+  test("requires conditional mode when a conditional option is rated better", async () => {
+    const finding = makeReviewFinding();
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Take the trade angle if the route remains protected.",
+      categories: ["positioning"],
+      feasibility: "conditional",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: ["The route remains protected."]
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("conditional_option_recommended_decisively");
+  });
+
+  test("rejects evidence-dependent claims with empty evidence lists", async () => {
+    const finding = makeReviewFinding();
+    finding.observations = [];
+    finding.inferences = [{ statement: "The route is safe.", cueEvidenceIds: [] }];
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Push the route.",
+      categories: ["positioning"],
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: [],
+      conditions: []
+    }];
+    finding.numericClaims = [];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.valid).toBe(false);
+    expect(result.errors.filter((error) => error.code === "missing_evidence")).toHaveLength(2);
+  });
+
+  test("requires and applies the reviewed patch context for reference claims", async () => {
+    const finding = makeReviewFinding();
+    finding.referenceClaims.push({
+      referenceId: "legend.vantage",
+      valueKey: "ability.tactical.cooldown",
+      claim: "Echo Relocation has a 17-second cooldown.",
+      expectedValue: { kind: "absolute", value: 17, unit: "seconds" }
+    });
+
+    const missingContext = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(missingContext.errors.map((error) => error.code)).toContain("missing_reference_context");
+
+    const beforeEffectiveDate = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-05-01T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(beforeEffectiveDate.errors.map((error) => error.code)).toContain("unsupported_reference_claim");
+
+    const current = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(current.valid).toBe(true);
+  });
+
+  test("cross-checks typed ability availability evidence", async () => {
+    const finding = makeReviewFinding();
+    finding.observations[0]!.abilityAvailability = [{
+      ability: "Echo Relocation",
+      status: "unavailable",
+      source: "hud"
+    }];
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Use Echo Relocation.",
+      categories: ["ability"],
+      abilityName: "Echo Relocation",
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: []
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("ability_availability_conflict");
+  });
+
+  test("checks structured expected values for reference claims", async () => {
+    const finding = makeReviewFinding();
+    finding.referenceClaims.push({
+      referenceId: "legend.vantage",
+      valueKey: "ability.tactical.effect",
+      claim: "Echo restores shields.",
+      expectedValue: { kind: "absolute", value: "restore_shields" }
+    });
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_reference_claim");
+  });
+
+  test("rejects duplicate observation ids", async () => {
+    const finding = makeReviewFinding();
+    finding.observations.push({ id: "obs-1", statement: "The HUD shows the ability on cooldown." });
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("duplicate_observation_id");
+  });
+
+  test("applies recovery gates to options that are both abilities and recovery", async () => {
+    const finding = makeReviewFinding();
+    finding.observations[0]!.abilityAvailability = [{
+      ability: "D.O.C. Heal Drone",
+      status: "available",
+      source: "hud"
+    }];
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Deploy D.O.C. and heal.",
+      categories: ["ability", "recovery"],
+      abilityName: "D.O.C. Heal Drone",
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: []
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("missing_recovery_context");
+  });
+});
+
 describe("MVP reference data validation", () => {
   test("passes schema-backed data validation and preserves unknown facts", async () => {
     const report = await validateReferenceData(
@@ -563,6 +844,29 @@ describe("MVP reference data validation", () => {
         (missing) => missing.reason !== undefined && missing.reason.length > 0,
       ),
     ).toBe(true);
+  });
+
+  test("keeps the plugin effectiveness regression contract complete", async () => {
+    const raw = await readFile(join(process.cwd(), "data", "reviews", "plugin-effectiveness-regression.json"), "utf8");
+    const regression = JSON.parse(raw) as {
+      requiredBehaviors?: Array<{ id?: string; enforcedBy?: string[] }>;
+      evaluation?: { runsPerCondition?: number; passCriteria?: { criticalUnsupportedClaims?: number; requiredBehaviorCoverage?: number } };
+    };
+
+    expect(regression.requiredBehaviors?.map((behavior) => behavior.id)).toEqual(expect.arrayContaining([
+      "ability-feasibility",
+      "inventory-opportunity-cost",
+      "no-scene-threshold",
+      "ambiguous-utility",
+      "doc-conditions",
+      "audio-conditional",
+      "preserve-valid-causal-findings"
+    ]));
+    expect(regression.requiredBehaviors?.every((behavior) => (behavior.enforcedBy?.length ?? 0) > 0)).toBe(true);
+    expect(regression.evaluation).toMatchObject({
+      runsPerCondition: 3,
+      passCriteria: { criticalUnsupportedClaims: 0, requiredBehaviorCoverage: 7 }
+    });
   });
 });
 
@@ -643,6 +947,29 @@ describe("MCP server", () => {
     );
     expect(structuredContent.results?.[0]).toHaveProperty("source");
 
+    await server.close();
+  });
+
+  test("exposes validate_review with structured validation output", async () => {
+    const server = createApexReferenceServer(repository);
+    const client = new Client({ name: "test-client", version: "0.2.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    clients.push(client);
+
+    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+    const tools = await client.listTools();
+    expect(tools.tools.map((tool) => tool.name)).toContain("validate_review");
+
+    const result = await client.callTool({
+      name: "validate_review",
+      arguments: {
+        audioCoverage: "none",
+        findings: [makeReviewFinding()]
+      }
+    });
+
+    expect(result.isError).toBeUndefined();
+    expect(result.structuredContent).toMatchObject({ valid: true, errors: [] });
     await server.close();
   });
 
@@ -911,5 +1238,30 @@ function makeTestReference(id: string, name: string) {
     ],
     fieldProvenance: {},
     changeEvents: [],
+  };
+}
+
+function makeReviewFinding(): ReviewFinding {
+  return {
+    id: "finding-1",
+    timestampRange: "01:18-01:21",
+    observations: [{ id: "obs-1", statement: "The teammate is ahead when contact starts." }],
+    inferences: [],
+    actualAction: "The player approaches the building.",
+    actualActionCertainty: "confirmed",
+    evaluation: "The scene supports more than one acceptable continuation.",
+    recommendationMode: "conditional",
+    audioStatus: "not_analyzed",
+    audioDependent: false,
+    options: [{
+      action: "Take a protected trade angle if it remains reachable.",
+      categories: ["positioning"],
+      feasibility: "conditional",
+      verdict: "acceptable",
+      evidenceIds: ["obs-1"],
+      conditions: ["The route remains protected."]
+    }],
+    numericClaims: [{ value: 27, unit: "meters", use: "measurement", evidenceIds: ["obs-1"] }],
+    referenceClaims: []
   };
 }

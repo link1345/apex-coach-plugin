@@ -5,18 +5,21 @@ import { ClipExtractionService } from "./media/clipExtraction.js";
 import { CropRegionService } from "./media/cropRegion.js";
 import { MediaError } from "./media/errors.js";
 import { FrameExtractionService } from "./media/frameExtraction.js";
+import { FfmpegRunner } from "./media/ffmpeg.js";
+import { RuntimeDiagnosticService } from "./media/runtimeDiagnostic.js";
 import { VideoInfoService } from "./media/videoInfo.js";
 
-export function createGameVideoAnalysisServer(): McpServer {
+export function createGameVideoAnalysisServer(runner = new FfmpegRunner()): McpServer {
   const server = new McpServer({
     name: "game-video-analysis-mcp",
-    version: "0.1.0"
+    version: "0.2.0"
   });
-  const videoInfoService = new VideoInfoService();
-  const frameExtractionService = new FrameExtractionService();
-  const clipExtractionService = new ClipExtractionService();
-  const audioExtractionService = new AudioExtractionService();
-  const cropRegionService = new CropRegionService();
+  const videoInfoService = new VideoInfoService(runner);
+  const frameExtractionService = new FrameExtractionService(runner, videoInfoService);
+  const clipExtractionService = new ClipExtractionService(runner, videoInfoService);
+  const audioExtractionService = new AudioExtractionService(runner, videoInfoService);
+  const cropRegionService = new CropRegionService(runner, videoInfoService);
+  const runtimeDiagnosticService = new RuntimeDiagnosticService(runner);
 
   server.registerResource(
     "server-capabilities",
@@ -42,7 +45,7 @@ export function createGameVideoAnalysisServer(): McpServer {
                 managedTemporaryFiles: true,
                 videoInfo: true
               },
-              tools: ["get_video_info", "get_frame", "get_frames", "get_clip", "get_audio", "crop_region"],
+              tools: ["check_runtime", "get_video_info", "get_frame", "get_frames", "get_clip", "get_audio", "crop_region"],
               excluded: ["apex_specific_analysis", "ocr", "audio_event_classification", "coaching"]
             },
             null,
@@ -51,6 +54,25 @@ export function createGameVideoAnalysisServer(): McpServer {
         }
       ]
     })
+  );
+
+  server.registerTool(
+    "check_runtime",
+    {
+      title: "Check video analysis runtime",
+      description: "Check whether ffmpeg and ffprobe are usable by this MCP process before analyzing a video.",
+      inputSchema: {},
+      outputSchema: {
+        ready: z.boolean(),
+        ffmpeg: runtimeBinaryDiagnosticSchema(),
+        ffprobe: runtimeBinaryDiagnosticSchema(),
+        audioExtractionAvailable: z.boolean(),
+        videoExtractionAvailable: z.boolean(),
+        remediation: z.array(z.string()),
+        restartRequiredAfterEnvironmentChange: z.boolean()
+      }
+    },
+    async () => toToolResponse(() => runtimeDiagnosticService.checkRuntime())
   );
 
   server.registerTool(
@@ -332,6 +354,19 @@ function cropRegionSchema() {
     y: z.number(),
     width: z.number(),
     height: z.number()
+  });
+}
+
+function runtimeBinaryDiagnosticSchema() {
+  return z.object({
+    ready: z.boolean(),
+    path: z.string().optional(),
+    version: z.string().optional(),
+    configuredBy: z.enum(["environment", "path"]),
+    error: z.object({
+      code: z.string(),
+      message: z.string()
+    }).optional()
   });
 }
 
