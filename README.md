@@ -34,6 +34,19 @@ ffprobe -version
 
 ### 2. Marketplaceを追加する
 
+#### AIエージェントに任せる
+
+Codexで新しいタスクを作成し、次のようにリポジトリを指定して依頼します。
+
+```text
+https://github.com/link1345/apex-coach-plugin
+このリポジトリのCodexプラグインをインストールしてください。
+```
+
+AIエージェントがリポジトリ内のREADMEとMarketplace定義を確認し、Marketplaceの登録と登録結果の確認を進めます。環境の権限設定によっては、コマンドの実行前に承認を求められる場合があります。セットアップ完了後は「3. Codexアプリでインストールする」へ進んでください。
+
+#### コマンドで追加する
+
 Codexアプリの統合ターミナル、またはPowerShellで次のコマンドを実行します。
 
 ```powershell
@@ -41,12 +54,6 @@ codex plugin marketplace add https://github.com/link1345/apex-coach-plugin.git -
 ```
 
 このコマンドは`.agents/plugins/marketplace.json`だけをMarketplace情報として取得します。そこから、リポジトリ直下の`apex-coach-plugin`をインストール対象として読み込みます。
-
-リポジトリが非公開の場合は、あらかじめGitがアクセス権のあるGitHubアカウントで認証済みである必要があります。GitHub CLIを使用する場合は、次のコマンドで認証できます。
-
-```powershell
-gh auth login
-```
 
 登録結果は次のコマンドで確認できます。
 
@@ -71,7 +78,6 @@ codex plugin marketplace list
 ### トラブルシュート
 
 - Marketplaceが表示されない: `codex plugin marketplace list`で`apex-coach`が登録されていることを確認し、Codexアプリを再起動します。
-- リポジトリを取得できない: GitHubへの認証と、`link1345/apex-coach-plugin`へのアクセス権を確認します。
 - MCPツールが利用できない: `bun`が`PATH`に設定されていることを確認し、新しいタスクを開始します。
 - 動画解析で`binary_not_found`が表示される: `ffmpeg`と`ffprobe`を`PATH`へ追加するか、`FFMPEG_PATH`と`FFPROBE_PATH`を設定してCodexアプリを再起動します。
 
