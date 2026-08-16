@@ -1,0 +1,21 @@
+{
+  "name": "apex-coach",
+  "interface": {
+    "displayName": "APEX Coach"
+  },
+  "plugins": [
+    {
+      "name": "apex-coach-plugin",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/link1345/apex-coach-plugin.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
