@@ -527,7 +527,8 @@ describe("review validation", () => {
     finding.referenceClaims.push({
       referenceId: "legend.lifeline",
       valueKey: "ability.tactical.effect",
-      claim: "D.O.C. can heal nearby allies."
+      claim: "D.O.C. can heal nearby allies.",
+      expectedValue: { kind: "absolute", value: "heal_nearby_allies" }
     });
 
     const result = await validateReviewDraft({
@@ -550,7 +551,8 @@ describe("review validation", () => {
     finding.recommendationMode = "decisive";
     finding.options = [{
       action: "Use Echo Relocation",
-      category: "ability",
+      categories: ["ability"],
+      abilityName: "Echo Relocation",
       feasibility: "unavailable",
       verdict: "better",
       evidenceIds: ["obs-1"],
@@ -572,7 +574,7 @@ describe("review validation", () => {
     finding.recommendationMode = "decisive";
     finding.options = [{
       action: "Use D.O.C. and heal",
-      category: "recovery",
+      categories: ["recovery"],
       feasibility: "confirmed",
       verdict: "better",
       evidenceIds: ["obs-1"],
@@ -599,7 +601,8 @@ describe("review validation", () => {
     finding.referenceClaims.push({
       referenceId: "legend.lifeline",
       valueKey: "ability.tactical.restoresShields",
-      claim: "D.O.C. restores shields."
+      claim: "D.O.C. restores shields.",
+      expectedValue: { kind: "absolute", value: true }
     });
 
     const result = await validateReviewDraft({
@@ -616,7 +619,8 @@ describe("review validation", () => {
     finding.referenceClaims.push({
       referenceId: "legend.lifeline",
       valueKey: "ability.tactical.shieldRestoration",
-      claim: "D.O.C. restores shields."
+      claim: "D.O.C. restores shields.",
+      expectedValue: { kind: "absolute", value: true }
     });
 
     const result = await validateReviewDraft({
@@ -669,7 +673,7 @@ describe("review validation", () => {
     finding.recommendationMode = "decisive";
     finding.options = [{
       action: "Take the trade angle if the route remains protected.",
-      category: "positioning",
+      categories: ["positioning"],
       feasibility: "conditional",
       verdict: "better",
       evidenceIds: ["obs-1"],
@@ -687,7 +691,7 @@ describe("review validation", () => {
     finding.recommendationMode = "decisive";
     finding.options = [{
       action: "Push the route.",
-      category: "positioning",
+      categories: ["positioning"],
       feasibility: "confirmed",
       verdict: "better",
       evidenceIds: [],
@@ -705,7 +709,8 @@ describe("review validation", () => {
     finding.referenceClaims.push({
       referenceId: "legend.vantage",
       valueKey: "ability.tactical.cooldown",
-      claim: "Echo Relocation has a 17-second cooldown."
+      claim: "Echo Relocation has a 17-second cooldown.",
+      expectedValue: { kind: "absolute", value: 17, unit: "seconds" }
     });
 
     const missingContext = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
@@ -724,6 +729,75 @@ describe("review validation", () => {
       findings: [finding]
     }, repository);
     expect(current.valid).toBe(true);
+  });
+
+  test("cross-checks typed ability availability evidence", async () => {
+    const finding = makeReviewFinding();
+    finding.observations[0]!.abilityAvailability = [{
+      ability: "Echo Relocation",
+      status: "unavailable",
+      source: "hud"
+    }];
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Use Echo Relocation.",
+      categories: ["ability"],
+      abilityName: "Echo Relocation",
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: []
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("ability_availability_conflict");
+  });
+
+  test("checks structured expected values for reference claims", async () => {
+    const finding = makeReviewFinding();
+    finding.referenceClaims.push({
+      referenceId: "legend.vantage",
+      valueKey: "ability.tactical.effect",
+      claim: "Echo restores shields.",
+      expectedValue: { kind: "absolute", value: "restore_shields" }
+    });
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-08-16T00:00:00.000Z" },
+      findings: [finding]
+    }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_reference_claim");
+  });
+
+  test("rejects duplicate observation ids", async () => {
+    const finding = makeReviewFinding();
+    finding.observations.push({ id: "obs-1", statement: "The HUD shows the ability on cooldown." });
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("duplicate_observation_id");
+  });
+
+  test("applies recovery gates to options that are both abilities and recovery", async () => {
+    const finding = makeReviewFinding();
+    finding.observations[0]!.abilityAvailability = [{
+      ability: "D.O.C. Heal Drone",
+      status: "available",
+      source: "hud"
+    }];
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Deploy D.O.C. and heal.",
+      categories: ["ability", "recovery"],
+      abilityName: "D.O.C. Heal Drone",
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: []
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("missing_recovery_context");
   });
 });
 
@@ -1181,7 +1255,7 @@ function makeReviewFinding(): ReviewFinding {
     audioDependent: false,
     options: [{
       action: "Take a protected trade angle if it remains reachable.",
-      category: "positioning",
+      categories: ["positioning"],
       feasibility: "conditional",
       verdict: "acceptable",
       evidenceIds: ["obs-1"],

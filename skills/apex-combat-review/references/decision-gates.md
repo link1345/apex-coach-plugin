@@ -7,7 +7,7 @@ Use this worksheet before rating any alternative.
 For each option record:
 
 - action;
-- category: ability, recovery, positioning, weapon, utility, or other;
+- all applicable categories: ability, recovery, positioning, weapon, utility, or other (for example, D.O.C. healing is both `ability` and `recovery`);
 - feasibility: confirmed, conditional, unavailable, or unknown;
 - evidence ids;
 - conditions;

@@ -135,13 +135,13 @@ Successful responses include `found: true`, `resolvedBy`, and `history` with the
 
 Validates a structured combat-review draft before prose generation. It checks:
 
-- option feasibility and evidence ids;
+- unique observation ids, typed ability-availability cues, option feasibility, and evidence ids;
 - empty evidence lists and unavailable, unknown, or conditional abilities recommended too decisively;
 - scene measurements incorrectly promoted to numeric thresholds that do not exactly match a numeric reference value and unit;
 - decisive comparisons against ambiguous actions;
 - decisive audio-dependent recommendations when audio was not analyzed;
-- recovery recommendations that do not distinguish health, shield, deployment, reachability, and completion window;
-- reference claims whose exact `referenceId` and `valueKey` are absent or explicitly unknown;
+- recovery recommendations, including recovery abilities with multiple applicable categories, that do not distinguish health, shield, deployment, reachability, and completion window;
+- reference claims whose exact `referenceId`, `valueKey`, and structured expected value do not match the resolved value, or whose value is absent or explicitly unknown;
 - reference-backed claims that omit the reviewed patch or ISO timestamp in `referenceContext`.
 
 The result contains `valid`, separate `errors` and `warnings`, and the exact reference values resolved for supported claims. Clients should fix every error before publishing the review.

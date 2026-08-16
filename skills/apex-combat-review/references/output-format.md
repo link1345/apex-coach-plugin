@@ -8,15 +8,15 @@ Required fields include:
 
 - reference patch or timestamp context when any reference-backed claim is used;
 - timestamp range;
-- observations with unique ids;
+- observations with unique ids and typed ability availability cues when an ability is evaluated;
 - inferences and cue evidence ids;
 - actual action and certainty;
 - evaluation;
 - recommendation mode;
 - audio status and dependency;
-- options with feasibility and verdict;
+- options with every applicable category, ability name when relevant, feasibility, and verdict;
 - numeric claims as measurement or threshold;
-- exact reference claims;
+- exact reference claims with the expected structured reference value;
 - recovery context when recovery is recommended.
 
 Run `validate_review`. Repair every error before prose generation.

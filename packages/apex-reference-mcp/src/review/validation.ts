@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from "node:util";
 import type { Reference } from "../reference/schema.js";
 import { ReferenceRepository } from "../reference/repository.js";
 
@@ -11,7 +12,8 @@ export type ReviewValidationIssue = {
 
 export type ReviewOption = {
   action: string;
-  category: "ability" | "recovery" | "positioning" | "weapon" | "utility" | "other";
+  categories: Array<"ability" | "recovery" | "positioning" | "weapon" | "utility" | "other">;
+  abilityName?: string;
   feasibility: "confirmed" | "conditional" | "unavailable" | "unknown";
   verdict: "better" | "acceptable" | "not_recommended" | "unrated";
   evidenceIds: string[];
@@ -21,7 +23,15 @@ export type ReviewOption = {
 export type ReviewFinding = {
   id: string;
   timestampRange: string;
-  observations: Array<{ id: string; statement: string }>;
+  observations: Array<{
+    id: string;
+    statement: string;
+    abilityAvailability?: Array<{
+      ability: string;
+      status: "available" | "unavailable" | "unknown";
+      source: "hud" | "prior_use" | "other";
+    }>;
+  }>;
   inferences: Array<{ statement: string; cueEvidenceIds: string[] }>;
   actualAction: string;
   actualActionCertainty: "confirmed" | "ambiguous" | "unknown";
@@ -42,6 +52,7 @@ export type ReviewFinding = {
     referenceId: string;
     valueKey: string;
     claim: string;
+    expectedValue: unknown;
   }>;
   recoveryContext?: {
     resourceTypes: Array<"health" | "shield">;
@@ -83,7 +94,21 @@ export async function validateReviewDraft(
   const checkedReferenceClaims: ReviewValidationResult["checkedReferenceClaims"] = [];
 
   for (const finding of draft.findings) {
+    const duplicateObservationIds = finding.observations
+      .map((observation) => observation.id)
+      .filter((id, index, ids) => ids.indexOf(id) !== index)
+      .filter((id, index, ids) => ids.indexOf(id) === index);
+    for (const duplicateId of duplicateObservationIds) {
+      issues.push(issue(
+        "duplicate_observation_id",
+        "error",
+        finding.id,
+        `findings.${finding.id}.observations`,
+        `Observation id ${duplicateId} must be unique within a finding.`
+      ));
+    }
     const evidenceIds = new Set(finding.observations.map((observation) => observation.id));
+    const observationsById = new Map(finding.observations.map((observation) => [observation.id, observation]));
     const decisiveOptions = finding.options.filter((option) => option.verdict === "better");
     const referenceSelector = {
       ...(draft.referenceContext?.patch ? { patch: draft.referenceContext.patch } : {}),
@@ -122,8 +147,23 @@ export async function validateReviewDraft(
       if (option.verdict === "better" && option.feasibility === "conditional" && finding.recommendationMode === "decisive") {
         issues.push(issue("conditional_option_recommended_decisively", "error", finding.id, path, "A conditional option rated better requires conditional recommendation mode."));
       }
-      if (option.category === "ability" && option.verdict === "better" && option.evidenceIds.length === 0) {
-        issues.push(issue("ability_without_availability_evidence", "error", finding.id, path, "A recommended ability requires HUD, prior-use, or availability evidence."));
+      if (option.categories.includes("ability") && option.verdict === "better") {
+        const abilityName = option.abilityName?.trim();
+        if (!abilityName) {
+          issues.push(issue("ability_without_availability_evidence", "error", finding.id, path, "A recommended ability must identify abilityName and cite typed availability evidence."));
+        } else {
+          const availability = option.evidenceIds.flatMap((evidenceId) =>
+            observationsById.get(evidenceId)?.abilityAvailability ?? []
+          ).filter((cue) => normalizeAbilityName(cue.ability) === normalizeAbilityName(abilityName));
+          if (availability.length === 0) {
+            issues.push(issue("ability_without_availability_evidence", "error", finding.id, path, `No typed availability evidence was cited for ${abilityName}.`));
+          } else if (
+            availability.some((cue) => cue.status === "unavailable")
+            || (option.feasibility === "confirmed" && !availability.some((cue) => cue.status === "available"))
+          ) {
+            issues.push(issue("ability_availability_conflict", "error", finding.id, path, `The typed availability evidence does not support ${abilityName} as confirmed available.`));
+          }
+        }
       }
     }
 
@@ -200,7 +240,7 @@ export async function validateReviewDraft(
       }
     }
 
-    const recoveryRecommended = decisiveOptions.some((option) => option.category === "recovery");
+    const recoveryRecommended = decisiveOptions.some((option) => option.categories.includes("recovery"));
     if (recoveryRecommended) {
       const context = finding.recoveryContext;
       if (!context || context.resourceTypes.length === 0) {
@@ -246,6 +286,14 @@ export async function validateReviewDraft(
           `findings.${finding.id}.referenceClaims`,
           `Reference ${referenceClaim.referenceId} marks values.${referenceClaim.valueKey} as unknown: ${value.reason}`
         ));
+      } else if (!isDeepStrictEqual(value, referenceClaim.expectedValue)) {
+        issues.push(issue(
+          "unsupported_reference_claim",
+          "error",
+          finding.id,
+          `findings.${finding.id}.referenceClaims`,
+          `Claimed value for ${referenceClaim.referenceId} values.${referenceClaim.valueKey} does not match the resolved reference value.`
+        ));
       }
     }
 
@@ -278,6 +326,10 @@ function addMissingEvidenceIssues(
 
 function normalizeUnit(unit: string | undefined): string | undefined {
   return unit?.trim().toLowerCase();
+}
+
+function normalizeAbilityName(value: string): string {
+  return value.normalize("NFKC").trim().toLowerCase();
 }
 
 function issue(

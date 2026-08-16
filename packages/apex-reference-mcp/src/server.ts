@@ -204,7 +204,15 @@ function reviewFindingSchema() {
   return z.object({
     id: z.string().min(1),
     timestampRange: z.string().min(1),
-    observations: z.array(z.object({ id: z.string().min(1), statement: z.string().min(1) })),
+    observations: z.array(z.object({
+      id: z.string().min(1),
+      statement: z.string().min(1),
+      abilityAvailability: z.array(z.object({
+        ability: z.string().min(1),
+        status: z.enum(["available", "unavailable", "unknown"]),
+        source: z.enum(["hud", "prior_use", "other"])
+      })).optional()
+    })),
     inferences: z.array(z.object({ statement: z.string().min(1), cueEvidenceIds: z.array(z.string().min(1)) })),
     actualAction: z.string().min(1),
     actualActionCertainty: z.enum(["confirmed", "ambiguous", "unknown"]),
@@ -214,7 +222,8 @@ function reviewFindingSchema() {
     audioDependent: z.boolean(),
     options: z.array(z.object({
       action: z.string().min(1),
-      category: z.enum(["ability", "recovery", "positioning", "weapon", "utility", "other"]),
+      categories: z.array(z.enum(["ability", "recovery", "positioning", "weapon", "utility", "other"])).min(1),
+      abilityName: z.string().min(1).optional(),
       feasibility,
       verdict: z.enum(["better", "acceptable", "not_recommended", "unrated"]),
       evidenceIds: z.array(z.string().min(1)),
@@ -231,7 +240,8 @@ function reviewFindingSchema() {
     referenceClaims: z.array(z.object({
       referenceId: z.string().min(1),
       valueKey: z.string().min(1),
-      claim: z.string().min(1)
+      claim: z.string().min(1),
+      expectedValue: z.unknown()
     })),
     recoveryContext: z.object({
       resourceTypes: z.array(z.enum(["health", "shield"])),
