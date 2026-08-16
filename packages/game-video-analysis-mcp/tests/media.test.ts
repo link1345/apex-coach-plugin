@@ -179,7 +179,7 @@ describe("video info service", () => {
 
       await expect(service.getVideoInfo(videoPath)).rejects.toBeInstanceOf(MediaError);
       await expect(service.getVideoInfo(videoPath)).rejects.toMatchObject({
-        code: "process_failed"
+        code: "unsupported_input"
       });
     });
   });
