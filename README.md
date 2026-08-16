@@ -16,6 +16,74 @@ APEX Legendsのゲームプレイ動画を、観察可能な情報とAPEX固有�
 
 `ffmpeg`と`ffprobe`は`PATH`に追加するか、`FFMPEG_PATH`と`FFPROBE_PATH`で指定できます。
 
+## Codexアプリへのインストール
+
+このリポジトリには、Codex CLIから追加できるMarketplace定義が含まれています。
+
+### 1. 必要なコマンドを確認する
+
+PowerShellで次のコマンドを実行します。
+
+```powershell
+bun --version
+ffmpeg -version
+ffprobe -version
+```
+
+`bun`は必須です。`ffmpeg`と`ffprobe`は動画解析機能を使用する場合のみ必要です。
+
+### 2. Marketplaceを追加する
+
+#### AIエージェントに任せる
+
+Codexで新しいタスクを作成し、次のようにリポジトリを指定して依頼します。
+
+```text
+https://github.com/link1345/apex-coach-plugin
+このリポジトリのCodexプラグインをインストールしてください。
+```
+
+AIエージェントがリポジトリ内のREADMEとMarketplace定義を確認し、Marketplaceの登録と登録結果の確認を進めます。環境の権限設定によっては、コマンドの実行前に承認を求められる場合があります。セットアップ完了後は「使い方」を参照してください。
+
+#### コマンドで追加する
+
+Codexアプリの統合ターミナル、またはPowerShellで次のコマンドを実行します。
+
+```powershell
+codex plugin marketplace add https://github.com/link1345/apex-coach-plugin.git --sparse .agents/plugins
+```
+
+このコマンドは`.agents/plugins/marketplace.json`だけをMarketplace情報として取得します。そこから、リポジトリ直下の`apex-coach-plugin`をインストール対象として読み込みます。
+
+登録結果は次のコマンドで確認できます。
+
+```powershell
+codex plugin marketplace list
+```
+
+### トラブルシュート
+
+- Marketplaceが表示されない: `codex plugin marketplace list`で`apex-coach`が登録されていることを確認し、Codexアプリを再起動します。
+- MCPツールが利用できない: `bun`が`PATH`に設定されていることを確認し、新しいタスクを開始します。
+- 動画解析で`binary_not_found`が表示される: `ffmpeg`と`ffprobe`を`PATH`へ追加するか、`FFMPEG_PATH`と`FFPROBE_PATH`を設定してCodexアプリを再起動します。
+
+Marketplaceの更新を取得する場合は、次のコマンドを実行します。
+
+```powershell
+codex plugin marketplace upgrade apex-coach
+```
+
+詳しいプラグイン開発・導入方法は、[OpenAI公式のPackage your plugin](https://developers.openai.com/plugins/build/plugins)を参照してください。
+
+## 使い方
+
+新しいタスクで、例えば次のように依頼できます。
+
+```text
+@apex-coach-plugin
+このAPEX戦闘動画を分析して、優先度順に改善点を教えてください。
+```
+
 ## Development
 
 ```sh
@@ -28,6 +96,7 @@ bun run check
 ## Plugin structure
 
 ```text
+.agents/plugins/marketplace.json  Git配布用Marketplace定義
 .codex-plugin/plugin.json     Codexプラグインマニフェスト
 .mcp.json                     2つのMCPサーバーの起動設定
 skills/apex-combat-review/    コーチングSkill
