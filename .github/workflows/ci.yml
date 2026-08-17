@@ -10,11 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: "1.3.14"
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: bun install --frozen-lockfile
+      - name: Reject changed plugin content without a version bump
+        env:
+          VERSION_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: bun run version:check --base "$VERSION_BASE_SHA"
       - run: bun run check
       - name: Verify committed bundles are current
-        run: git diff --exit-code -- dist
+        run: git diff --exit-code -- dist .codex-plugin/build.json

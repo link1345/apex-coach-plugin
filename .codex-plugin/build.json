@@ -1,0 +1,15 @@
+{
+  "pluginVersion": "0.2.1",
+  "contentHash": "sha256:1edc66c1ac9ecda6b485370cc114ed3566d420f4cee1c61ab8eb6356e84c4a95",
+  "skillRevision": "sha256:a1915d524c2f8a00fd8c4cde2693691bf56b6e42a29e017644371cf601621f14",
+  "mcpServers": {
+    "apex-reference": {
+      "version": "0.2.1",
+      "revision": "sha256:101211c08e126b24e38548821ff7485fde5f3c582dbf380a1a3379705c24a275"
+    },
+    "game-video-analysis": {
+      "version": "0.2.1",
+      "revision": "sha256:1b8a9021ec7aea50869c39a9bcdf8783ab4366d118a0f90b673ae0c1ca53bc59"
+    }
+  }
+}

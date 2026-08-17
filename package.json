@@ -1,6 +1,6 @@
 {
   "name": "apex-coach-plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -8,12 +8,13 @@
   ],
   "scripts": {
     "build": "bun run scripts/build.ts",
+    "version:check": "bun run scripts/check-plugin-version.ts",
     "test": "bun run --cwd packages/apex-reference-mcp test && bun run --cwd packages/game-video-analysis-mcp test",
     "typecheck": "bun run --cwd packages/apex-reference-mcp typecheck && bun run --cwd packages/game-video-analysis-mcp typecheck",
     "references:validate": "bun run --cwd packages/apex-reference-mcp references:validate",
     "plugin:smoke": "bun run scripts/plugin-smoke.ts",
     "mcp:smoke": "bun run scripts/mcp-smoke.ts",
-    "check": "bun run typecheck && bun run test && bun run references:validate && bun run build && bun run plugin:smoke && bun run mcp:smoke"
+    "check": "bun run version:check && bun run typecheck && bun run test && bun run references:validate && bun run build && bun run plugin:smoke && bun run mcp:smoke"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
