@@ -89,7 +89,26 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
           kind: z.enum(["evaluation", "recommendation", "good_decision", "timeline", "summary", "other"]),
           text: z.string().min(1),
           findingIds: z.array(z.string().min(1))
-        })).min(1)
+        })).min(1),
+        terminalState: z.object({
+          squadOutcome: z.enum(["alive", "eliminated", "unknown"]),
+          reviveOutcome: z.enum(["completed", "interrupted", "not_attempted", "unknown"]),
+          evidenceIds: z.array(z.string().min(1)).min(1)
+        }).optional(),
+        readerFacingReview: z.object({
+          summary: z.string().min(1),
+          findings: z.array(z.object({ findingId: z.string().min(1), text: z.string().min(1) })),
+          themes: z.array(z.string().min(1)).max(3),
+          claims: z.array(z.object({
+            findingId: z.string().min(1),
+            type: z.enum(["numeric_threshold", "ability_availability", "causal", "absolute_rule"]),
+            statement: z.string().min(1)
+          })),
+          outcome: z.object({
+            squadOutcome: z.enum(["alive", "eliminated", "unknown"]),
+            reviveOutcome: z.enum(["completed", "interrupted", "not_attempted", "unknown"])
+          })
+        }).optional()
       },
       outputSchema: {
         valid: z.boolean(),
@@ -212,16 +231,47 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
 
 function reviewFindingSchema() {
   const feasibility = z.enum(["confirmed", "conditional", "unavailable", "unknown"]);
+  const controlAvailability = z.enum(["available", "limited", "unavailable", "unknown"]);
+  const uiCueType = z.enum(["position", "icon_shape", "numeric_display", "input_prompt", "animation", "target_marker", "observed_effect", "frame_continuity"]);
   return z.object({
     id: z.string().min(1),
     timestampRange: z.string().min(1),
+    decisionType: z.enum(["ability", "inventory", "recovery", "positioning", "weapon", "utility", "other"]),
+    assessment: z.enum(["positive", "negative", "neutral"]),
+    evaluationTarget: z.enum(["purpose", "execution"]),
+    actionPhase: z.enum(["targeting", "committed", "transit", "landing", "neutral"]),
+    controlState: z.object({
+      move: controlAvailability,
+      aim: controlAvailability,
+      fireWeapon: controlAvailability,
+      swapWeapon: controlAvailability,
+      cancel: controlAvailability
+    }),
+    decisionTimeline: z.object({
+      eventVisibleAt: z.number().nonnegative().nullable(),
+      likelyPerceivedAt: z.number().nonnegative().nullable(),
+      controlAvailableAt: z.number().nonnegative().nullable(),
+      decisionCommittedAt: z.number().nonnegative().nullable()
+    }),
     observations: z.array(z.object({
       id: z.string().min(1),
       statement: z.string().min(1),
+      visibleAt: z.number().nonnegative().nullable(),
       abilityAvailability: z.array(z.object({
         ability: z.string().min(1),
         status: z.enum(["available", "unavailable", "unknown"]),
-        source: z.enum(["hud", "prior_use", "other"])
+        source: z.enum(["hud", "prior_use", "other"]),
+        uiIdentificationId: z.string().min(1).optional()
+      })).optional(),
+      uiIdentifications: z.array(z.object({
+        id: z.string().min(1),
+        element: z.string().min(1),
+        selectedCandidate: z.string().min(1).optional(),
+        candidates: z.array(z.object({
+          identity: z.string().min(1),
+          confidence: z.enum(["high", "medium", "low"]),
+          cueTypes: z.array(uiCueType).min(1)
+        })).min(1)
       })).optional()
     })),
     inferences: z.array(z.object({ statement: z.string().min(1), cueEvidenceIds: z.array(z.string().min(1)) })),
@@ -238,7 +288,9 @@ function reviewFindingSchema() {
       feasibility,
       verdict: z.enum(["better", "acceptable", "not_recommended", "unrated"]),
       evidenceIds: z.array(z.string().min(1)),
-      conditions: z.array(z.string().min(1))
+      conditions: z.array(z.string().min(1)),
+      requiresControls: z.array(z.enum(["move", "aim", "fireWeapon", "swapWeapon", "cancel"])),
+      uiIdentificationIds: z.array(z.string().min(1))
     })),
     numericClaims: z.array(z.object({
       value: z.number(),
@@ -273,12 +325,26 @@ function reviewFindingSchema() {
       changeCause: z.enum(["observer", "target", "both", "unknown"]),
       evidenceIds: z.array(z.string().min(1))
     })).optional(),
+    readerClaims: z.array(z.string().min(1)),
     recoveryContext: z.object({
       resourceTypes: z.array(z.enum(["health", "shield"])),
       availability: feasibility,
       deployed: z.enum(["confirmed", "not_required", "unknown"]),
       reachable: z.enum(["confirmed", "not_required", "unknown"]),
       completionWindow: z.enum(["sufficient", "pressured", "unknown"]),
+      evidenceIds: z.array(z.string().min(1))
+    }).optional(),
+    reactionAssessment: z.object({
+      conclusion: z.enum(["delayed", "not_delayed", "unknown"]),
+      evidenceIds: z.array(z.string().min(1))
+    }).optional(),
+    inventoryContext: z.object({
+      movementState: z.enum(["moving", "stopped", "unknown"]),
+      protectedByCover: z.union([z.boolean(), z.literal("unknown")]),
+      enemyPressure: z.enum(["none", "possible", "active", "unknown"]),
+      allyCombatActive: z.union([z.boolean(), z.literal("unknown")]),
+      overlapWithCombatCue: z.union([z.boolean(), z.literal("unknown")]),
+      lostOpportunity: z.string().min(1).nullable(),
       evidenceIds: z.array(z.string().min(1))
     }).optional()
   });

@@ -136,11 +136,17 @@ Successful responses include `found: true`, `resolvedBy`, and `history` with the
 Validates a structured combat-review draft before prose generation. It checks:
 
 - unique observation ids, typed ability-availability cues, option feasibility, and evidence ids;
+- action phase, required controls, and whether firing, swapping, aiming, moving, or cancellation is actually available;
+- HUD identification candidates, confidence, and multiple visual cue types before a UI element supports a decisive claim;
+- event visibility, likely perception, control availability, and decision commitment so later evidence is not applied retroactively;
 - empty evidence lists and unavailable, unknown, or conditional abilities recommended too decisively;
 - scene measurements incorrectly promoted to numeric thresholds that do not exactly match a numeric reference value and unit;
 - decisive comparisons against ambiguous actions;
 - decisive audio-dependent recommendations when audio was not analyzed;
 - recovery recommendations, including recovery abilities with multiple applicable categories, that do not distinguish health, shield, deployment, reachability, and completion window;
+- negative inventory findings without combat overlap or a concrete lost opportunity;
+- terminal squad/revive outcomes and purpose-versus-execution separation;
+- reader-facing numeric thresholds, absolute rules, ability claims, causal claims, or outcomes that are not traceable to validated findings;
 - reference claims whose exact `referenceId`, `valueKey`, and structured expected value do not match the resolved value, or whose value is absent or explicitly unknown;
 - reference-backed claims that omit the reviewed patch or ISO timestamp in `referenceContext`.
 - squad-wide low-durability language that is not supported by separate HUD records for self and both allies;
@@ -148,4 +154,4 @@ Validates a structured combat-review draft before prose generation. It checks:
 - numbers introduced in reader-facing text that are absent from linked timestamps, numeric claims, and validated reference values;
 - reader-facing evaluations, recommendations, praise, timeline statements, or summaries that do not link to a finding.
 
-Pass every reader-facing statement in the required, non-empty `renderedClaims` array before publishing it. The result contains `valid`, separate `errors` and `warnings`, the exact reference values resolved for supported claims, and `reviewCoverage` with validated finding ids, rendered finding ids, and unvalidated claim ids. Clients should fix every error and avoid describing the whole response as validated when the coverage is partial.
+Pass every reader-facing statement in the required, non-empty `renderedClaims` array before publishing it. When `readerFacingReview` is present, its declared claims and outcome are also checked against each finding's `readerClaims` and `terminalState`. The result contains `valid`, separate `errors` and `warnings`, exact resolved reference values, and `reviewCoverage` with validated finding ids, rendered finding ids, and unvalidated claim ids. Clients should fix every error and avoid describing the whole response as validated when coverage is partial.

@@ -8,7 +8,11 @@ Required fields include:
 
 - reference patch or timestamp context when any reference-backed claim is used;
 - timestamp range;
+- decision type, positive/negative/neutral assessment, and whether the finding evaluates purpose or execution;
+- action phase, control availability, and the controls required by each option;
+- event-visible, likely-perceived, control-available, and decision-committed times, using null for unknowns;
 - observations with unique ids and typed ability availability cues when an ability is evaluated;
+- UI identification candidates, confidence, and cue types when a HUD element is used;
 - inferences and cue evidence ids;
 - actual action and certainty;
 - evaluation;
@@ -19,9 +23,14 @@ Required fields include:
 - exact reference claims with the expected structured reference value;
 - member-level `teamStatus` for self and both allies whenever squad durability affects a claim;
 - `distanceObservations` whenever distance change affects movement causality;
+- `readerClaims` for every numeric threshold, absolute rule, ability-availability assertion, or causal claim intended for final prose;
 - recovery context when recovery is recommended.
+- inventory context and concrete opportunity loss for a negative inventory finding;
+- terminal squad/revive state from final-frame evidence;
 
 Draft every reader-facing evaluation, recommendation, good decision, timeline statement, and summary as a `renderedClaims` entry. Give each entry a unique id, kind, exact text, and supporting finding ids. Run `validate_review`, repair every error, and render those validated texts without adding new factual or numeric claims afterward.
+
+Also include `readerFacingReview`, link its declared numeric thresholds, absolute rules, ability assertions, and causal claims to exact `readerClaims`, and validate the complete final outcome text against `terminalState`.
 
 Read `reviewCoverage` literally:
 
@@ -62,3 +71,5 @@ For each theme include:
 - linked finding timestamps.
 
 Do not introduce new claims in the summary.
+
+If a valid purpose and risky execution occur in the same interval, use two findings with the same timestamp and different `evaluationTarget` values. Never summarize an interrupted revive followed by squad elimination as a successful reset.

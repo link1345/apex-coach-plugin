@@ -556,7 +556,9 @@ describe("review validation", () => {
       feasibility: "unavailable",
       verdict: "better",
       evidenceIds: ["obs-1"],
-      conditions: []
+      conditions: [],
+      requiresControls: [],
+      uiIdentificationIds: []
     }];
     finding.numericClaims.push({ value: 25, unit: "meters", use: "threshold", evidenceIds: ["obs-1"] });
 
@@ -578,7 +580,9 @@ describe("review validation", () => {
       feasibility: "confirmed",
       verdict: "better",
       evidenceIds: ["obs-1"],
-      conditions: []
+      conditions: [],
+      requiresControls: [],
+      uiIdentificationIds: []
     }];
     finding.recoveryContext = {
       resourceTypes: ["health"],
@@ -677,7 +681,9 @@ describe("review validation", () => {
       feasibility: "conditional",
       verdict: "better",
       evidenceIds: ["obs-1"],
-      conditions: ["The route remains protected."]
+      conditions: ["The route remains protected."],
+      requiresControls: ["move"],
+      uiIdentificationIds: []
     }];
 
     const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
@@ -695,7 +701,9 @@ describe("review validation", () => {
       feasibility: "confirmed",
       verdict: "better",
       evidenceIds: [],
-      conditions: []
+      conditions: [],
+      requiresControls: ["move"],
+      uiIdentificationIds: []
     }];
     finding.numericClaims = [];
 
@@ -746,7 +754,9 @@ describe("review validation", () => {
       feasibility: "confirmed",
       verdict: "better",
       evidenceIds: ["obs-1"],
-      conditions: []
+      conditions: [],
+      requiresControls: [],
+      uiIdentificationIds: []
     }];
 
     const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
@@ -772,7 +782,7 @@ describe("review validation", () => {
 
   test("rejects duplicate observation ids", async () => {
     const finding = makeReviewFinding();
-    finding.observations.push({ id: "obs-1", statement: "The HUD shows the ability on cooldown." });
+    finding.observations.push({ id: "obs-1", statement: "The HUD shows the ability on cooldown.", visibleAt: 78 });
 
     const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
     expect(result.errors.map((error) => error.code)).toContain("duplicate_observation_id");
@@ -793,7 +803,9 @@ describe("review validation", () => {
       feasibility: "confirmed",
       verdict: "better",
       evidenceIds: ["obs-1"],
-      conditions: []
+      conditions: [],
+      requiresControls: [],
+      uiIdentificationIds: []
     }];
 
     const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
@@ -803,9 +815,9 @@ describe("review validation", () => {
   test("rejects a whole-team low-durability summary when one member is full", async () => {
     const finding = makeReviewFinding();
     finding.observations = [
-      { id: "self-hud", statement: "The player's health and shields are damaged." },
-      { id: "wraith-hud", statement: "Wraith has just been revived and is damaged." },
-      { id: "lifeline-hud", statement: "Lifeline has full health and shields." }
+      { id: "self-hud", statement: "The player's health and shields are damaged.", visibleAt: 107 },
+      { id: "wraith-hud", statement: "Wraith has just been revived and is damaged.", visibleAt: 107 },
+      { id: "lifeline-hud", statement: "Lifeline has full health and shields.", visibleAt: 107 }
     ];
     finding.numericClaims = [{ value: 3, unit: "players", use: "measurement", evidenceIds: ["self-hud", "wraith-hud", "lifeline-hud"] }];
     finding.options[0]!.evidenceIds = ["self-hud"];
@@ -949,6 +961,144 @@ describe("review validation", () => {
       unvalidatedClaims: []
     });
   });
+  test("rejects weapon actions during Vantage transit and excludes later knock evidence", async () => {
+    const finding = makeReviewFinding();
+    finding.decisionType = "ability";
+    finding.actionPhase = "transit";
+    finding.controlState.fireWeapon = "unavailable";
+    finding.controlState.swapWeapon = "unavailable";
+    finding.decisionTimeline = {
+      eventVisibleAt: 78,
+      likelyPerceivedAt: null,
+      controlAvailableAt: null,
+      decisionCommittedAt: 79
+    };
+    finding.observations.push({ id: "ally-knock", statement: "The ally is knocked during transit.", visibleAt: 80 });
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Fire or swap weapons during Echo Relocation transit.",
+      categories: ["weapon"],
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1", "ally-knock"],
+      conditions: [],
+      requiresControls: ["fireWeapon", "swapWeapon"],
+      uiIdentificationIds: []
+    }];
+    finding.reactionAssessment = { conclusion: "delayed", evidenceIds: ["obs-1"] };
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    const codes = result.errors.map((error) => error.code);
+
+    expect(codes).toContain("control_unavailable_option_recommended");
+    expect(codes).toContain("hindsight_evidence_used");
+    expect(codes).toContain("reaction_timing_not_established");
+  });
+
+  test("does not confirm an ambiguous HUD percentage from one visual cue", async () => {
+    const finding = makeReviewFinding();
+    finding.decisionType = "ability";
+    finding.observations[0] = {
+      id: "obs-1",
+      statement: "A percentage is visible on the HUD.",
+      visibleAt: 78,
+      uiIdentifications: [{
+        id: "hud-percent",
+        element: "HUD percentage",
+        selectedCandidate: "tactical cooldown",
+        candidates: [{ identity: "tactical cooldown", confidence: "medium", cueTypes: ["numeric_display"] }]
+      }],
+      abilityAvailability: [{
+        ability: "Echo Relocation",
+        status: "available",
+        source: "hud",
+        uiIdentificationId: "hud-percent"
+      }]
+    };
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("low_confidence_ui_identification");
+
+    finding.observations[0]!.uiIdentifications![0]!.candidates[0] = {
+      identity: "tactical cooldown",
+      confidence: "high",
+      cueTypes: ["numeric_display", "icon_shape"]
+    };
+    const accepted = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(accepted.valid).toBe(true);
+  });
+
+  test("requires combat overlap or concrete opportunity loss for a negative inventory finding", async () => {
+    const finding = makeReviewFinding();
+    finding.decisionType = "inventory";
+    finding.assessment = "negative";
+    finding.inventoryContext = {
+      movementState: "moving",
+      protectedByCover: true,
+      enemyPressure: "none",
+      allyCombatActive: false,
+      overlapWithCombatCue: false,
+      lostOpportunity: null,
+      evidenceIds: ["obs-1"]
+    };
+
+    const rejected = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(rejected.errors.map((error) => error.code)).toContain("inventory_without_opportunity_loss");
+
+    finding.assessment = "neutral";
+    const accepted = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(accepted.valid).toBe(true);
+
+    finding.assessment = "negative";
+    finding.inventoryContext.lostOpportunity = "The inventory stayed open after the combat cue and delayed the weapon-ready response.";
+    const causal = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(causal.valid).toBe(true);
+  });
+
+  test("rejects confirmed actions described as unidentified or only possible", async () => {
+    const finding = makeReviewFinding();
+    finding.actualAction = "The held item is possibly a grenade or an unidentified ability.";
+    finding.actualActionCertainty = "confirmed";
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("confirmed_action_contains_uncertainty");
+  });
+
+  test("validates terminal outcome and rejects numeric rules added only to final prose", async () => {
+    const finding = makeReviewFinding();
+    finding.observations.push({ id: "terminal", statement: "The squad eliminated banner appears after the revive is interrupted.", visibleAt: 90 });
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      terminalState: { squadOutcome: "eliminated", reviveOutcome: "interrupted", evidenceIds: ["terminal"] },
+      readerFacingReview: {
+        summary: "The reset succeeded.",
+        findings: [{ findingId: finding.id, text: "Always draw the weapon within 1 second." }],
+        themes: [],
+        claims: [],
+        outcome: { squadOutcome: "alive", reviveOutcome: "completed" }
+      }
+    }, repository);
+    const codes = result.errors.map((error) => error.code);
+
+    expect(codes).toContain("terminal_state_conflict");
+    expect(codes).toContain("unvalidated_final_numeric_claim");
+    expect(codes).toContain("unvalidated_final_absolute_claim");
+  });
+
+  test("represents a sound revive-cover purpose and risky execution as separate findings", async () => {
+    const purpose = makeReviewFinding();
+    purpose.id = "revive-purpose";
+    purpose.evaluationTarget = "purpose";
+    purpose.assessment = "positive";
+    const execution = makeReviewFinding();
+    execution.id = "revive-execution";
+    execution.evaluationTarget = "execution";
+    execution.assessment = "negative";
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [purpose, execution] }, repository);
+    expect(result.valid).toBe(true);
+  });
 });
 
 describe("MVP reference data validation", () => {
@@ -1010,12 +1160,18 @@ describe("MVP reference data validation", () => {
       "ambiguous-utility",
       "doc-conditions",
       "audio-conditional",
+      "action-phase-controls",
+      "decision-time-hindsight",
+      "ui-identification",
+      "terminal-state",
+      "final-prose-validation",
+      "purpose-execution-split",
       "preserve-valid-causal-findings"
     ]));
     expect(regression.requiredBehaviors?.every((behavior) => (behavior.enforcedBy?.length ?? 0) > 0)).toBe(true);
     expect(regression.evaluation).toMatchObject({
       runsPerCondition: 3,
-      passCriteria: { criticalUnsupportedClaims: 0, requiredBehaviorCoverage: 7 }
+      passCriteria: { criticalUnsupportedClaims: 0, requiredBehaviorCoverage: 13 }
     });
   });
 });
@@ -1418,7 +1574,24 @@ function makeReviewFinding(): ReviewFinding {
   return {
     id: "finding-1",
     timestampRange: "01:18-01:21",
-    observations: [{ id: "obs-1", statement: "The teammate is ahead when contact starts." }],
+    decisionType: "positioning",
+    assessment: "neutral",
+    evaluationTarget: "execution",
+    actionPhase: "neutral",
+    controlState: {
+      move: "available",
+      aim: "available",
+      fireWeapon: "available",
+      swapWeapon: "available",
+      cancel: "available"
+    },
+    decisionTimeline: {
+      eventVisibleAt: 78,
+      likelyPerceivedAt: 78,
+      controlAvailableAt: 78,
+      decisionCommittedAt: null
+    },
+    observations: [{ id: "obs-1", statement: "The teammate is ahead when contact starts.", visibleAt: 78 }],
     inferences: [],
     actualAction: "The player approaches the building.",
     actualActionCertainty: "confirmed",
@@ -1432,9 +1605,12 @@ function makeReviewFinding(): ReviewFinding {
       feasibility: "conditional",
       verdict: "acceptable",
       evidenceIds: ["obs-1"],
-      conditions: ["The route remains protected."]
+      conditions: ["The route remains protected."],
+      requiresControls: ["move"],
+      uiIdentificationIds: []
     }],
     numericClaims: [{ value: 27, unit: "meters", use: "measurement", evidenceIds: ["obs-1"] }],
-    referenceClaims: []
+    referenceClaims: [],
+    readerClaims: []
   };
 }
