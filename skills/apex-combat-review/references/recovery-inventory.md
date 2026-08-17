@@ -44,6 +44,8 @@ Opening inventory is not automatically a mistake. Distinguish:
 
 Do not criticize the number of openings without showing time cost, movement loss, exposure, or a missed combat window.
 
+For every inventory finding record `movementState`, `protectedByCover`, `enemyPressure`, `allyCombatActive`, `overlapWithCombatCue`, and `lostOpportunity`. A negative finding requires either observed overlap with a combat cue or a concrete lost opportunity. Safe movement with the inventory closed before combat is not negative merely because the inventory was opened repeatedly.
+
 ## Reload and weapon swap
 
 Compare current magazine, backup weapon, cover, enemy timing, and ally pressure. Do not declare one weapon universally correct at a range when peek style, swap time, ammo, and cover change the choice.

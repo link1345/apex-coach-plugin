@@ -13,7 +13,7 @@
     {
       "id": "inventory-opportunity-cost",
       "requirement": "Do not penalize inventory opening count alone; require lost movement, exposure, time, or a missed combat window.",
-      "enforcedBy": ["skill-recovery-inventory"]
+      "enforcedBy": ["missing_inventory_context", "inventory_without_opportunity_loss", "skill-recovery-inventory"]
     },
     {
       "id": "no-scene-threshold",
@@ -36,6 +36,36 @@
       "enforcedBy": ["audio_not_analyzed_for_decisive_claim"]
     },
     {
+      "id": "action-phase-controls",
+      "requirement": "Do not recommend firing, weapon swapping, or another required input while that control is unavailable during an ability phase.",
+      "enforcedBy": ["control_unavailable_option_recommended", "unknown_control_option_recommended"]
+    },
+    {
+      "id": "decision-time-hindsight",
+      "requirement": "Do not use events visible after decision commitment or unknown input-availability time as evidence of slow reaction.",
+      "enforcedBy": ["hindsight_evidence_used", "reaction_timing_not_established"]
+    },
+    {
+      "id": "ui-identification",
+      "requirement": "Do not identify tactical cooldown or ultimate progress from a percentage without high confidence and multiple visual cue types.",
+      "enforcedBy": ["low_confidence_ui_identification", "low_confidence_ui_decisive_basis"]
+    },
+    {
+      "id": "terminal-state",
+      "requirement": "Keep interrupted revives and squad elimination consistent between final-frame evidence and the reader-facing outcome.",
+      "enforcedBy": ["terminal_state_conflict"]
+    },
+    {
+      "id": "final-prose-validation",
+      "requirement": "Reject numeric thresholds and absolute claims introduced only in reader-facing prose.",
+      "enforcedBy": ["unvalidated_final_numeric_claim", "unvalidated_final_absolute_claim", "unvalidated_final_claim"]
+    },
+    {
+      "id": "purpose-execution-split",
+      "requirement": "Represent a sound purpose and risky execution as separate findings even when they share a timestamp.",
+      "enforcedBy": ["evaluationTarget", "skill-output-format"]
+    },
+    {
       "id": "preserve-valid-causal-findings",
       "requirement": "Keep evidence-backed findings about the revive-window wide swing, staged retreat, and failure to convert safety into an attempted reset.",
       "enforcedBy": ["skill-combat-decisions", "skill-output-format"]
@@ -45,7 +75,7 @@
     "runsPerCondition": 3,
     "passCriteria": {
       "criticalUnsupportedClaims": 0,
-      "requiredBehaviorCoverage": 7
+      "requiredBehaviorCoverage": 13
     }
   }
 }

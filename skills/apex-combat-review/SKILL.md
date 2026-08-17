@@ -40,6 +40,8 @@ Assign every practical option one status:
 
 Never recommend an `unavailable` or `unknown` option as the better action. A `conditional` recommendation must state its conditions.
 
+Record `actionPhase` and every `controlState` before rating an option. Each option must list `requiresControls`. During an ability `transit` phase, do not treat unavailable firing, weapon swapping, aiming, movement, or cancellation as player reaction time.
+
 For an ability, check HUD state, prior use, cooldown evidence, placement requirements, route, and exposure. A reference cooldown does not prove that the ability was ready in the clip. Read [decision-gates.md](references/decision-gates.md) for the full option worksheet.
 
 ### Numeric rule gate
@@ -51,6 +53,12 @@ Only state a general numeric threshold when `validate_review` can trace it to a 
 ### Ambiguous-action gate
 
 If an action is only “possibly a grenade or ability,” mark the actual action `ambiguous`. Do not claim another action was better unless the action or its effect is confirmed through impact, damage, displacement, delay, or another cue.
+
+For an ambiguous HUD element, record identification candidates, confidence, and the visual cue types used. A selected HUD identity requires high confidence and at least two distinct cues before it can establish ability availability or support a decisive recommendation. Percentage alone is not enough to distinguish tactical cooldown from ultimate progress.
+
+### Decision-time gate
+
+Record `eventVisibleAt`, `likelyPerceivedAt`, `controlAvailableAt`, and `decisionCommittedAt`; use `null` when a time cannot be established. Evidence that became visible after `decisionCommittedAt` cannot justify criticism of the earlier commit. Do not classify a reaction as delayed unless both perception and required-control availability are established.
 
 ### Recovery gate
 
@@ -93,6 +101,10 @@ Read only the relevant decision guide:
 Rank repeated root causes and fight-losing decisions before aim polish, loot, or inventory details. Do not inflate severity because the player later died.
 
 Include evidence-backed good decisions. Separate a good retreat from a poor choice made after reaching safety; do not score an entire interval as one failure.
+
+Set each finding's `evaluationTarget` to either `purpose` or `execution`. When a sound purpose and risky execution share a timestamp, create separate findings instead of averaging them into one verdict.
+
+Record the terminal squad and revive outcome from the final frames. Pass the reader-facing summary back through `validate_review`; its outcome and numeric claims must match validated findings.
 
 End with at most three improvement themes, each with a future cue and concrete next action.
 
