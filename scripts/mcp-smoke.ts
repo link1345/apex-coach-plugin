@@ -7,7 +7,7 @@ const root = join(import.meta.dir, "..");
 await verifyServer(
   "apex-reference",
   join(root, "dist", "apex-reference", "server.js"),
-  ["search_reference", "get_reference", "get_reference_history", "validate_review"]
+  ["get_plugin_info", "search_reference", "get_reference", "get_reference_history", "validate_review"]
 );
 await verifyServer(
   "game-video-analysis",
@@ -16,7 +16,7 @@ await verifyServer(
 );
 
 async function verifyServer(name: string, entrypoint: string, expectedTools: string[]): Promise<void> {
-  const client = new Client({ name: `${name}-plugin-smoke`, version: "0.2.0" });
+  const client = new Client({ name: `${name}-plugin-smoke`, version: "0.2.1" });
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [entrypoint],
@@ -38,6 +38,21 @@ async function verifyServer(name: string, entrypoint: string, expectedTools: str
         throw new Error("game-video-analysis check_runtime did not return readiness");
       }
       console.log(`${name}: runtime diagnostic available (ready=${ready}).`);
+    }
+    if (name === "apex-reference") {
+      const diagnostic = await client.callTool({ name: "get_plugin_info", arguments: {} });
+      const info = diagnostic.structuredContent as {
+        pluginVersion?: unknown;
+        contentHash?: unknown;
+        cachePath?: unknown;
+      } | undefined;
+      if (info?.pluginVersion !== "0.2.1" ||
+          typeof info.contentHash !== "string" ||
+          !info.contentHash.startsWith("sha256:") ||
+          typeof info.cachePath !== "string") {
+        throw new Error("apex-reference get_plugin_info returned invalid build information");
+      }
+      console.log(`${name}: loaded plugin ${info.pluginVersion} (${info.contentHash}).`);
     }
     console.log(`${name}: ${expectedTools.length} expected tools available.`);
   } finally {

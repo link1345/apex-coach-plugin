@@ -78,6 +78,14 @@ Marketplaceの更新を取得する場合は、次のコマンドを実行しま
 codex plugin marketplace upgrade apex-coach
 ```
 
+続けてプラグインを再インストールし、Codexアプリを再起動します。更新後のSkillとMCPを確実に読み込むため、確認は新しいタスクで行います。
+
+```powershell
+codex plugin add apex-coach-plugin@apex-coach
+```
+
+新しいタスクで`get_plugin_info`を呼び出してください。このリリースではplugin versionが`0.2.1`である必要があります。併せて、bundle content hash、Skill revision、2つのMCP server revision、実際に使用中のcache pathを確認できます。更新不具合の調査ではcontent hashも比較します。旧versionまたは旧hashが読み込まれた場合は、cache directoryを手動削除せず、Marketplaceの更新とplugin addを再実行してCodexを再起動し、別の新しいタスクで確認してください。
+
 詳しいプラグイン開発・導入方法は、[OpenAI公式のPackage your plugin](https://developers.openai.com/plugins/build/plugins)を参照してください。
 
 ## 使い方
@@ -99,6 +107,8 @@ Skillは、観測事実、推論、その時点で実行可能だった選択肢
 bun install --frozen-lockfile
 bun run check
 ```
+
+配布対象のSkill、MCP、参照データ、manifest、Marketplace、runtime、bundleを変更する場合はplugin versionも更新します。CIはbase revisionとの差分を確認し、version据え置きの変更を拒否します。`.codex-plugin/plugin.json`、root package、2つのMCP packageのversionは一致させてください。Marketplace schemaには独立したversion fieldがなく、設定されたsource revisionにあるplugin manifestのversionが使用されます。
 
 `bun run build`は2つのMCPサーバーを依存込みで`dist/`へバンドルします。`dist/`は、プラグイン導入後に追加のパッケージ取得を必要としないよう、リポジトリへコミットします。
 

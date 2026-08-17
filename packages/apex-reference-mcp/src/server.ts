@@ -3,12 +3,39 @@ import * as z from "zod/v4";
 import { ReferenceRepository } from "./reference/repository.js";
 import { ReferenceTypeSchema } from "./reference/schema.js";
 import { validateReviewDraft } from "./review/validation.js";
+import { readPluginBuildInfo } from "./pluginDiagnostic.js";
 
 export function createApexReferenceServer(repository = new ReferenceRepository()): McpServer {
   const server = new McpServer({
     name: "apex-reference-mcp",
-    version: "0.2.0"
+    version: "0.2.1"
   });
+
+  server.registerTool(
+    "get_plugin_info",
+    {
+      title: "Get loaded plugin information",
+      description: "Report the loaded plugin version, content revisions, and cache path for update diagnostics.",
+      outputSchema: {
+        pluginVersion: z.string(),
+        contentHash: z.string(),
+        skillRevision: z.string(),
+        mcpServers: z.object({
+          "apex-reference": z.object({ version: z.string(), revision: z.string() }),
+          "game-video-analysis": z.object({ version: z.string(), revision: z.string() })
+        }),
+        cachePath: z.string()
+      }
+    },
+    async () => {
+      const info = await readPluginBuildInfo();
+      const structuredContent: Record<string, unknown> = { ...info };
+      return {
+        structuredContent,
+        content: [{ type: "text", text: JSON.stringify(info, null, 2) }]
+      };
+    }
+  );
 
   server.registerResource(
     "apex-reference-catalog",

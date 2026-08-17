@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writePluginBuildMetadata } from "./plugin-content.js";
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const distRoot = join(repositoryRoot, "dist");
@@ -22,6 +23,8 @@ await cp(
   join(distRoot, "apex-reference", "data", "references"),
   { recursive: true }
 );
+
+await writePluginBuildMetadata(repositoryRoot);
 
 async function buildServer(entrypoint: string, outdir: string): Promise<void> {
   await mkdir(outdir, { recursive: true });

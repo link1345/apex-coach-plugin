@@ -78,6 +78,14 @@ To retrieve marketplace updates, run:
 codex plugin marketplace upgrade apex-coach
 ```
 
+Then reinstall the plugin entry and restart Codex so a new task loads the updated Skill and MCP bundles:
+
+```powershell
+codex plugin add apex-coach-plugin@apex-coach
+```
+
+In the new task, call `get_plugin_info`. For this release it must report plugin version `0.2.1`; it also reports the bundle content hash, Skill revision, both MCP server revisions, and the cache path actually in use. Compare the content hash when diagnosing an update. If the old version or hash is still loaded, run the marketplace upgrade and plugin add commands again, restart Codex, and verify from another new task instead of deleting cache directories manually.
+
 For more information about plugin packaging and installation, see the [official OpenAI Package your plugin documentation](https://developers.openai.com/plugins/build/plugins).
 
 ## Usage
@@ -99,6 +107,8 @@ The audio MCP extracts audio segments; it is not a classifier that automatically
 bun install --frozen-lockfile
 bun run check
 ```
+
+Changes to distributed Skill, MCP, reference-data, manifest, marketplace, runtime, or bundled files must include a plugin version bump. CI compares those files with the base revision and rejects unchanged versions. Keep `.codex-plugin/plugin.json`, the root package, and both MCP package versions equal; the marketplace schema has no independent version field and resolves the version from the plugin manifest at its configured source revision.
 
 `bun run build` bundles both MCP servers and their dependencies into `dist/`. The `dist/` directory is committed so that installing the plugin does not require downloading additional packages.
 
