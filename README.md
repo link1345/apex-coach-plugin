@@ -84,7 +84,7 @@ Then reinstall the plugin entry and restart Codex so a new task loads the update
 codex plugin add apex-coach-plugin@apex-coach
 ```
 
-In the new task, call `get_plugin_info`. For this release it must report plugin version `0.2.1`; it also reports the bundle content hash, Skill revision, both MCP server revisions, and the cache path actually in use. Compare the content hash when diagnosing an update. If the old version or hash is still loaded, run the marketplace upgrade and plugin add commands again, restart Codex, and verify from another new task instead of deleting cache directories manually.
+In the new task, call `get_plugin_info`. For this release it must report plugin version `0.3.0`; it also reports the bundle content hash, Skill revision, both MCP server revisions, and the cache path actually in use. Compare the content hash when diagnosing an update. If the old version or hash is still loaded, run the marketplace upgrade and plugin add commands again, restart Codex, and verify from another new task instead of deleting cache directories manually.
 
 For more information about plugin packaging and installation, see the [official OpenAI Package your plugin documentation](https://developers.openai.com/plugins/build/plugins).
 

@@ -20,9 +20,39 @@ export type ReviewOption = {
   conditions: string[];
   requiresControls: Array<"move" | "aim" | "fireWeapon" | "swapWeapon" | "cancel">;
   uiIdentificationIds: string[];
+  planContext?: PlanContext;
+  engagementOpportunity?: EngagementOpportunity;
 };
 
 type ControlAvailability = "available" | "limited" | "unavailable" | "unknown";
+type ActionPhase = "setup" | "targeting" | "committed" | "transit" | "landing" | "neutral";
+export type PlanContext = {
+  observedPurpose: string;
+  purposeCertainty: "high" | "medium" | "low" | "unknown";
+  currentStep: string;
+  requiredPrerequisites: string[];
+  alternativePreservesPlan: boolean | "unknown";
+  alternativeOpportunityCost: string | null;
+  tradeoffComparison: "alternative_higher_value" | "current_plan_higher_value" | "unresolved";
+  evidenceIds: string[];
+};
+export type EngagementOpportunity = {
+  targetVisible: boolean | "unknown";
+  lineOfSight: "confirmed" | "blocked" | "unknown";
+  reachableFiringPosition: "confirmed" | "conditional" | "unknown";
+  allyTradeWindow: "open" | "closed" | "unknown";
+  routeToEffect: "confirmed" | "conditional" | "unknown";
+  evidenceIds: string[];
+};
+export type ActionSegment = {
+  startAt: number;
+  endAt: number;
+  phase: ActionPhase;
+  purpose: string;
+  purposeCertainty: "high" | "medium" | "low" | "unknown";
+  controlState: Record<"move" | "aim" | "fireWeapon" | "swapWeapon" | "cancel", ControlAvailability>;
+  evidenceIds: string[];
+};
 type UiCueType = "position" | "icon_shape" | "numeric_display" | "input_prompt" | "animation" | "target_marker" | "observed_effect" | "frame_continuity";
 type UiIdentification = {
   id: string;
@@ -67,8 +97,9 @@ export type ReviewFinding = {
   decisionType: "ability" | "inventory" | "recovery" | "positioning" | "weapon" | "utility" | "other";
   assessment: "positive" | "negative" | "neutral";
   evaluationTarget: "purpose" | "execution";
-  actionPhase: "targeting" | "committed" | "transit" | "landing" | "neutral";
+  actionPhase: ActionPhase;
   controlState: Record<"move" | "aim" | "fireWeapon" | "swapWeapon" | "cancel", ControlAvailability>;
+  actionSegments: ActionSegment[];
   decisionTimeline: {
     eventVisibleAt: number | null;
     likelyPerceivedAt: number | null;
@@ -230,6 +261,8 @@ export async function validateReviewDraft(
     const hasReferenceDependentClaims = finding.referenceClaims.length > 0
       || finding.numericClaims.some((claim) => claim.use === "threshold" && claim.referenceId && claim.valueKey);
 
+    validateActionSegments(issues, finding, evidenceIds);
+
     if (finding.teamStatus) {
       validateTeamStatus(issues, finding, evidenceIds);
     }
@@ -274,6 +307,10 @@ export async function validateReviewDraft(
         issues.push(issue("conditional_option_recommended_decisively", "error", finding.id, path, "A conditional option rated better requires conditional recommendation mode."));
       }
       if (option.verdict === "better") {
+        validatePlanContext(issues, finding, option, path, evidenceIds);
+        if (option.categories.includes("weapon") || option.requiresControls.includes("fireWeapon")) {
+          validateEngagementOpportunity(issues, finding, option, path, evidenceIds);
+        }
         for (const control of option.requiresControls) {
           const controlAvailability = finding.controlState[control];
           if (controlAvailability === "unavailable") {
@@ -374,6 +411,12 @@ export async function validateReviewDraft(
         issues.push(issue("reaction_timing_not_established", "error", finding.id, `findings.${finding.id}.reactionAssessment`, "Do not classify reaction delay until both likely perception and required-control availability are established."));
       }
     }
+    validateNegativeTimingLanguage(
+      issues,
+      finding,
+      [finding.evaluation, ...finding.readerClaims],
+      `findings.${finding.id}`
+    );
 
     if (finding.inventoryContext) {
       addMissingEvidenceIssues(issues, finding.id, `findings.${finding.id}.inventoryContext`, finding.inventoryContext.evidenceIds, evidenceIds);
@@ -558,6 +601,109 @@ export async function validateReviewDraft(
   };
 }
 
+function validateActionSegments(
+  issues: ReviewValidationIssue[],
+  finding: ReviewFinding,
+  evidenceIds: Set<string>
+): void {
+  if (finding.actionSegments.length === 0) {
+    issues.push(issue("missing_action_segments", "error", finding.id, `findings.${finding.id}.actionSegments`, "Every finding must map its interval to at least one action phase."));
+    return;
+  }
+
+  for (const [index, segment] of finding.actionSegments.entries()) {
+    const path = `findings.${finding.id}.actionSegments.${index}`;
+    addMissingEvidenceIssues(issues, finding.id, path, segment.evidenceIds, evidenceIds);
+    if (segment.endAt <= segment.startAt) {
+      issues.push(issue("invalid_action_segment_range", "error", finding.id, path, "An action segment must end after it starts."));
+    }
+    const previous = finding.actionSegments[index - 1];
+    if (previous && segment.startAt < previous.endAt) {
+      issues.push(issue("overlapping_action_segments", "error", finding.id, path, "Action segments must be ordered and must not overlap."));
+    }
+  }
+
+  const phases = new Set(finding.actionSegments.map((segment) => segment.phase));
+  if (phases.size > 1 && finding.actionPhase === "neutral") {
+    issues.push(issue("multiple_phases_collapsed_to_neutral", "error", finding.id, `findings.${finding.id}.actionPhase`, "A finding that contains multiple observed phases cannot collapse the interval to a single neutral phase."));
+  }
+}
+
+function validatePlanContext(
+  issues: ReviewValidationIssue[],
+  finding: ReviewFinding,
+  option: ReviewOption,
+  path: string,
+  evidenceIds: Set<string>
+): void {
+  const context = option.planContext;
+  if (!context) {
+    issues.push(issue("missing_plan_context", "error", finding.id, `${path}.planContext`, "A better option must record the current purpose, prerequisites, plan preservation, opportunity cost, and tradeoff comparison."));
+    return;
+  }
+  addMissingEvidenceIssues(issues, finding.id, `${path}.planContext`, context.evidenceIds, evidenceIds);
+  if (!context.alternativeOpportunityCost?.trim()) {
+    issues.push(issue("missing_alternative_opportunity_cost", "error", finding.id, `${path}.planContext.alternativeOpportunityCost`, "Evaluate what the alternative delays, abandons, or exposes before rating it better."));
+  }
+  if (context.alternativePreservesPlan === "unknown") {
+    issues.push(issue("plan_preservation_unknown_for_better", "error", finding.id, `${path}.planContext.alternativePreservesPlan`, "An alternative with unknown plan preservation cannot be rated better."));
+  }
+  if (
+    context.alternativePreservesPlan === false
+    && context.tradeoffComparison !== "alternative_higher_value"
+  ) {
+    issues.push(issue("plan_disruption_not_justified", "error", finding.id, `${path}.planContext.tradeoffComparison`, "An alternative that breaks the current plan needs evidence that abandoning the plan has higher value."));
+  }
+  if (
+    context.alternativePreservesPlan === false
+    && context.purposeCertainty === "unknown"
+    && option.feasibility === "confirmed"
+  ) {
+    issues.push(issue("plan_purpose_unknown_for_decisive_tradeoff", "error", finding.id, `${path}.planContext.purposeCertainty`, "Do not make a confirmed plan-breaking comparison when the observed purpose is unknown."));
+  }
+}
+
+function validateEngagementOpportunity(
+  issues: ReviewValidationIssue[],
+  finding: ReviewFinding,
+  option: ReviewOption,
+  path: string,
+  evidenceIds: Set<string>
+): void {
+  const opportunity = option.engagementOpportunity;
+  if (!opportunity) {
+    issues.push(issue("missing_engagement_opportunity", "error", finding.id, `${path}.engagementOpportunity`, "A better weapon or firing option must establish target visibility, line of sight, a reachable firing position, the trade window, and a route to effect."));
+    return;
+  }
+  addMissingEvidenceIssues(issues, finding.id, `${path}.engagementOpportunity`, opportunity.evidenceIds, evidenceIds);
+  const confirmed = opportunity.targetVisible === true
+    && opportunity.lineOfSight === "confirmed"
+    && opportunity.reachableFiringPosition === "confirmed"
+    && opportunity.allyTradeWindow === "open"
+    && opportunity.routeToEffect === "confirmed";
+  if (option.feasibility === "confirmed" && !confirmed) {
+    issues.push(issue("engagement_opportunity_not_established", "error", finding.id, `${path}.engagementOpportunity`, "Confirmed better requires evidence that the weapon option can produce an effect before the trade window closes; otherwise use conditional or unrated."));
+  }
+}
+
+function validateNegativeTimingLanguage(
+  issues: ReviewValidationIssue[],
+  finding: ReviewFinding,
+  texts: string[],
+  path: string
+): void {
+  if (!texts.some(containsNegativeTimingLanguage)) {
+    return;
+  }
+  if (!finding.reactionAssessment) {
+    issues.push(issue("reaction_assessment_required", "error", finding.id, path, "Negative timing or missed-opportunity language requires a reactionAssessment."));
+    return;
+  }
+  if (finding.reactionAssessment.conclusion !== "delayed") {
+    issues.push(issue("reaction_assessment_conflict", "error", finding.id, path, "Negative timing language conflicts with a reaction assessment that does not establish delay."));
+  }
+}
+
 function validateTeamStatus(
   issues: ReviewValidationIssue[],
   finding: ReviewFinding,
@@ -636,6 +782,9 @@ function validateRenderedClaims(
     validateRenderedNumbers(issues, claim, linkedFindings, path);
     validateTeamAggregateLanguage(issues, claim, linkedFindings, path);
     validateDistanceLanguage(issues, claim, linkedFindings, path);
+    for (const finding of linkedFindings) {
+      validateNegativeTimingLanguage(issues, finding, [claim.text], path);
+    }
   }
 }
 
@@ -887,6 +1036,13 @@ function isStrongUiIdentification(candidate: { confidence: "high" | "medium" | "
 
 function containsUncertaintyLanguage(value: string): boolean {
   return /(未同定|可能性|不明|判別でき|unknown|unidentified|possibly|might|may be|could be)/i.test(value);
+}
+
+function containsNegativeTimingLanguage(value: string): boolean {
+  if (/(遅れではない|遅くない|not delayed|was not late)/i.test(value)) {
+    return false;
+  }
+  return /(遅れた|反応が遅|即座に.{0,16}(?:べき|必要)|先に.{0,16}べき|間に合わなかった|早い.{0,24}機会を失|切り替え.{0,12}遅|missed (?:an? )?(?:early )?opportunity|(?:reacted|switched|responded).{0,16}(?:too )?late|reaction was slow|should have (?:immediately|first)|failed to (?:respond|switch) in time)/i.test(value);
 }
 
 function addMissingEvidenceIssues(

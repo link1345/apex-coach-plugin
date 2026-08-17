@@ -84,7 +84,7 @@ codex plugin marketplace upgrade apex-coach
 codex plugin add apex-coach-plugin@apex-coach
 ```
 
-新しいタスクで`get_plugin_info`を呼び出してください。このリリースではplugin versionが`0.2.1`である必要があります。併せて、bundle content hash、Skill revision、2つのMCP server revision、実際に使用中のcache pathを確認できます。更新不具合の調査ではcontent hashも比較します。旧versionまたは旧hashが読み込まれた場合は、cache directoryを手動削除せず、Marketplaceの更新とplugin addを再実行してCodexを再起動し、別の新しいタスクで確認してください。
+新しいタスクで`get_plugin_info`を呼び出してください。このリリースではplugin versionが`0.3.0`である必要があります。併せて、bundle content hash、Skill revision、2つのMCP server revision、実際に使用中のcache pathを確認できます。更新不具合の調査ではcontent hashも比較します。旧versionまたは旧hashが読み込まれた場合は、cache directoryを手動削除せず、Marketplaceの更新とplugin addを再実行してCodexを再起動し、別の新しいタスクで確認してください。
 
 詳しいプラグイン開発・導入方法は、[OpenAI公式のPackage your plugin](https://developers.openai.com/plugins/build/plugins)を参照してください。
 

@@ -8,7 +8,7 @@ import { readPluginBuildInfo } from "./pluginDiagnostic.js";
 export function createApexReferenceServer(repository = new ReferenceRepository()): McpServer {
   const server = new McpServer({
     name: "apex-reference-mcp",
-    version: "0.2.1"
+    version: "0.3.0"
   });
 
   server.registerTool(
@@ -259,6 +259,14 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
 function reviewFindingSchema() {
   const feasibility = z.enum(["confirmed", "conditional", "unavailable", "unknown"]);
   const controlAvailability = z.enum(["available", "limited", "unavailable", "unknown"]);
+  const actionPhase = z.enum(["setup", "targeting", "committed", "transit", "landing", "neutral"]);
+  const controlState = z.object({
+    move: controlAvailability,
+    aim: controlAvailability,
+    fireWeapon: controlAvailability,
+    swapWeapon: controlAvailability,
+    cancel: controlAvailability
+  });
   const uiCueType = z.enum(["position", "icon_shape", "numeric_display", "input_prompt", "animation", "target_marker", "observed_effect", "frame_continuity"]);
   return z.object({
     id: z.string().min(1),
@@ -266,14 +274,17 @@ function reviewFindingSchema() {
     decisionType: z.enum(["ability", "inventory", "recovery", "positioning", "weapon", "utility", "other"]),
     assessment: z.enum(["positive", "negative", "neutral"]),
     evaluationTarget: z.enum(["purpose", "execution"]),
-    actionPhase: z.enum(["targeting", "committed", "transit", "landing", "neutral"]),
-    controlState: z.object({
-      move: controlAvailability,
-      aim: controlAvailability,
-      fireWeapon: controlAvailability,
-      swapWeapon: controlAvailability,
-      cancel: controlAvailability
-    }),
+    actionPhase,
+    controlState,
+    actionSegments: z.array(z.object({
+      startAt: z.number().nonnegative(),
+      endAt: z.number().nonnegative(),
+      phase: actionPhase,
+      purpose: z.string().min(1),
+      purposeCertainty: z.enum(["high", "medium", "low", "unknown"]),
+      controlState,
+      evidenceIds: z.array(z.string().min(1))
+    })).min(1),
     decisionTimeline: z.object({
       eventVisibleAt: z.number().nonnegative().nullable(),
       likelyPerceivedAt: z.number().nonnegative().nullable(),
@@ -317,7 +328,25 @@ function reviewFindingSchema() {
       evidenceIds: z.array(z.string().min(1)),
       conditions: z.array(z.string().min(1)),
       requiresControls: z.array(z.enum(["move", "aim", "fireWeapon", "swapWeapon", "cancel"])),
-      uiIdentificationIds: z.array(z.string().min(1))
+      uiIdentificationIds: z.array(z.string().min(1)),
+      planContext: z.object({
+        observedPurpose: z.string().min(1),
+        purposeCertainty: z.enum(["high", "medium", "low", "unknown"]),
+        currentStep: z.string().min(1),
+        requiredPrerequisites: z.array(z.string().min(1)),
+        alternativePreservesPlan: z.union([z.boolean(), z.literal("unknown")]),
+        alternativeOpportunityCost: z.string().min(1).nullable(),
+        tradeoffComparison: z.enum(["alternative_higher_value", "current_plan_higher_value", "unresolved"]),
+        evidenceIds: z.array(z.string().min(1))
+      }).optional(),
+      engagementOpportunity: z.object({
+        targetVisible: z.union([z.boolean(), z.literal("unknown")]),
+        lineOfSight: z.enum(["confirmed", "blocked", "unknown"]),
+        reachableFiringPosition: z.enum(["confirmed", "conditional", "unknown"]),
+        allyTradeWindow: z.enum(["open", "closed", "unknown"]),
+        routeToEffect: z.enum(["confirmed", "conditional", "unknown"]),
+        evidenceIds: z.array(z.string().min(1))
+      }).optional()
     })),
     numericClaims: z.array(z.object({
       value: z.number(),

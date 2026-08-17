@@ -10,6 +10,9 @@ Required fields include:
 - timestamp range;
 - decision type, positive/negative/neutral assessment, and whether the finding evaluates purpose or execution;
 - action phase, control availability, and the controls required by each option;
+- action segments for setup, targeting, commitment, transit, landing, and neutral portions whenever the interval crosses phases;
+- plan context for each better option, including purpose certainty, prerequisites, plan preservation, opportunity cost, tradeoff comparison, and evidence ids;
+- engagement opportunity for each better weapon or firing option, including visibility, line of sight, reachable firing position, trade window, route to effect, and evidence ids;
 - event-visible, likely-perceived, control-available, and decision-committed times, using null for unknowns;
 - observations with unique ids and typed ability availability cues when an ability is evaluated;
 - UI identification candidates, confidence, and cue types when a HUD element is used;

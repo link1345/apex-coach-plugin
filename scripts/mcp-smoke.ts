@@ -16,7 +16,7 @@ await verifyServer(
 );
 
 async function verifyServer(name: string, entrypoint: string, expectedTools: string[]): Promise<void> {
-  const client = new Client({ name: `${name}-plugin-smoke`, version: "0.2.1" });
+  const client = new Client({ name: `${name}-plugin-smoke`, version: "0.3.0" });
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [entrypoint],
@@ -46,7 +46,7 @@ async function verifyServer(name: string, entrypoint: string, expectedTools: str
         contentHash?: unknown;
         cachePath?: unknown;
       } | undefined;
-      if (info?.pluginVersion !== "0.2.1" ||
+      if (info?.pluginVersion !== "0.3.0" ||
           typeof info.contentHash !== "string" ||
           !info.contentHash.startsWith("sha256:") ||
           typeof info.cachePath !== "string") {
