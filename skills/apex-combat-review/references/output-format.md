@@ -21,12 +21,24 @@ Required fields include:
 - options with every applicable category, ability name when relevant, feasibility, and verdict;
 - numeric claims as measurement or threshold;
 - exact reference claims with the expected structured reference value;
+- member-level `teamStatus` for self and both allies whenever squad durability affects a claim;
+- `distanceObservations` whenever distance change affects movement causality;
 - `readerClaims` for every numeric threshold, absolute rule, ability-availability assertion, or causal claim intended for final prose;
 - recovery context when recovery is recommended.
 - inventory context and concrete opportunity loss for a negative inventory finding;
 - terminal squad/revive state from final-frame evidence;
 
-Run `validate_review`. Repair every error before prose generation. Then include `readerFacingReview`, link its declared claims to exact `readerClaims`, and run it again so final outcome text, ability/causal assertions, absolute rules, and numeric claims cannot exceed the validated findings.
+Draft every reader-facing evaluation, recommendation, good decision, timeline statement, and summary as a `renderedClaims` entry. Give each entry a unique id, kind, exact text, and supporting finding ids. Run `validate_review`, repair every error, and render those validated texts without adding new factual or numeric claims afterward.
+
+Also include `readerFacingReview`, link its declared numeric thresholds, absolute rules, ability assertions, and causal claims to exact `readerClaims`, and validate the complete final outcome text against `terminalState`.
+
+Read `reviewCoverage` literally:
+
+- `validatedFindingIds` are findings without validation errors;
+- `renderedFindingIds` are findings used by reader-facing claims;
+- `unvalidatedClaims` are rendered claim ids that lack validated support.
+
+Only describe the whole review as validated when all rendered finding ids are validated and `unvalidatedClaims` is empty. Otherwise state the validated finding scope and label or remove the remaining observations.
 
 ## Reader-facing review
 
@@ -45,6 +57,8 @@ Use `critical` only for a decision that directly exposes the player to death, lo
 ## Good decisions
 
 Use the same evidence standard for praise. Name the visible action, why it worked from information available then, what to repeat, and confidence. Avoid vague praise.
+
+Good decisions are `renderedClaims` too. A “best decision” or similar evaluation without a linked validated finding is not publishable.
 
 ## Final themes
 

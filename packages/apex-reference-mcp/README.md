@@ -149,5 +149,9 @@ Validates a structured combat-review draft before prose generation. It checks:
 - reader-facing numeric thresholds, absolute rules, ability claims, causal claims, or outcomes that are not traceable to validated findings;
 - reference claims whose exact `referenceId`, `valueKey`, and structured expected value do not match the resolved value, or whose value is absent or explicitly unknown;
 - reference-backed claims that omit the reviewed patch or ISO timestamp in `referenceContext`.
+- squad-wide low-durability language that is not supported by separate HUD records for self and both allies;
+- enemy-approach causality when the evidence establishes only that relative distance changed;
+- numbers introduced in reader-facing text that are absent from linked timestamps, numeric claims, and validated reference values;
+- reader-facing evaluations, recommendations, praise, timeline statements, or summaries that do not link to a finding.
 
-The result contains `valid`, separate `errors` and `warnings`, and the exact reference values resolved for supported claims. Clients should fix every error, generate `readerFacingReview`, and validate that final prose before publishing the review.
+Pass every reader-facing statement in the required, non-empty `renderedClaims` array before publishing it. When `readerFacingReview` is present, its declared claims and outcome are also checked against each finding's `readerClaims` and `terminalState`. The result contains `valid`, separate `errors` and `warnings`, exact resolved reference values, and `reviewCoverage` with validated finding ids, rendered finding ids, and unvalidated claim ids. Clients should fix every error and avoid describing the whole response as validated when coverage is partial.

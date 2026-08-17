@@ -10,7 +10,7 @@ It bundles the following three components into one plugin:
 - `apex-reference`: An MCP server for looking up weapons, legends, items, mechanics, and patch-specific changes
 - `game-video-analysis`: An MCP server for extracting video metadata, frames, short clips, audio, and HUD regions
 
-At the start of a review, the plugin diagnoses the video-analysis runtime and validates structured findings before producing the final response. Validation rejects unavailable abilities, unsupported numeric thresholds, reliance on unreviewed audio, decisive comparisons of ambiguous actions, and overclaims about recovery conditions or reference data.
+At the start of a review, the plugin diagnoses the video-analysis runtime and validates structured findings plus reader-facing claims before producing the final response. Validation rejects unavailable abilities, unsupported numeric thresholds, squad-wide HUD generalizations, unsupported enemy-movement causality, post-validation numbers, reliance on unreviewed audio, decisive comparisons of ambiguous actions, and overclaims about recovery conditions or reference data. Coverage output distinguishes validated findings from supplemental observations.
 
 ## Requirements
 
