@@ -799,6 +799,156 @@ describe("review validation", () => {
     const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
     expect(result.errors.map((error) => error.code)).toContain("missing_recovery_context");
   });
+
+  test("rejects a whole-team low-durability summary when one member is full", async () => {
+    const finding = makeReviewFinding();
+    finding.observations = [
+      { id: "self-hud", statement: "The player's health and shields are damaged." },
+      { id: "wraith-hud", statement: "Wraith has just been revived and is damaged." },
+      { id: "lifeline-hud", statement: "Lifeline has full health and shields." }
+    ];
+    finding.numericClaims = [{ value: 3, unit: "players", use: "measurement", evidenceIds: ["self-hud", "wraith-hud", "lifeline-hud"] }];
+    finding.options[0]!.evidenceIds = ["self-hud"];
+    finding.teamStatus = {
+      members: [
+        { slot: "self", legend: "Vantage", healthState: "damaged", shieldState: "empty", confidence: "high", evidenceIds: ["self-hud"] },
+        { slot: "ally_1", legend: "Wraith", healthState: "damaged", shieldState: "empty", confidence: "high", evidenceIds: ["wraith-hud"] },
+        { slot: "ally_2", legend: "Lifeline", healthState: "full", shieldState: "full", confidence: "high", evidenceIds: ["lifeline-hud"] }
+      ]
+    };
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      renderedClaims: [{ id: "team-summary", kind: "evaluation", text: "低耐久の3人が同じレーンへ集まった。", findingIds: [finding.id] }]
+    }, repository);
+
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_team_aggregate");
+  });
+
+  test("requires all three member HUD states when team status is assessed", async () => {
+    const finding = makeReviewFinding();
+    finding.teamStatus = {
+      members: [
+        { slot: "self", legend: "Vantage", healthState: "damaged", shieldState: "empty", confidence: "high", evidenceIds: ["obs-1"] },
+        { slot: "ally_1", legend: "Wraith", healthState: "damaged", shieldState: "empty", confidence: "medium", evidenceIds: ["obs-1"] }
+      ]
+    };
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("incomplete_team_status");
+  });
+
+  test("does not turn observer movement from 19m to 5m into enemy approach", async () => {
+    const finding = makeReviewFinding();
+    finding.numericClaims = [
+      { value: 19, unit: "meters", use: "measurement", evidenceIds: ["obs-1"] },
+      { value: 5, unit: "meters", use: "measurement", evidenceIds: ["obs-1"] }
+    ];
+    finding.distanceObservations = [{
+      subject: "enemy_marker",
+      startDistance: 19,
+      endDistance: 5,
+      observerMotion: "moving_toward",
+      targetMotion: "unknown",
+      changeCause: "observer",
+      evidenceIds: ["obs-1"]
+    }];
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      renderedClaims: [{ id: "distance-cause", kind: "timeline", text: "敵が19mから5mまで急接近した。", findingIds: [finding.id] }]
+    }, repository);
+
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_target_motion_claim");
+  });
+
+  test("accepts relative-distance wording when movement cause is unknown", async () => {
+    const finding = makeReviewFinding();
+    finding.numericClaims = [
+      { value: 19, unit: "meters", use: "measurement", evidenceIds: ["obs-1"] },
+      { value: 5, unit: "meters", use: "measurement", evidenceIds: ["obs-1"] }
+    ];
+    finding.distanceObservations = [{
+      subject: "enemy_marker",
+      startDistance: 19,
+      endDistance: 5,
+      observerMotion: "moving_toward",
+      targetMotion: "unknown",
+      changeCause: "unknown",
+      evidenceIds: ["obs-1"]
+    }];
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      renderedClaims: [{ id: "relative-distance", kind: "timeline", text: "マーカーとの相対距離が19mから5mへ縮まった。", findingIds: [finding.id] }]
+    }, repository);
+
+    expect(result.valid).toBe(true);
+  });
+
+  test("rejects a new three-second rule added only to reader-facing text", async () => {
+    const finding = makeReviewFinding();
+    finding.numericClaims = [];
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      renderedClaims: [{ id: "new-rule", kind: "recommendation", text: "蘇生完了時に3秒だけ役割を再判定する。", findingIds: [finding.id] }]
+    }, repository);
+
+    expect(result.errors.map((error) => error.code)).toContain("unsupported_rendered_number");
+    expect(result.reviewCoverage).toEqual({
+      validatedFindingIds: [finding.id],
+      renderedFindingIds: [finding.id],
+      unvalidatedClaims: ["new-rule"]
+    });
+  });
+
+  test("reports rendered coverage and rejects claims without finding ids", async () => {
+    const finding = makeReviewFinding();
+    finding.numericClaims = [];
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      renderedClaims: [
+        { id: "evaluated", kind: "evaluation", text: "The protected route remained conditional.", findingIds: [finding.id] },
+        { id: "unvalidated-praise", kind: "good_decision", text: "This was the best decision in the video.", findingIds: [] }
+      ]
+    }, repository);
+
+    expect(result.valid).toBe(false);
+    expect(result.errors.map((error) => error.code)).toContain("unlinked_rendered_claim");
+    expect(result.reviewCoverage).toEqual({
+      validatedFindingIds: [finding.id],
+      renderedFindingIds: [finding.id],
+      unvalidatedClaims: ["unvalidated-praise"]
+    });
+  });
+
+  test("links evaluations, recommendations, and good decisions to validated findings", async () => {
+    const finding = makeReviewFinding();
+    finding.numericClaims = [];
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      findings: [finding],
+      renderedClaims: [
+        { id: "evaluation", kind: "evaluation", text: "The route remained conditional.", findingIds: [finding.id] },
+        { id: "recommendation", kind: "recommendation", text: "Recheck cover before advancing.", findingIds: [finding.id] },
+        { id: "good-decision", kind: "good_decision", text: "Keeping the protected option open was sound.", findingIds: [finding.id] }
+      ]
+    }, repository);
+
+    expect(result.valid).toBe(true);
+    expect(result.reviewCoverage).toEqual({
+      validatedFindingIds: [finding.id],
+      renderedFindingIds: [finding.id],
+      unvalidatedClaims: []
+    });
+  });
 });
 
 describe("MVP reference data validation", () => {
@@ -960,16 +1110,39 @@ describe("MCP server", () => {
     const tools = await client.listTools();
     expect(tools.tools.map((tool) => tool.name)).toContain("validate_review");
 
-    const result = await client.callTool({
+    const missingRenderedClaims = await client.callTool({
       name: "validate_review",
       arguments: {
         audioCoverage: "none",
         findings: [makeReviewFinding()]
       }
     });
+    expect(missingRenderedClaims.isError).toBe(true);
+
+    const result = await client.callTool({
+      name: "validate_review",
+      arguments: {
+        audioCoverage: "none",
+        findings: [makeReviewFinding()],
+        renderedClaims: [{
+          id: "finding-1-evaluation",
+          kind: "evaluation",
+          text: "The protected route remained conditional.",
+          findingIds: ["finding-1"]
+        }]
+      }
+    });
 
     expect(result.isError).toBeUndefined();
-    expect(result.structuredContent).toMatchObject({ valid: true, errors: [] });
+    expect(result.structuredContent).toMatchObject({
+      valid: true,
+      errors: [],
+      reviewCoverage: {
+        validatedFindingIds: ["finding-1"],
+        renderedFindingIds: ["finding-1"],
+        unvalidatedClaims: []
+      }
+    });
     await server.close();
   });
 

@@ -14,8 +14,8 @@ Review the decision from information available at that timestamp. Do not use the
 3. Inspect video metadata, broad phases, and then dense frames or clips around decision points.
 4. Extract audio around a decision when sound could change the recommendation. Record audio coverage as `complete`, `partial`, or `none`.
 5. Use `apex-reference.search_reference` and `get_reference` when an APEX-specific fact affects the judgment. Cite the exact reference id and `values` key used.
-6. Build structured findings and call `apex-reference.validate_review` before writing the final answer. When the draft contains reference-backed claims, pass `referenceContext.patch` or `referenceContext.at` for the reviewed gameplay version; never validate historical footage against an implicit latest value.
-7. Fix every validation error. Report unresolved warnings or evidence gaps as limitations.
+6. Build structured findings and every reader-facing evaluation, recommendation, good decision, timeline statement, and summary as `renderedClaims`, then call `apex-reference.validate_review`. Link each rendered claim to its supporting finding ids. When the draft contains reference-backed claims, pass `referenceContext.patch` or `referenceContext.at` for the reviewed gameplay version; never validate historical footage against an implicit latest value.
+7. Fix every validation error. Render only the validated claims, and report `reviewCoverage` plus unresolved warnings or evidence gaps as limitations.
 
 ## Hard decision gates
 
@@ -46,7 +46,19 @@ For an ability, check HUD state, prior use, cooldown evidence, placement require
 
 Treat a number measured in the clip as a scene fact, not a general threshold. Do not turn “the teammate was 27m away” into “at 25m or more, always do X.” Use travel time, line of sight, route obstruction, ally survival window, and trade timing instead.
 
-Only state a general numeric threshold when `validate_review` can trace it to a reference id and value key.
+Only state a general numeric threshold when `validate_review` can trace it to a reference id and value key. Do not add any number while polishing the final answer; every non-timestamp number in `renderedClaims` must already exist in a linked finding's `numericClaims` or validated reference value.
+
+### Team HUD gate
+
+When a judgment depends on squad durability, record `teamStatus.members` for `self`, `ally_1`, and `ally_2` separately. For each member record legend, health, shields, confidence, and evidence ids. Never project one member's damage state onto the squad.
+
+Use “all,” “all three,” or equivalent whole-team durability language only when every member-level HUD record supports it. If one member is full or unknown, name the members separately or describe the mixed squad state.
+
+### Relative-distance gate
+
+For a changing marker or model distance, record `distanceObservations`: subject, start and end distance, observer motion, target motion, change cause, and evidence ids. A smaller displayed distance establishes only that relative distance shrank.
+
+Say the enemy approached only when continuous model tracking, a stationary observer, movement animation, reviewed audio, or equivalent evidence establishes target motion. When `changeCause` is `unknown`, use “the relative distance shrank” and keep the cause unknown.
 
 ### Ambiguous-action gate
 
@@ -101,7 +113,10 @@ End with at most three improvement themes, each with a future cue and concrete n
 - Do not invent damage, timing, ability, weapon, audio, or patch facts.
 - Do not convert tactical preferences or scene measurements into fixed APEX rules.
 - Do not infer exact enemy identity, count, floor, or distance from ambiguous audio.
+- Do not aggregate squad durability until all three member HUD states are recorded.
+- Do not attribute relative-distance change to enemy movement without target-motion evidence.
 - Do not claim a reference supports a fact unless its exact `values` key does.
 - Do not recommend a mechanically unavailable action.
 - Do not compare an unidentified action decisively with a proposed alternative.
 - Keep unsupported facts `unknown` and lower confidence.
+- Do not call the whole answer validated when `reviewCoverage.renderedFindingIds` exceeds `validatedFindingIds` or `unvalidatedClaims` is non-empty. Say exactly which findings were validated and label remaining prose as unvalidated observation, or remove it.

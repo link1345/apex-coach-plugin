@@ -73,7 +73,7 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
     "validate_review",
     {
       title: "Validate an APEX review draft",
-      description: "Validate structured coaching findings before writing the final review. Rejects unavailable options, unsupported thresholds and references, ambiguous comparisons, and overconfident audio or recovery claims.",
+      description: "Validate structured coaching findings and every reader-facing claim before writing the final review. Rejects unsupported team aggregates, target-motion causality, new numeric rules, unavailable options, unsupported references, ambiguous comparisons, and overconfident audio or recovery claims.",
       inputSchema: {
         audioCoverage: z.enum(["complete", "partial", "none"]),
         referenceContext: z.object({
@@ -83,7 +83,13 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
           (context) => context.patch !== undefined || context.at !== undefined,
           "referenceContext requires patch or at"
         ).optional(),
-        findings: z.array(reviewFindingSchema()).min(1)
+        findings: z.array(reviewFindingSchema()).min(1),
+        renderedClaims: z.array(z.object({
+          id: z.string().min(1),
+          kind: z.enum(["evaluation", "recommendation", "good_decision", "timeline", "summary", "other"]),
+          text: z.string().min(1),
+          findingIds: z.array(z.string().min(1))
+        })).min(1)
       },
       outputSchema: {
         valid: z.boolean(),
@@ -95,7 +101,12 @@ export function createApexReferenceServer(repository = new ReferenceRepository()
           valueKey: z.string(),
           found: z.boolean(),
           value: z.unknown().optional()
-        }))
+        })),
+        reviewCoverage: z.object({
+          validatedFindingIds: z.array(z.string()),
+          renderedFindingIds: z.array(z.string()),
+          unvalidatedClaims: z.array(z.string())
+        })
       }
     },
     async (draft) => {
@@ -243,6 +254,25 @@ function reviewFindingSchema() {
       claim: z.string().min(1),
       expectedValue: z.unknown()
     })),
+    teamStatus: z.object({
+      members: z.array(z.object({
+        slot: z.enum(["self", "ally_1", "ally_2"]),
+        legend: z.string().min(1),
+        healthState: z.enum(["full", "damaged", "downed", "unknown"]),
+        shieldState: z.enum(["full", "damaged", "empty", "unknown"]),
+        confidence: z.enum(["high", "medium", "low"]),
+        evidenceIds: z.array(z.string().min(1))
+      }))
+    }).optional(),
+    distanceObservations: z.array(z.object({
+      subject: z.enum(["enemy_marker", "enemy_model", "ping", "unknown"]),
+      startDistance: z.number().nonnegative(),
+      endDistance: z.number().nonnegative(),
+      observerMotion: z.enum(["stationary", "moving_toward", "moving_away", "unknown"]),
+      targetMotion: z.enum(["stationary", "moving_toward", "moving_away", "unknown"]),
+      changeCause: z.enum(["observer", "target", "both", "unknown"]),
+      evidenceIds: z.array(z.string().min(1))
+    })).optional(),
     recoveryContext: z.object({
       resourceTypes: z.array(z.enum(["health", "shield"])),
       availability: feasibility,
