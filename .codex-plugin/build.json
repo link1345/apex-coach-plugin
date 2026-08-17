@@ -1,15 +1,15 @@
 {
-  "pluginVersion": "0.2.1",
-  "contentHash": "sha256:1edc66c1ac9ecda6b485370cc114ed3566d420f4cee1c61ab8eb6356e84c4a95",
-  "skillRevision": "sha256:a1915d524c2f8a00fd8c4cde2693691bf56b6e42a29e017644371cf601621f14",
+  "pluginVersion": "0.3.0",
+  "contentHash": "sha256:97a79e814c7e00882fdb08d2a868193f6c5e8277cd9dd7bb0a033b37cbc57b3b",
+  "skillRevision": "sha256:7e47f5f440305443e471f47ef76570accf674677a883d5a995458852ceea8c2c",
   "mcpServers": {
     "apex-reference": {
-      "version": "0.2.1",
-      "revision": "sha256:101211c08e126b24e38548821ff7485fde5f3c582dbf380a1a3379705c24a275"
+      "version": "0.3.0",
+      "revision": "sha256:a15695b145c2000686c28c03ad60aa605ec2d46166763b3b409af3004edb0e6f"
     },
     "game-video-analysis": {
-      "version": "0.2.1",
-      "revision": "sha256:1b8a9021ec7aea50869c39a9bcdf8783ab4366d118a0f90b673ae0c1ca53bc59"
+      "version": "0.3.0",
+      "revision": "sha256:21ceead32fc398d3b4a664de4b51b306209807608be58f1e978efd1dda7832b6"
     }
   }
 }

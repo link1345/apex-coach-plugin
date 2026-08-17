@@ -11,8 +11,8 @@ if (manifest.name !== "apex-coach-plugin") {
   throw new Error("plugin manifest name must be apex-coach-plugin");
 }
 
-if (manifest.version !== "0.2.1") {
-  throw new Error("plugin manifest version must be 0.2.1");
+if (manifest.version !== "0.3.0") {
+  throw new Error("plugin manifest version must be 0.3.0");
 }
 
 for (const packagePath of [

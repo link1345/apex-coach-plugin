@@ -709,7 +709,7 @@ describe("review validation", () => {
 
     const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
     expect(result.valid).toBe(false);
-    expect(result.errors.filter((error) => error.code === "missing_evidence")).toHaveLength(2);
+    expect(result.errors.filter((error) => error.code === "missing_evidence")).toHaveLength(3);
   });
 
   test("requires and applies the reviewed patch context for reference claims", async () => {
@@ -995,6 +995,197 @@ describe("review validation", () => {
     expect(codes).toContain("reaction_timing_not_established");
   });
 
+  test("rejects a mechanically available weapon option that breaks Echo setup without an established engagement", async () => {
+    const finding = makeReviewFinding();
+    finding.id = "echo-setup";
+    finding.decisionType = "weapon";
+    finding.assessment = "negative";
+    finding.actionPhase = "setup";
+    finding.actionSegments = [{
+      startAt: 77,
+      endAt: 78.5,
+      phase: "setup",
+      purpose: "Move to the point where Echo Relocation can begin.",
+      purposeCertainty: "high",
+      controlState: { ...finding.controlState },
+      evidenceIds: ["obs-1"]
+    }];
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Draw the weapon and search for a trade angle.",
+      categories: ["weapon", "positioning"],
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: [],
+      requiresControls: ["move", "aim", "swapWeapon"],
+      uiIdentificationIds: [],
+      planContext: {
+        observedPurpose: "Use Echo Relocation to reach the allied building.",
+        purposeCertainty: "high",
+        currentStep: "Move to the activation point.",
+        requiredPrerequisites: ["Reach the activation point."],
+        alternativePreservesPlan: false,
+        alternativeOpportunityCost: "Searching for a firing angle can delay Echo activation.",
+        tradeoffComparison: "unresolved",
+        evidenceIds: ["obs-1"]
+      },
+      engagementOpportunity: {
+        targetVisible: "unknown",
+        lineOfSight: "unknown",
+        reachableFiringPosition: "unknown",
+        allyTradeWindow: "unknown",
+        routeToEffect: "unknown",
+        evidenceIds: ["obs-1"]
+      }
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    const codes = result.errors.map((error) => error.code);
+    expect(codes).toContain("plan_disruption_not_justified");
+    expect(codes).toContain("engagement_opportunity_not_established");
+  });
+
+  test("allows a confirmed weapon alternative after plan tradeoff and firing effect are established", async () => {
+    const finding = makeReviewFinding();
+    finding.decisionType = "weapon";
+    finding.recommendationMode = "decisive";
+    finding.options = [{
+      action: "Fire from the current position before the trade window closes.",
+      categories: ["weapon"],
+      feasibility: "confirmed",
+      verdict: "better",
+      evidenceIds: ["obs-1"],
+      conditions: [],
+      requiresControls: ["aim", "fireWeapon"],
+      uiIdentificationIds: [],
+      planContext: {
+        observedPurpose: "Move toward the allied building.",
+        purposeCertainty: "high",
+        currentStep: "Approach the relocation point.",
+        requiredPrerequisites: ["Reach the relocation point."],
+        alternativePreservesPlan: false,
+        alternativeOpportunityCost: "Firing delays the relocation route.",
+        tradeoffComparison: "alternative_higher_value",
+        evidenceIds: ["obs-1"]
+      },
+      engagementOpportunity: {
+        targetVisible: true,
+        lineOfSight: "confirmed",
+        reachableFiringPosition: "confirmed",
+        allyTradeWindow: "open",
+        routeToEffect: "confirmed",
+        evidenceIds: ["obs-1"]
+      }
+    }];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.valid).toBe(true);
+  });
+
+  test("rejects negative timing prose when perception time is unknown or reactionAssessment is omitted", async () => {
+    const finding = makeReviewFinding();
+    finding.assessment = "negative";
+    finding.decisionTimeline.likelyPerceivedAt = null;
+    finding.evaluation = "The player switched to combat too late.";
+
+    const omitted = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(omitted.errors.map((error) => error.code)).toContain("reaction_assessment_required");
+
+    finding.reactionAssessment = { conclusion: "delayed", evidenceIds: ["obs-1"] };
+    const unknownTime = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(unknownTime.errors.map((error) => error.code)).toContain("reaction_timing_not_established");
+  });
+
+  test("rejects collapsing setup, transit, and landing into one neutral phase", async () => {
+    const finding = makeReviewFinding();
+    finding.actionPhase = "neutral";
+    finding.actionSegments = [
+      { startAt: 77, endAt: 79, phase: "setup", purpose: "Reach the Echo activation point.", purposeCertainty: "high", controlState: { ...finding.controlState }, evidenceIds: ["obs-1"] },
+      { startAt: 79, endAt: 81.5, phase: "transit", purpose: "Travel with Echo Relocation.", purposeCertainty: "high", controlState: { ...finding.controlState, fireWeapon: "unavailable", swapWeapon: "unavailable" }, evidenceIds: ["obs-1"] },
+      { startAt: 81.5, endAt: 82, phase: "landing", purpose: "Finish the relocation.", purposeCertainty: "high", controlState: { ...finding.controlState, fireWeapon: "limited" }, evidenceIds: ["obs-1"] }
+    ];
+
+    const result = await validateReviewDraft({ audioCoverage: "none", findings: [finding] }, repository);
+    expect(result.errors.map((error) => error.code)).toContain("multiple_phases_collapsed_to_neutral");
+  });
+
+  test("validates the issue 12 Echo setup reanalysis without a weapon-delay finding", async () => {
+    const finding = makeReviewFinding();
+    finding.id = "issue-12-echo-route";
+    finding.timestampRange = "01:17-01:22";
+    finding.decisionType = "ability";
+    finding.actionPhase = "setup";
+    finding.assessment = "neutral";
+    finding.observations = [
+      { id: "echo-setup", statement: "The player moves toward the building while Echo is visible ahead.", visibleAt: 77 },
+      { id: "echo-commit", statement: "The Echo Relocation activation animation begins.", visibleAt: 79 },
+      { id: "echo-transit", statement: "The player travels toward the selected destination without a weapon drawn.", visibleAt: 80 },
+      { id: "echo-land", statement: "The player finishes the relocation and draws a weapon.", visibleAt: 82 }
+    ];
+    finding.actionSegments = [
+      { startAt: 77, endAt: 79, phase: "setup", purpose: "Reach the Echo activation point.", purposeCertainty: "high", controlState: { ...finding.controlState }, evidenceIds: ["echo-setup"] },
+      { startAt: 79, endAt: 79.5, phase: "committed", purpose: "Commit Echo Relocation.", purposeCertainty: "high", controlState: { ...finding.controlState, fireWeapon: "unavailable", swapWeapon: "unavailable", cancel: "limited" }, evidenceIds: ["echo-commit"] },
+      { startAt: 79.5, endAt: 81.5, phase: "transit", purpose: "Travel toward the allied building.", purposeCertainty: "high", controlState: { ...finding.controlState, move: "limited", aim: "unavailable", fireWeapon: "unavailable", swapWeapon: "unavailable", cancel: "unavailable" }, evidenceIds: ["echo-transit"] },
+      { startAt: 81.5, endAt: 82, phase: "landing", purpose: "Finish relocation and regain weapon control.", purposeCertainty: "high", controlState: { ...finding.controlState, fireWeapon: "limited", swapWeapon: "limited" }, evidenceIds: ["echo-land"] }
+    ];
+    finding.actualAction = "The player uses the approach as setup for Echo Relocation, completes transit, and draws the weapon after landing.";
+    finding.evaluation = "The setup movement is part of the observed Echo route; the evidence does not establish a superior weapon-first route.";
+    finding.options = [{
+      action: "Draw the weapon first only if an immediate firing route is established.",
+      categories: ["weapon", "positioning"],
+      feasibility: "conditional",
+      verdict: "unrated",
+      evidenceIds: ["echo-setup"],
+      conditions: ["A visible target, line of sight, and a faster route to firing effect are established."],
+      requiresControls: ["aim", "swapWeapon", "fireWeapon"],
+      uiIdentificationIds: [],
+      planContext: {
+        observedPurpose: "Use Echo Relocation to reach the allied building.",
+        purposeCertainty: "high",
+        currentStep: "Reach the Echo activation point.",
+        requiredPrerequisites: ["Continue the approach to the activation point."],
+        alternativePreservesPlan: false,
+        alternativeOpportunityCost: "Weapon preparation or angle search could delay Echo activation.",
+        tradeoffComparison: "unresolved",
+        evidenceIds: ["echo-setup", "echo-commit"]
+      },
+      engagementOpportunity: {
+        targetVisible: "unknown",
+        lineOfSight: "unknown",
+        reachableFiringPosition: "unknown",
+        allyTradeWindow: "unknown",
+        routeToEffect: "unknown",
+        evidenceIds: ["echo-setup"]
+      }
+    }];
+    finding.numericClaims = [];
+    finding.referenceClaims = [{
+      referenceId: "legend.vantage",
+      valueKey: "ability.tactical.effect",
+      claim: "Echo Relocation launches Vantage toward positioned Echo.",
+      expectedValue: { kind: "absolute", value: "launch_toward_positioned_echo" }
+    }];
+    const renderedClaims = [{
+      id: "issue-12-conclusion",
+      kind: "evaluation" as const,
+      text: "Echo setup movement served the observed relocation route; a weapon-first alternative remains conditional because target visibility and a route to effect are unknown.",
+      findingIds: [finding.id]
+    }];
+
+    const result = await validateReviewDraft({
+      audioCoverage: "none",
+      referenceContext: { at: "2026-07-22T08:39:33.000Z" },
+      findings: [finding],
+      renderedClaims
+    }, repository);
+    expect(result.valid).toBe(true);
+    expect(result.reviewCoverage).toMatchObject({
+      validatedFindingIds: [finding.id],
+      unvalidatedClaims: []
+    });
+  });
+
   test("does not confirm an ambiguous HUD percentage from one visual cue", async () => {
     const finding = makeReviewFinding();
     finding.decisionType = "ability";
@@ -1166,12 +1357,16 @@ describe("MVP reference data validation", () => {
       "terminal-state",
       "final-prose-validation",
       "purpose-execution-split",
-      "preserve-valid-causal-findings"
+      "preserve-valid-causal-findings",
+      "plan-purpose-opportunity-cost",
+      "engagement-opportunity",
+      "negative-timing-language",
+      "multi-phase-segmentation"
     ]));
     expect(regression.requiredBehaviors?.every((behavior) => (behavior.enforcedBy?.length ?? 0) > 0)).toBe(true);
     expect(regression.evaluation).toMatchObject({
       runsPerCondition: 3,
-      passCriteria: { criticalUnsupportedClaims: 0, requiredBehaviorCoverage: 13 }
+      passCriteria: { criticalUnsupportedClaims: 0, requiredBehaviorCoverage: 17 }
     });
   });
 });
@@ -1585,6 +1780,21 @@ function makeReviewFinding(): ReviewFinding {
       swapWeapon: "available",
       cancel: "available"
     },
+    actionSegments: [{
+      startAt: 78,
+      endAt: 81,
+      phase: "neutral",
+      purpose: "Approach the building while preserving protected options.",
+      purposeCertainty: "medium",
+      controlState: {
+        move: "available",
+        aim: "available",
+        fireWeapon: "available",
+        swapWeapon: "available",
+        cancel: "available"
+      },
+      evidenceIds: ["obs-1"]
+    }],
     decisionTimeline: {
       eventVisibleAt: 78,
       likelyPerceivedAt: 78,

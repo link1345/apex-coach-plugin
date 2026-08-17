@@ -69,13 +69,33 @@
       "id": "preserve-valid-causal-findings",
       "requirement": "Keep evidence-backed findings about the revive-window wide swing, staged retreat, and failure to convert safety into an attempted reset.",
       "enforcedBy": ["skill-combat-decisions", "skill-output-format"]
+    },
+    {
+      "id": "plan-purpose-opportunity-cost",
+      "requirement": "Do not rate a mechanically available alternative better until current purpose, prerequisites, plan preservation, opportunity cost, and the tradeoff are established.",
+      "enforcedBy": ["missing_plan_context", "missing_alternative_opportunity_cost", "plan_preservation_unknown_for_better", "plan_disruption_not_justified"]
+    },
+    {
+      "id": "engagement-opportunity",
+      "requirement": "Do not rate a weapon or firing alternative confirmed better without target visibility, line of sight, a reachable firing position, an open trade window, and a route to effect.",
+      "enforcedBy": ["missing_engagement_opportunity", "engagement_opportunity_not_established"]
+    },
+    {
+      "id": "negative-timing-language",
+      "requirement": "Do not publish delay or missed-early-opportunity claims without a reaction assessment and established perception and control-availability times.",
+      "enforcedBy": ["reaction_assessment_required", "reaction_assessment_conflict", "reaction_timing_not_established"]
+    },
+    {
+      "id": "multi-phase-segmentation",
+      "requirement": "Split setup, activation, transit, and landing instead of collapsing a multi-phase interval to neutral.",
+      "enforcedBy": ["missing_action_segments", "multiple_phases_collapsed_to_neutral"]
     }
   ],
   "evaluation": {
     "runsPerCondition": 3,
     "passCriteria": {
       "criticalUnsupportedClaims": 0,
-      "requiredBehaviorCoverage": 13
+      "requiredBehaviorCoverage": 17
     }
   }
 }

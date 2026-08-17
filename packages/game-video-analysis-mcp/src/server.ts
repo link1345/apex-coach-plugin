@@ -12,7 +12,7 @@ import { VideoInfoService } from "./media/videoInfo.js";
 export function createGameVideoAnalysisServer(runner = new FfmpegRunner()): McpServer {
   const server = new McpServer({
     name: "game-video-analysis-mcp",
-    version: "0.2.1"
+    version: "0.3.0"
   });
   const videoInfoService = new VideoInfoService(runner);
   const frameExtractionService = new FrameExtractionService(runner, videoInfoService);

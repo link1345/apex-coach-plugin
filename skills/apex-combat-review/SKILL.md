@@ -42,7 +42,17 @@ Never recommend an `unavailable` or `unknown` option as the better action. A `co
 
 Record `actionPhase` and every `controlState` before rating an option. Each option must list `requiresControls`. During an ability `transit` phase, do not treat unavailable firing, weapon swapping, aiming, movement, or cancellation as player reaction time.
 
+Split any interval that crosses setup, targeting, commitment, transit, landing, or neutral play into `actionSegments`. Do not describe the whole interval as neutral when the visible controls or purpose change. Movement that flows directly into an ability activation is a purposeful `setup` step unless the evidence leaves that purpose uncertain.
+
 For an ability, check HUD state, prior use, cooldown evidence, placement requirements, route, and exposure. A reference cooldown does not prove that the ability was ready in the clip. Read [decision-gates.md](references/decision-gates.md) for the full option worksheet.
+
+### Purpose and opportunity-cost gate
+
+Mechanical availability is necessary but not sufficient for a `better` verdict. For every better option, record `planContext`: the observed purpose and certainty, the current setup step, its prerequisites, whether the alternative preserves that plan, the alternative's opportunity cost, and the evidence-backed tradeoff comparison.
+
+When observed movement leads continuously into an ability activation, evaluate it as preparation for that activation. Do not call it delay, non-combat movement, or a missed opportunity unless the alternative preserves the plan or evidence establishes that abandoning the plan has higher value. If the player's purpose is unclear, set `purposeCertainty: unknown` and keep the comparison conditional or unrated.
+
+For a better weapon, firing, or trade-angle option, also record `engagementOpportunity`: target visibility, line of sight, a reachable firing position, the ally trade window, and the route from the proposed input to actual effect. An unknown target, line of sight, route, or effect window cannot support `confirmed better`.
 
 ### Numeric rule gate
 
@@ -71,6 +81,8 @@ For an ambiguous HUD element, record identification candidates, confidence, and 
 ### Decision-time gate
 
 Record `eventVisibleAt`, `likelyPerceivedAt`, `controlAvailableAt`, and `decisionCommittedAt`; use `null` when a time cannot be established. Evidence that became visible after `decisionCommittedAt` cannot justify criticism of the earlier commit. Do not classify a reaction as delayed unless both perception and required-control availability are established.
+
+Any negative timing or missed-opportunity wording in evaluations, `readerClaims`, or `renderedClaims` requires `reactionAssessment`. This includes claims that a switch was late, should have happened first or immediately, failed to happen in time, or lost an earlier firing opportunity. When perception or control-availability time is unknown, rewrite the idea as a conditional alternative rather than a delay claim.
 
 ### Recovery gate
 
