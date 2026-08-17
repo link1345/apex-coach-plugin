@@ -136,12 +136,18 @@ Successful responses include `found: true`, `resolvedBy`, and `history` with the
 Validates a structured combat-review draft before prose generation. It checks:
 
 - unique observation ids, typed ability-availability cues, option feasibility, and evidence ids;
+- action phase, required controls, and whether firing, swapping, aiming, moving, or cancellation is actually available;
+- HUD identification candidates, confidence, and multiple visual cue types before a UI element supports a decisive claim;
+- event visibility, likely perception, control availability, and decision commitment so later evidence is not applied retroactively;
 - empty evidence lists and unavailable, unknown, or conditional abilities recommended too decisively;
 - scene measurements incorrectly promoted to numeric thresholds that do not exactly match a numeric reference value and unit;
 - decisive comparisons against ambiguous actions;
 - decisive audio-dependent recommendations when audio was not analyzed;
 - recovery recommendations, including recovery abilities with multiple applicable categories, that do not distinguish health, shield, deployment, reachability, and completion window;
+- negative inventory findings without combat overlap or a concrete lost opportunity;
+- terminal squad/revive outcomes and purpose-versus-execution separation;
+- reader-facing numeric thresholds, absolute rules, ability claims, causal claims, or outcomes that are not traceable to validated findings;
 - reference claims whose exact `referenceId`, `valueKey`, and structured expected value do not match the resolved value, or whose value is absent or explicitly unknown;
 - reference-backed claims that omit the reviewed patch or ISO timestamp in `referenceContext`.
 
-The result contains `valid`, separate `errors` and `warnings`, and the exact reference values resolved for supported claims. Clients should fix every error before publishing the review.
+The result contains `valid`, separate `errors` and `warnings`, and the exact reference values resolved for supported claims. Clients should fix every error, generate `readerFacingReview`, and validate that final prose before publishing the review.

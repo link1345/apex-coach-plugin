@@ -8,7 +8,11 @@ Required fields include:
 
 - reference patch or timestamp context when any reference-backed claim is used;
 - timestamp range;
+- decision type, positive/negative/neutral assessment, and whether the finding evaluates purpose or execution;
+- action phase, control availability, and the controls required by each option;
+- event-visible, likely-perceived, control-available, and decision-committed times, using null for unknowns;
 - observations with unique ids and typed ability availability cues when an ability is evaluated;
+- UI identification candidates, confidence, and cue types when a HUD element is used;
 - inferences and cue evidence ids;
 - actual action and certainty;
 - evaluation;
@@ -17,9 +21,12 @@ Required fields include:
 - options with every applicable category, ability name when relevant, feasibility, and verdict;
 - numeric claims as measurement or threshold;
 - exact reference claims with the expected structured reference value;
+- `readerClaims` for every numeric threshold, absolute rule, ability-availability assertion, or causal claim intended for final prose;
 - recovery context when recovery is recommended.
+- inventory context and concrete opportunity loss for a negative inventory finding;
+- terminal squad/revive state from final-frame evidence;
 
-Run `validate_review`. Repair every error before prose generation.
+Run `validate_review`. Repair every error before prose generation. Then include `readerFacingReview`, link its declared claims to exact `readerClaims`, and run it again so final outcome text, ability/causal assertions, absolute rules, and numeric claims cannot exceed the validated findings.
 
 ## Reader-facing review
 
@@ -50,3 +57,5 @@ For each theme include:
 - linked finding timestamps.
 
 Do not introduce new claims in the summary.
+
+If a valid purpose and risky execution occur in the same interval, use two findings with the same timestamp and different `evaluationTarget` values. Never summarize an interrupted revive followed by squad elimination as a successful reset.
